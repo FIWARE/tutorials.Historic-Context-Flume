@@ -48,7 +48,7 @@ curl -X POST \
  "devices": [
    {
      "device_id":   "motion001",
-     "entity_name": "urn:ngsd-ld:Motion:001",
+     "entity_name": "Motion:001",
      "entity_type": "Motion",
      "protocol":    "PDI-IoTA-UltraLight",
      "timezone":    "Europe/Berlin",
@@ -56,7 +56,7 @@ curl -X POST \
        { "object_id": "c", "name":"count", "type":"Integer"}
       ],
       "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:001"}
+         {"name":"refStore", "type": "Relationship","value": "Store:001"}
       ]
    }
  ]
@@ -74,7 +74,7 @@ curl -X POST \
   "devices": [
     {
       "device_id": "bell001",
-      "entity_name": "urn:ngsi-ld:Bell:001",
+      "entity_name": "Bell:001",
       "entity_type": "Bell",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
@@ -86,7 +86,7 @@ curl -X POST \
         }
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:001"}
+         {"name":"refStore", "type": "Relationship","value": "Store:001"}
       ]
     }
   ]
@@ -105,7 +105,7 @@ curl -X POST \
   "devices": [
     {
       "device_id": "door001",
-      "entity_name": "urn:ngsi-ld:Door:001",
+      "entity_name": "Door:001",
       "entity_type": "Door",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
@@ -120,7 +120,7 @@ curl -X POST \
         {"object_id": "s", "name": "state", "type":"Text"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:001"}
+         {"name":"refStore", "type": "Relationship","value": "Store:001"}
        ]
     }
   ]
@@ -140,7 +140,7 @@ curl -X POST \
   "devices": [
     {
       "device_id": "lamp001",
-      "entity_name": "urn:ngsi-ld:Lamp:001",
+      "entity_name": "Lamp:001",
       "entity_type": "Lamp",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
@@ -154,7 +154,7 @@ curl -X POST \
         {"object_id": "l", "name": "luminosity", "type":"Integer"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:001"}
+         {"name":"refStore", "type": "Relationship","value": "Store:001"}
     	]
     }
   ]
@@ -179,7 +179,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Bell:001", "type": "Bell"
+        "id": "Bell:001", "type": "Bell"
       }
     ],
     "attrs": ["ring"]
@@ -205,7 +205,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Door:001", "type": "Door"
+        "id": "Door:001", "type": "Door"
       }
     ],
     "attrs": [ "lock", "unlock", "open", "close"]
@@ -231,7 +231,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Lamp:001","type": "Lamp"
+        "id": "Lamp:001","type": "Lamp"
       }
     ],
     "attrs": [ "on", "off" ]
@@ -259,7 +259,7 @@ curl -X POST \
  "devices": [
    {
      "device_id":   "motion002",
-     "entity_name": "urn:ngsd-ld:Motion:002",
+     "entity_name": "Motion:002",
      "entity_type": "Motion",
      "protocol":    "PDI-IoTA-UltraLight",
      "timezone":    "Europe/Berlin",
@@ -267,7 +267,7 @@ curl -X POST \
        { "object_id": "c", "name":"count", "type":"Integer"}
       ],
       "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:002"}
+         {"name":"refStore", "type": "Relationship","value": "Store:002"}
       ]
    }
  ]
@@ -285,11 +285,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "bell002",
-      "entity_name": "urn:ngsi-ld:Bell:002",
+      "entity_name": "Bell:002",
       "entity_type": "Bell",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3002/iot/bell002",
+      "endpoint": "http://context-provider:3001/iot/bell002",
       "commands": [ 
         {
           "name": "ring",
@@ -297,7 +297,7 @@ curl -X POST \
         }
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:002"}
+         {"name":"refStore", "type": "Relationship","value": "Store:002"}
       ]
     }
   ]
@@ -316,11 +316,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "door002",
-      "entity_name": "urn:ngsi-ld:Door:002",
+      "entity_name": "Door:002",
       "entity_type": "Door",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3002/iot/door002",
+      "endpoint": "http://context-provider:3001/iot/door002",
       "commands": [ 
         {"name": "unlock","type": "command"},
         {"name": "open","type": "command"},
@@ -331,7 +331,7 @@ curl -X POST \
         {"object_id": "s", "name": "state", "type":"Text"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:002"}
+         {"name":"refStore", "type": "Relationship","value": "Store:002"}
        ]
     }
   ]
@@ -351,11 +351,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "lamp002",
-      "entity_name": "urn:ngsi-ld:Lamp:002",
+      "entity_name": "Lamp:002",
       "entity_type": "Lamp",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3002/iot/lamp002",
+      "endpoint": "http://context-provider:3001/iot/lamp002",
       "commands": [ 
         {"name": "on","type": "command"},
         {"name": "off","type": "command"}
@@ -365,7 +365,7 @@ curl -X POST \
         {"object_id": "l", "name": "luminosity", "type":"Integer"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:002"}
+         {"name":"refStore", "type": "Relationship","value": "Store:002"}
     	]
     }
   ]
@@ -390,7 +390,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Bell:002", "type": "Bell"
+        "id": "Bell:002", "type": "Bell"
       }
     ],
     "attrs": ["ring"]
@@ -416,7 +416,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Door:002", "type": "Door"
+        "id": "Door:002", "type": "Door"
       }
     ],
     "attrs": [ "lock", "unlock", "open", "close"]
@@ -442,7 +442,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Lamp:002","type": "Lamp"
+        "id": "Lamp:002","type": "Lamp"
       }
     ],
     "attrs": [ "on", "off" ]
@@ -470,7 +470,7 @@ curl -X POST \
  "devices": [
    {
      "device_id":   "motion003",
-     "entity_name": "urn:ngsd-ld:Motion:003",
+     "entity_name": "Motion:003",
      "entity_type": "Motion",
      "protocol":    "PDI-IoTA-UltraLight",
      "timezone":    "Europe/Berlin",
@@ -478,7 +478,7 @@ curl -X POST \
        { "object_id": "c", "name":"count", "type":"Integer"}
       ],
       "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:003"}
+         {"name":"refStore", "type": "Relationship","value": "Store:003"}
       ]
    }
  ]
@@ -496,11 +496,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "bell003",
-      "entity_name": "urn:ngsi-ld:Bell:003",
+      "entity_name": "Bell:003",
       "entity_type": "Bell",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3003/iot/bell003",
+      "endpoint": "http://context-provider:3001/iot/bell003",
       "commands": [ 
         {
           "name": "ring",
@@ -508,7 +508,7 @@ curl -X POST \
         }
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:003"}
+         {"name":"refStore", "type": "Relationship","value": "Store:003"}
       ]
     }
   ]
@@ -527,11 +527,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "door003",
-      "entity_name": "urn:ngsi-ld:Door:003",
+      "entity_name": "Door:003",
       "entity_type": "Door",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3003/iot/door003",
+      "endpoint": "http://context-provider:3001/iot/door003",
       "commands": [ 
         {"name": "unlock","type": "command"},
         {"name": "open","type": "command"},
@@ -542,7 +542,7 @@ curl -X POST \
         {"object_id": "s", "name": "state", "type":"Text"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:003"}
+         {"name":"refStore", "type": "Relationship","value": "Store:003"}
        ]
     }
   ]
@@ -562,11 +562,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "lamp003",
-      "entity_name": "urn:ngsi-ld:Lamp:003",
+      "entity_name": "Lamp:003",
       "entity_type": "Lamp",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3003/iot/lamp003",
+      "endpoint": "http://context-provider:3001/iot/lamp003",
       "commands": [ 
         {"name": "on","type": "command"},
         {"name": "off","type": "command"}
@@ -576,7 +576,7 @@ curl -X POST \
         {"object_id": "l", "name": "luminosity", "type":"Integer"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:003"}
+         {"name":"refStore", "type": "Relationship","value": "Store:003"}
     	]
     }
   ]
@@ -601,7 +601,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Bell:003", "type": "Bell"
+        "id": "Bell:003", "type": "Bell"
       }
     ],
     "attrs": ["ring"]
@@ -627,7 +627,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Door:003", "type": "Door"
+        "id": "Door:003", "type": "Door"
       }
     ],
     "attrs": [ "lock", "unlock", "open", "close"]
@@ -653,7 +653,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Lamp:003","type": "Lamp"
+        "id": "Lamp:003","type": "Lamp"
       }
     ],
     "attrs": [ "on", "off" ]
@@ -681,7 +681,7 @@ curl -X POST \
  "devices": [
    {
      "device_id":   "motion004",
-     "entity_name": "urn:ngsd-ld:Motion:004",
+     "entity_name": "Motion:004",
      "entity_type": "Motion",
      "protocol":    "PDI-IoTA-UltraLight",
      "timezone":    "Europe/Berlin",
@@ -689,7 +689,7 @@ curl -X POST \
        { "object_id": "c", "name":"count", "type":"Integer"}
       ],
       "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:004"}
+         {"name":"refStore", "type": "Relationship","value": "Store:004"}
       ]
    }
  ]
@@ -707,11 +707,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "bell004",
-      "entity_name": "urn:ngsi-ld:Bell:004",
+      "entity_name": "Bell:004",
       "entity_type": "Bell",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3004/iot/bell004",
+      "endpoint": "http://context-provider:3001/iot/bell004",
       "commands": [ 
         {
           "name": "ring",
@@ -719,7 +719,7 @@ curl -X POST \
         }
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:004"}
+         {"name":"refStore", "type": "Relationship","value": "Store:004"}
       ]
     }
   ]
@@ -738,11 +738,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "door004",
-      "entity_name": "urn:ngsi-ld:Door:004",
+      "entity_name": "Door:004",
       "entity_type": "Door",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3004/iot/door004",
+      "endpoint": "http://context-provider:3001/iot/door004",
       "commands": [ 
         {"name": "unlock","type": "command"},
         {"name": "open","type": "command"},
@@ -753,7 +753,7 @@ curl -X POST \
         {"object_id": "s", "name": "state", "type":"Text"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:004"}
+         {"name":"refStore", "type": "Relationship","value": "Store:004"}
        ]
     }
   ]
@@ -773,11 +773,11 @@ curl -X POST \
   "devices": [
     {
       "device_id": "lamp004",
-      "entity_name": "urn:ngsi-ld:Lamp:004",
+      "entity_name": "Lamp:004",
       "entity_type": "Lamp",
       "protocol": "PDI-IoTA-UltraLight",
       "transport": "HTTP",
-      "endpoint": "http://context-provider:3004/iot/lamp004",
+      "endpoint": "http://context-provider:3001/iot/lamp004",
       "commands": [ 
         {"name": "on","type": "command"},
         {"name": "off","type": "command"}
@@ -787,7 +787,7 @@ curl -X POST \
         {"object_id": "l", "name": "luminosity", "type":"Integer"}
        ],
        "static_attributes": [
-         {"name":"refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:004"}
+         {"name":"refStore", "type": "Relationship","value": "Store:004"}
     	]
     }
   ]
@@ -812,7 +812,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Bell:004", "type": "Bell"
+        "id": "Bell:004", "type": "Bell"
       }
     ],
     "attrs": ["ring"]
@@ -838,7 +838,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Door:004", "type": "Door"
+        "id": "Door:004", "type": "Door"
       }
     ],
     "attrs": [ "lock", "unlock", "open", "close"]
@@ -864,7 +864,7 @@ curl -X POST \
   "dataProvided": {
     "entities": [
       {
-        "id": "urn:ngsi-ld:Lamp:004","type": "Lamp"
+        "id": "Lamp:004","type": "Lamp"
       }
     ],
     "attrs": [ "on", "off" ]

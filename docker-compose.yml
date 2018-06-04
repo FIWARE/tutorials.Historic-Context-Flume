@@ -4,13 +4,27 @@ services:
     image: mongo:3.6
     hostname: context-db
     container_name: context-db
-    expose:
-        - "27017"
     ports:
         - "27017:27017"
     networks:
         - default
     command: --bind_ip_all --smallfiles
+
+
+  postgres:
+      image: postgres:latest
+      hostname: historic-db
+      container_name: historic-db
+      expose:
+        - "5432"
+      ports:
+        - "5432:5432"
+      networks:
+        - default
+      environment:
+        - "POSTGRES_PASSWORD=password"
+        - "POSTGRES_USER=postgres"
+        - "POSTGRES_DB=postgres"
 
   orion:
     image: fiware/orion:latest
@@ -27,6 +41,29 @@ services:
         - "1026:1026"
     command: -dbhost context-db -logLevel DEBUG
 
+
+  cygnus:
+    image: fiware/cygnus-ngsi-cache:latest
+    hostname: cygnus
+    container_name: cygnus
+    networks:
+        - default
+    expose:
+        - "5050"
+        - "5080"
+    ports:
+        - "5050:5050"
+        - "5080:5080"
+    environment:
+        - "CYGNUS_POSTGRESQL_HOST=historic-db"
+        - "CYGNUS_POSTGRESQL_PORT=5432"
+        - "CYGNUS_POSTGRESQL_USER=postgres" 
+        - "CYGNUS_POSTGRESQL_PASS=password" 
+        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_SERVICE_PORT=5050"
+        - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
+
   iot-agent:
     image: fiware/iotagent-ul:latest
     hostname: iot-agent
@@ -36,9 +73,6 @@ services:
       - orion
     networks:
         - default
-    expose:
-        - "4041"
-        - "7896"
     ports:
         - "4041:4041"
         - "7896:7896"

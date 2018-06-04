@@ -130,11 +130,11 @@ function sendCommand(req, res) {
 	};
 
 	if (action === "ring"){
-		id =  'urn:ngsi-ld:Bell:' + id;
+		id =  'Bell:' + id;
 	} else if (action === "on" || action === "off" ){
-		id =  'urn:ngsi-ld:Lamp:' + id;
+		id =  'Lamp:' + id;
 	} else {
-		id =  'urn:ngsi-ld:Door:' + id;
+		id =  'Door:' + id;
 	}
 
 	const options = { method: 'PATCH',

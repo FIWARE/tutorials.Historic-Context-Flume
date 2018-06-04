@@ -64,7 +64,7 @@ Therefore the overall architecture will consist of the following elements:
     + Display store information and allow users to interact with the dummy IoT devices
     + Show which products can be bought at each store
     + Allow users to "buy" products and reduce the stock count.
-  * A webserver acting as set of [dummy IoT devices]](https://github.com/Fiware/tutorials.IoT-Sensors) using the [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) protocol running over HTTP.
+  * A webserver acting as set of [dummy IoT devices](https://github.com/Fiware/tutorials.IoT-Sensors) using the [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) protocol running over HTTP.
   * The **Context Provider NGSI** proxy is not used in this tutorial. It does the following:
     + receive requests using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
     + makes requests to publicly available data sources using their own APIs in a proprietory format 

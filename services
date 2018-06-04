@@ -42,5 +42,7 @@ case "${command}" in
 		docker pull fiware/iotagent-ul
 		echo "Recreate Context-Providers proxy"
 		docker build -t fiware/cp-web-app ./proxy
+		echo "Recreate Cygnus with cache"
+		docker build -t fiware/cygnus-ngsi-cache ./cygnus
 		;;
 esac
