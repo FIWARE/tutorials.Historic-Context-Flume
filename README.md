@@ -40,7 +40,7 @@ This application builds on the components and dummy IoT devices created in
 the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the
 [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) and introduce the
 [Cygnus Generic Enabler](http://fiware-cygnus.readthedocs.io/en/latest/) for persisting context data to a database.
-Two databases are now involved - both the Orion Context Broker and the IoT Agent rely on [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold, and we will be persisting our historical context data into a **POSTGRES** database.
+Two databases are now involved - both the Orion Context Broker and the IoT Agent rely on [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold, and we will be persisting our historical context data into a **PostgreSQL** database.
 
 
 Therefore the overall architecture will consist of the following elements:
@@ -76,6 +76,88 @@ Since all interactions between the elements are initiated by HTTP requests, the 
 
 
 
+## PostgreSQL Server Configuration
+
+```yaml
+  postgres:
+    image: postgres:latest
+    hostname: historic-db
+    container_name: historic-db
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+    environment:
+      - "POSTGRES_PASSWORD=password"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_DB=postgres"
+
+```
+
+The `postgres` container is listening on a single port: 
+
+* Port `5432` is the default port for a PostgreSQL server. It has been exposed so you can also run the `pgAdmin4` tool to display database data if you wish
+
+The `postgres` container is driven by environment variables as shown:
+
+| Key             |Value.    |Description                    |
+|-----------------|----------|-------------------------------|
+|POSTGRES_PASSWORD|`password`| Password for the PostgreSQL database user|
+|POSTGRES_USER    |`postgres`| Username for the PostgreSQL database user|
+|POSTGRES_DB      |`postgres`| The name of the PostgreSQL database      | 
+
+
+
+## Cygnus  Configuration
+
+```yaml
+  cygnus:
+    image: fiware/cygnus-ngsi:latest
+    hostname: cygnus
+    container_name: cygnus
+    networks:
+        - default
+    expose:
+        - "5080"
+    ports:
+        - "5080:5080"
+    environment:
+        - "CYGNUS_POSTGRESQL_HOST=historic-db"
+        - "CYGNUS_POSTGRESQL_PORT=5432"
+        - "CYGNUS_POSTGRESQL_USER=postgres" 
+        - "CYGNUS_POSTGRESQL_PASS=password" 
+        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_SERVICE_PORT=5050"
+        - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
+```
+
+The `cygnus` container is listening on two ports: 
+
+* Port `5050` is exposed ....
+* Port `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
+  without being part of the same network.
+
+
+The `cygnus` container is driven by environment variables as shown:
+
+| Key                           |Value         |Description|
+|-------------------------------|--------------|-----------|
+|CYGNUS_POSTGRESQL_HOST         |`historic-db` | Hostname of the PostgreSQL server used to persist historical context data |
+|CYGNUS_POSTGRESQL_PORT         |`5432`        | Port that the PostgreSQL server uses to listen to commands |
+|CYGNUS_POSTGRESQL_USER         |`postgres`    | Username for the PostgreSQL database user | 
+|CYGNUS_POSTGRESQL_PASS         |`password`    | Password for the PostgreSQL database user |
+|CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
+|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
+|CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
+|CYGNUS_POSTGRESQL_ENABLE_CACHE |`true`        | Switch to enable caching within the PostgreSQL configuration |
+
+
+
+
+
 
 # Persisting Context Data
 
@@ -95,6 +177,102 @@ The stores can be found at:
 
 
 
+```console
+docker run -it --rm  --network fiware_default jbergknoff/postgresql-client postgresql://postgres:password@historic-db:5432/postgres
+```
+
+Once running a docker container within the network, it is possible to 
+
+
+#### Query:
+
+```sql
+SELECT table_schema,table_name
+FROM information_schema.tables
+WHERE table_schema ='openiot'
+ORDER BY table_schema,table_name;
+```
+
+#### Result:
+
+```
+ table_schema |    table_name     
+--------------+-------------------
+ openiot      | door_001_door
+ openiot      | door_002_door
+ openiot      | door_003_door
+ openiot      | door_004_door
+ openiot      | lamp_001_lamp
+ openiot      | motion_001_motion
+ openiot      | motion_002_motion
+ openiot      | motion_003_motion
+ openiot      | motion_004_motion
+(9 rows)
+```
+
+#### Query:
+
+```sql
+SELECT * FROM openiot.door_001_door limit 10;
+```
+
+#### Result:
+
+```
+  recvtimets   |         recvtime         | fiwareservicepath | entityid | entitytype |   attrname   |   attrtype    |        attrvalue         |                                    attrmd                                    
+---------------+--------------------------+-------------------+----------+------------+--------------+---------------+--------------------------+------
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | TimeInstant  | ISO8601       | 2018-06-05T12:34:06.642Z | []
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | close_info   | commandResult |                          | []
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | close_status | commandStatus | UNKNOWN                  | []
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | lock_info    | commandResult |                          | []
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | lock_status  | commandStatus | UNKNOWN                  | []
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | open_info    | commandResult |  open OK                 | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:33:06.591Z"}]
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | open_status  | commandStatus | OK                       | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:33:06.591Z"}]
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | refStore     | Relationship  | Store:001                | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:06.642Z"}]
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | state        | Text          | OPEN                     | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:06.642Z"}]
+ 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | unlock_info  | commandResult |                          | []
+(10 rows)
+```
+
+#### Query:
+
+```sql
+SELECT * FROM openiot.motion_001_motion limit 10;
+```
+
+#### Result:
+
+```
+  recvtimets   |         recvtime         | fiwareservicepath |  entityid  | entitytype |  attrname   |   attrtype   |        attrvalue         |                                    attrmd                                    
+---------------+--------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+-----
+ 1528202064795 | 2018-06-05T12:34:24.795Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:34:24.736Z | []
+ 1528202064795 | 2018-06-05T12:34:24.795Z | /                 | Motion:001 | Motion     | count       | Integer      | 7                        | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:24.736Z"}]
+ 1528202064795 | 2018-06-05T12:34:24.795Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:24.736Z"}]
+ 1528202082820 | 2018-06-05T12:34:42.820Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:34:42.782Z | []
+ 1528202082820 | 2018-06-05T12:34:42.820Z | /                 | Motion:001 | Motion     | count       | Integer      | 9                        | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:42.782Z"}]
+ 1528202082820 | 2018-06-05T12:34:42.820Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:42.782Z"}]
+ 1528202112977 | 2018-06-05T12:35:12.977Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:35:12.930Z | []
+ 1528202112977 | 2018-06-05T12:35:12.977Z | /                 | Motion:001 | Motion     | count       | Integer      | 10                       | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:35:12.930Z"}]
+ 1528202112977 | 2018-06-05T12:35:12.977Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | 
+ [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:35:12.930Z"}]
+ 1528202130992 | 2018-06-05T12:35:30.992Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:35:30.955Z | []
+```
+
+To leave the Postgres client and leave interactive mode, run the following:
+
+```sql
+\q
+```
+ You will then return to the commmand line.
 
 
 

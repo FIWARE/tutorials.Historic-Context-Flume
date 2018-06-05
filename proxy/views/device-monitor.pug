@@ -100,6 +100,16 @@ block content
         playAudio = true;
       });
 
+      $("form.device").submit(function(event){
+        event.preventDefault();
+        var serializedData = $(this).serialize();
+        $.ajax({
+            url: "/device/command",
+            type: "post",
+            data: serializedData
+        });
+      });
+
       function beep() {
         if(playAudio){
           snd.play();

@@ -40,9 +40,10 @@ case "${command}" in
 		docker pull fiware/orion
 		echo "Obtaining Latest UltraLight IoT Agent"
 		docker pull fiware/iotagent-ul
+		echo "Obtaining Latest Cygnus"
+		docker pull fiware/cygnus-ngsi
 		echo "Recreate Context-Providers proxy"
 		docker build -t fiware/cp-web-app ./proxy
-		echo "Recreate Cygnus with cache"
-		docker build -t fiware/cygnus-ngsi-cache ./cygnus
+		
 		;;
 esac
