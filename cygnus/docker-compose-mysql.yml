@@ -10,9 +10,10 @@ services:
         - default
     command: --bind_ip_all --smallfiles
 
-  historic-db-mysql:
+
+  db-mysql:
       image: mysql:latest
-      hostname: historic-db-mysql
+      hostname: db-mysql
       container_name: db-mysql
       expose:
         - "3306"
@@ -20,26 +21,19 @@ services:
         - "3306:3306"
       networks:
         - default
+#      environment:
+#        - "MYSQL_ROOT_PASSWORD=password"
+#        - "MYSQL_ROOT_HOST=%"
+#        - "MYSQL_DATABASE=openiot"
+#        - "MYSQL_USER=root"
+#        - "MYSQL_PASSWORD=password"
+      entrypoint: ['docker-entrypoint.sh', '--default-authentication-plugin=mysql_native_password']
       environment:
-        - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
-        - "MYSQL_USER=user"
-        - "MYSQL_PASSWORD=password"
-        - "MYSQL_DATABASE=mysql"
-
-  historic-db-postgres:
-      image: postgres:latest
-      hostname: historic-db-postgres
-      container_name: db-postgres
-      expose:
-        - "5432"
-      ports:
-        - "5432:5432"
-      networks:
-        - default
-      environment:
-        - "POSTGRES_PASSWORD=password"
-        - "POSTGRES_USER=postgres"
-        - "POSTGRES_DB=postgres"
+         - "MYSQL_ROOT_PASSWORD=supersecret"
+         - "MYSQL_DATABASE=iotagent"
+         - "MYSQL_USER=zuser"
+         - "MYSQL_PASSWORD=zpass"
+         - "MYSQL_TCP_PORT=3306"
 
   orion:
     image: fiware/orion:latest
@@ -63,20 +57,17 @@ services:
     container_name: fiware-cygnus
     networks:
         - default
+    depends_on:
+        - db-mysql
     expose:
         - "5080"
     ports:
         - "5080:5080"
     environment:
-        - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
-        - "CYGNUS_POSTGRESQL_PORT=5432"
-        - "CYGNUS_POSTGRESQL_USER=postgres" 
-        - "CYGNUS_POSTGRESQL_PASS=password" 
-        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
-        - "CYGNUS_MYSQL_HOST=historic-db-mysql"
+        - "CYGNUS_MYSQL_HOST=db-mysql"
         - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=user" 
-        - "CYGNUS_MYSQL_PASS=password" 
+        - "CYGNUS_MYSQL_USER=zuser" 
+        - "CYGNUS_MYSQL_PASS=zpass" 
         - "CYGNUS_LOG_LEVEL=DEBUG"
         - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"

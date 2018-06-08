@@ -7,35 +7,61 @@
 
 set -e
 
+loadData () {
+	sleep 2
+	echo "Loading context data"
+	./import-data
+	echo "Provisioning IoT devices"
+	./provision-devices
+}
+
+removeVolumes () {
+	echo "Removing volumes"
+	docker volume prune --force
+}
+
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
-    echo "usage: services [start|stop]"
+    echo "usage: services [mysql|postgres|start|stop]"
     exit 1
 fi
 
 command="$1"
 case "${command}" in
 	"help")
-        echo "usage: services [start|stop]"
+        echo "usage: services [mysql|postgres|start|stop]"
         ;;
     "start")
+		echo "Configuring with two databases"
 		echo "Starting containers"
-		docker-compose -p fiware up -d
+		docker-compose -f docker-compose.yml -p fiware up -d --remove-orphans
+		loadData
+		;;
+    "postgres")
+		echo -e "Configuring with a \033[1;31mPostgreSQL\033[0m database only"
+		echo "Starting containers"
+		docker-compose -f cygnus/docker-compose-postgres.yml -p fiware up -d --remove-orphans
+		loadData
+		;;
+	"mysql")
+		echo  -e "Configuring with a \033[1;31mmySQL\033[0m database only"
+		echo "Starting containers"
+		docker-compose  -f cygnus/docker-compose-mysql.yml -p fiware up -d --remove-orphans
 		sleep 2
-		echo "Loading context data"
-		./import-data
-		echo "Provisioning IoT devices"
-		./provision-devices
+		loadData
 		;;
 	"stop")
 		echo "Stopping containers"
-		docker-compose -p fiware down
-		echo "Removing volumes"
-		docker volume prune --force
+		docker-compose -f docker-compose.yml -p fiware down
+		removeVolumes
 		;;
 	"create")
 		echo "Obtaining Mongo DB image"
 		docker pull mongo:3.6
+		echo "Obtaining PostgreSQL DB image"
+		docker pull postgres:latest
+		echo "Obtaining MySQL DB image"
+		docker pull mysql:latest
 		echo "Obtaining Latest Orion Image"
 		docker pull fiware/orion
 		echo "Obtaining Latest UltraLight IoT Agent"

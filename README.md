@@ -26,11 +26,7 @@ The state of each device can be seen on the UltraLight device monitor web-page f
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context/img/device-monitor.png)
 
-#### Store 002
 
-Store002 can be found at: `http://localhost:3000/app/store/urn:ngsi-ld:Store:002`
-
-![Store](https://fiware.github.io/tutorials.Historic-Context/img/store2.png)
 
 
 # Architecture
@@ -81,8 +77,8 @@ Since all interactions between the elements are initiated by HTTP requests, the 
 ```yaml
   postgres:
     image: postgres:latest
-    hostname: historic-db
-    container_name: historic-db
+    hostname: historic-db-postgres
+    container_name: db-postgres
     expose:
       - "5432"
     ports:
@@ -124,7 +120,7 @@ The `postgres` container is driven by environment variables as shown:
     ports:
         - "5080:5080"
     environment:
-        - "CYGNUS_POSTGRESQL_HOST=historic-db"
+        - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
         - "CYGNUS_POSTGRESQL_PORT=5432"
         - "CYGNUS_POSTGRESQL_USER=postgres" 
         - "CYGNUS_POSTGRESQL_PASS=password" 
@@ -145,7 +141,7 @@ The `cygnus` container is driven by environment variables as shown:
 
 | Key                           |Value         |Description|
 |-------------------------------|--------------|-----------|
-|CYGNUS_POSTGRESQL_HOST         |`historic-db` | Hostname of the PostgreSQL server used to persist historical context data |
+|CYGNUS_POSTGRESQL_HOST         |`historic-db-postgres` | Hostname of the PostgreSQL server used to persist historical context data |
 |CYGNUS_POSTGRESQL_PORT         |`5432`        | Port that the PostgreSQL server uses to listen to commands |
 |CYGNUS_POSTGRESQL_USER         |`postgres`    | Username for the PostgreSQL database user | 
 |CYGNUS_POSTGRESQL_PASS         |`password`    | Password for the PostgreSQL database user |
@@ -159,26 +155,19 @@ The `cygnus` container is driven by environment variables as shown:
 
 
 
-# Persisting Context Data
+# Persisting Context Data into a POSTGRES Database
 
 To follow the tutorial correctly please ensure you have the device monitor page available in your browser and click on the page to enable audio before you enter any cUrl commands. The device monitor displays the current state of an array of dummy devices using Ultralight 2.0 syntax
 
 #### Device Monitor
 The device monitor can be found at: `http://localhost:3000/device/monitor`
 
-#### Stores
-
-The stores can be found at:
-
-* Store 1 -  `http://localhost:3000/app/store/urn:ngsi-ld:Store:001`
-* Store 2 -  `http://localhost:3000/app/store/urn:ngsi-ld:Store:002`
-* ...etc
 
 
 
 
 ```console
-docker run -it --rm  --network fiware_default jbergknoff/postgresql-client postgresql://postgres:password@historic-db:5432/postgres
+docker run -it --rm  --network fiware_default jbergknoff/postgresql-client postgresql://postgres:password@historic-db-postgres:5432/postgres
 ```
 
 Once running a docker container within the network, it is possible to 
@@ -274,6 +263,43 @@ To leave the Postgres client and leave interactive mode, run the following:
 ```
  You will then return to the commmand line.
 
+
+# Persisting Context Data into a MySQL Database
+
+
+
+## MySQL Server Configuration
+
+
+
+## Alternate Cygnus  Configuration
+
+```yaml
+  cygnus:
+    image: fiware/cygnus-ngsi:latest
+    hostname: cygnus
+    container_name: fiware-cygnus
+    networks:
+        - default
+    expose:
+        - "5080"
+    ports:
+        - "5080:5080"
+    environment:
+        - "CYGNUS_MYSQL_HOST=historic-db-mysql"
+        - "CYGNUS_MYSQL_PORT=3306"
+        - "CYGNUS_MYSQL_USER=user" 
+        - "CYGNUS_MYSQL_PASS=password" 
+        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_SERVICE_PORT=5050"
+        - "CYGNUS_API_PORT=5080"
+```
+
+
+
+```console
+docker run -it --rm  --network fiware_default mysql mysql -h historic-db-mysql -P 3306 -D mysql -u user -ppassword
+```
 
 
 # Next Steps

@@ -58,21 +58,8 @@ curl -X POST \
       "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:001"}
       ]
-   }
- ]
-}
-'
-#
-# Provision bell 001
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
-    {
+   },
+   {
       "device_id": "bell001",
       "entity_name": "Bell:001",
       "entity_type": "Bell",
@@ -88,21 +75,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:001"}
       ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Door 001
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    },
     {
       "device_id": "door001",
       "entity_name": "Door:001",
@@ -122,22 +95,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:001"}
        ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Lamp 001
-#
-
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    }, 
     {
       "device_id": "lamp001",
       "entity_name": "Lamp:001",
@@ -269,21 +227,8 @@ curl -X POST \
       "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:002"}
       ]
-   }
- ]
-}
-'
-#
-# Provision bell 002
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
-    {
+   },
+   {
       "device_id": "bell002",
       "entity_name": "Bell:002",
       "entity_type": "Bell",
@@ -299,21 +244,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:002"}
       ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Door 002
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    },
     {
       "device_id": "door002",
       "entity_name": "Door:002",
@@ -333,22 +264,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:002"}
        ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Lamp 002
-#
-
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    },
     {
       "device_id": "lamp002",
       "entity_name": "Lamp:002",
@@ -480,21 +396,8 @@ curl -X POST \
       "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:003"}
       ]
-   }
- ]
-}
-'
-#
-# Provision bell 003
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
-    {
+   },
+   {
       "device_id": "bell003",
       "entity_name": "Bell:003",
       "entity_type": "Bell",
@@ -510,21 +413,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:003"}
       ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Door 003
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    },
     {
       "device_id": "door003",
       "entity_name": "Door:003",
@@ -544,22 +433,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:003"}
        ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Lamp 003
-#
-
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    },
     {
       "device_id": "lamp003",
       "entity_name": "Lamp:003",
@@ -691,21 +565,8 @@ curl -X POST \
       "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:004"}
       ]
-   }
- ]
-}
-'
-#
-# Provision bell 004
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
-    {
+   },
+   {
       "device_id": "bell004",
       "entity_name": "Bell:004",
       "entity_type": "Bell",
@@ -721,21 +582,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:004"}
       ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Door 004
-#
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    },
     {
       "device_id": "door004",
       "entity_name": "Door:004",
@@ -755,22 +602,7 @@ curl -X POST \
        "static_attributes": [
          {"name":"refStore", "type": "Relationship","value": "Store:004"}
        ]
-    }
-  ]
-}
-'
-
-#
-# Provision Smart Lamp 004
-#
-
-curl -X POST \
-  'http://iot-agent:4041/iot/devices' \
-  -H 'Content-Type: application/json' \
-  -H 'fiware-service: openiot' \
-  -H 'fiware-servicepath: /' \
-  -d '{
-  "devices": [
+    },
     {
       "device_id": "lamp004",
       "entity_name": "Lamp:004",
