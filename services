@@ -52,7 +52,7 @@ case "${command}" in
 		;;
 	"stop")
 		echo "Stopping containers"
-		docker-compose -f cygnus/docker-compose-mysql.yml -p fiware down
+		docker-compose -f docker-compose.yml -p fiware down
 		removeVolumes
 		;;
 	"create")

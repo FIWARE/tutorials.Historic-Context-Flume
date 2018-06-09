@@ -23,7 +23,6 @@ services:
         - default
       environment:
         - "MYSQL_ROOT_PASSWORD=123"
-        - "MYSQL_TCP_PORT=3306"
         - "MYSQL_ROOT_HOST=%"
 
   historic-db-postgres:
@@ -47,7 +46,6 @@ services:
     container_name: fiware-orion
     depends_on:
       - context-db
-      - context-provider
     networks:
         - default
     expose:
@@ -61,33 +59,39 @@ services:
     image: fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
+    depends_on:
+      - orion
+      - historic-db-mysql
+      - historic-db-postgres
     networks:
-        - default
+      - default
     expose:
-        - "5080"
+      - "5080"
+      - "5084"
     ports:
-        - "5080:5080"
+      - "5080:5080"
+      - "5084:5084"
     environment:
-        - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
-        - "CYGNUS_POSTGRESQL_PORT=5432"
-        - "CYGNUS_POSTGRESQL_USER=postgres" 
-        - "CYGNUS_POSTGRESQL_PASS=password" 
-        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
-        - "CYGNUS_MYSQL_HOST=historic-db-mysql"
-        - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=root" 
-        - "CYGNUS_MYSQL_PASS=123" 
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_SERVICE_PORT=5050"
-        - "CYGNUS_API_PORT=5080"
+      - "CYGNUS_MULTIAGENT=true"
+      - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
+      - "CYGNUS_POSTGRESQL_PORT=5432"
+      - "CYGNUS_POSTGRESQL_USER=postgres" 
+      - "CYGNUS_POSTGRESQL_PASS=password" 
+      - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
+      - "CYGNUS_MYSQL_HOST=historic-db-mysql"
+      - "CYGNUS_MYSQL_PORT=3306"
+      - "CYGNUS_MYSQL_USER=root" 
+      - "CYGNUS_MYSQL_PASS=123" 
+      - "CYGNUS_LOG_LEVEL=DEBUG"
+        
 
   iot-agent:
     image: fiware/iotagent-ul:latest
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
-      - context-db
-      - orion
+       - orion
+       - context-db
     networks:
         - default
     ports:

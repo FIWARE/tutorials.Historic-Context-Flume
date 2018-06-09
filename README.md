@@ -75,7 +75,7 @@ Since all interactions between the elements are initiated by HTTP requests, the 
 ## PostgreSQL Server Configuration
 
 ```yaml
-  postgres:
+  historic-db-postgres:
     image: postgres:latest
     hostname: historic-db-postgres
     container_name: db-postgres
@@ -92,11 +92,11 @@ Since all interactions between the elements are initiated by HTTP requests, the 
 
 ```
 
-The `postgres` container is listening on a single port: 
+The `historic-db-postgres` container is listening on a single port: 
 
 * Port `5432` is the default port for a PostgreSQL server. It has been exposed so you can also run the `pgAdmin4` tool to display database data if you wish
 
-The `postgres` container is driven by environment variables as shown:
+The `historic-db-postgres` container is driven by environment variables as shown:
 
 | Key             |Value.    |Description                    |
 |-----------------|----------|-------------------------------|
@@ -106,7 +106,7 @@ The `postgres` container is driven by environment variables as shown:
 
 
 
-## Cygnus  Configuration
+## Cygnus Configuration to connect to PostgreSQL
 
 ```yaml
   cygnus:
@@ -270,9 +270,36 @@ To leave the Postgres client and leave interactive mode, run the following:
 
 ## MySQL Server Configuration
 
+```yaml
+  historic-db-mysql:
+      restart: always
+      image: mysql:5.7
+      hostname: historic-db-mysql
+      container_name: db-mysql
+      expose:
+        - "3306"
+      ports:
+        - "3306:3306"
+      networks:
+        - default
+      environment:
+        - "MYSQL_ROOT_PASSWORD=123"
+        - "MYSQL_ROOT_HOST=%"
+```
+
+The `historic-db-mysql` container is listening on a single port: 
+
+* Port `3306` is the default port for a MySQL server. It has been exposed so you can also run other database tools to display data if you wish
+
+The `historic-db-mysql` container is driven by environment variables as shown:
+
+| Key               |Value.    |Description                               |
+|-------------------|----------|------------------------------------------|
+|MYSQL_ROOT_PASSWORD|`123`.    | specifies a password that is set for the MySQL `root` account.|
+|MYSQL_ROOT_HOST    |`postgres`| By default, MySQL creates the `root'@'localhost` account. This account can only be connected to from inside the container. Setting this environment variable allows root connections from other hosts | 
 
 
-## Alternate Cygnus  Configuration
+## Cygnus Configuration to connect to MySQL
 
 ```yaml
   cygnus:
@@ -281,6 +308,8 @@ To leave the Postgres client and leave interactive mode, run the following:
     container_name: fiware-cygnus
     networks:
         - default
+    depends_on:
+        - historic-db-mysql
     expose:
         - "5080"
     ports:
@@ -288,8 +317,8 @@ To leave the Postgres client and leave interactive mode, run the following:
     environment:
         - "CYGNUS_MYSQL_HOST=historic-db-mysql"
         - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=user" 
-        - "CYGNUS_MYSQL_PASS=password" 
+        - "CYGNUS_MYSQL_USER=root" 
+        - "CYGNUS_MYSQL_PASS=123" 
         - "CYGNUS_LOG_LEVEL=DEBUG"
         - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"
@@ -298,7 +327,44 @@ To leave the Postgres client and leave interactive mode, run the following:
 
 
 ```console
-docker run -it --rm  --network fiware_default mysql mysql -h historic-db-mysql -P 3306 -D mysql -u user -ppassword
+docker run -it --rm  --network fiware_default mysql mysql -h historic-db-mysql -P 3306  -u root -p123
+```
+
+
+# Persisting Context Data into a multiple Databases
+
+
+## Cygnus Configuration for Multiple Agents
+
+```yaml
+  cygnus:
+    image: fiware/cygnus-ngsi:latest
+    hostname: cygnus
+    container_name: fiware-cygnus
+    depends_on:
+      - orion
+      - historic-db-mysql
+      - historic-db-postgres
+    networks:
+      - default
+    expose:
+      - "5080"
+      - "5084"
+    ports:
+      - "5080:5080"
+      - "5084:5084"
+    environment:
+      - "CYGNUS_MULTIAGENT=true"
+      - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
+      - "CYGNUS_POSTGRESQL_PORT=5432"
+      - "CYGNUS_POSTGRESQL_USER=postgres" 
+      - "CYGNUS_POSTGRESQL_PASS=password" 
+      - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
+      - "CYGNUS_MYSQL_HOST=historic-db-mysql"
+      - "CYGNUS_MYSQL_PORT=3306"
+      - "CYGNUS_MYSQL_USER=root" 
+      - "CYGNUS_MYSQL_PASS=123" 
+      - "CYGNUS_LOG_LEVEL=DEBUG"
 ```
 
 
