@@ -10,10 +10,10 @@ services:
         - default
     command: --bind_ip_all --smallfiles
 
-
-  db-mysql:
-      image: mysql:latest
-      hostname: db-mysql
+  historic-db-mysql:
+      restart: always
+      image: mysql:5.7
+      hostname: historic-db-mysql
       container_name: db-mysql
       expose:
         - "3306"
@@ -21,19 +21,10 @@ services:
         - "3306:3306"
       networks:
         - default
-#      environment:
-#        - "MYSQL_ROOT_PASSWORD=password"
-#        - "MYSQL_ROOT_HOST=%"
-#        - "MYSQL_DATABASE=openiot"
-#        - "MYSQL_USER=root"
-#        - "MYSQL_PASSWORD=password"
-      entrypoint: ['docker-entrypoint.sh', '--default-authentication-plugin=mysql_native_password']
       environment:
-         - "MYSQL_ROOT_PASSWORD=supersecret"
-         - "MYSQL_DATABASE=iotagent"
-         - "MYSQL_USER=zuser"
-         - "MYSQL_PASSWORD=zpass"
-         - "MYSQL_TCP_PORT=3306"
+        - "MYSQL_ROOT_PASSWORD=123"
+        - "MYSQL_TCP_PORT=3306"
+        - "MYSQL_ROOT_HOST=%"
 
   orion:
     image: fiware/orion:latest
@@ -58,16 +49,16 @@ services:
     networks:
         - default
     depends_on:
-        - db-mysql
+        - historic-db-mysql
     expose:
         - "5080"
     ports:
         - "5080:5080"
     environment:
-        - "CYGNUS_MYSQL_HOST=db-mysql"
+        - "CYGNUS_MYSQL_HOST=historic-db-mysql"
         - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=zuser" 
-        - "CYGNUS_MYSQL_PASS=zpass" 
+        - "CYGNUS_MYSQL_USER=root" 
+        - "CYGNUS_MYSQL_PASS=123" 
         - "CYGNUS_LOG_LEVEL=DEBUG"
         - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"

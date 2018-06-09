@@ -11,7 +11,8 @@ services:
     command: --bind_ip_all --smallfiles
 
   historic-db-mysql:
-      image: mysql:latest
+      restart: always
+      image: mysql:5.7
       hostname: historic-db-mysql
       container_name: db-mysql
       expose:
@@ -21,10 +22,9 @@ services:
       networks:
         - default
       environment:
-        - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
-        - "MYSQL_USER=user"
-        - "MYSQL_PASSWORD=password"
-        - "MYSQL_DATABASE=mysql"
+        - "MYSQL_ROOT_PASSWORD=123"
+        - "MYSQL_TCP_PORT=3306"
+        - "MYSQL_ROOT_HOST=%"
 
   historic-db-postgres:
       image: postgres:latest
@@ -75,8 +75,8 @@ services:
         - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
         - "CYGNUS_MYSQL_HOST=historic-db-mysql"
         - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=user" 
-        - "CYGNUS_MYSQL_PASS=password" 
+        - "CYGNUS_MYSQL_USER=root" 
+        - "CYGNUS_MYSQL_PASS=123" 
         - "CYGNUS_LOG_LEVEL=DEBUG"
         - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"
