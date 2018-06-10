@@ -10,22 +10,6 @@ services:
         - default
     command: --bind_ip_all --smallfiles
 
-
-  postgres-db:
-      image: postgres:latest
-      hostname: postgres-db
-      container_name: db-postgres
-      expose:
-        - "5432"
-      ports:
-        - "5432:5432"
-      networks:
-        - default
-      environment:
-        - "POSTGRES_PASSWORD=password"
-        - "POSTGRES_USER=postgres"
-        - "POSTGRES_DB=postgres"
-
   orion:
     image: fiware/orion:latest
     hostname: orion
@@ -45,10 +29,10 @@ services:
     image: fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
+    depends_on:
+        - mongo-db
     networks:
         - default
-    depends_on:
-        - postgres-db
     expose:
         - "5050"
         - "5080"
@@ -56,14 +40,10 @@ services:
         - "5050:5050"
         - "5080:5080"
     environment:
-        - "CYGNUS_POSTGRESQL_HOST=postgres-db"
-        - "CYGNUS_POSTGRESQL_PORT=5432"
-        - "CYGNUS_POSTGRESQL_USER=postgres" 
-        - "CYGNUS_POSTGRESQL_PASS=password" 
+        - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
         - "CYGNUS_LOG_LEVEL=DEBUG"
         - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"
-        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
 
   iot-agent:
     image: fiware/iotagent-ul:latest

@@ -1,8 +1,8 @@
 version: "3"
 services:
-  context-db:
+  mongo-db:
     image: mongo:3.6
-    hostname: context-db
+    hostname: mongo-db
     container_name: db-mongo
     ports:
         - "27017:27017"
@@ -10,10 +10,11 @@ services:
         - default
     command: --bind_ip_all --smallfiles
 
-  historic-db-mysql:
+
+  mysql-db:
       restart: always
       image: mysql:5.7
-      hostname: historic-db-mysql
+      hostname: mysql-db
       container_name: db-mysql
       expose:
         - "3306"
@@ -25,9 +26,9 @@ services:
         - "MYSQL_ROOT_PASSWORD=123"
         - "MYSQL_ROOT_HOST=%"
 
-  historic-db-postgres:
+  postgres-db:
       image: postgres:latest
-      hostname: historic-db-postgres
+      hostname: postgres-db
       container_name: db-postgres
       expose:
         - "5432"
@@ -45,14 +46,14 @@ services:
     hostname: orion
     container_name: fiware-orion
     depends_on:
-      - context-db
+      - mongo-db
     networks:
         - default
     expose:
         - "1026"
     ports:
         - "1026:1026"
-    command: -dbhost context-db -logLevel DEBUG
+    command: -dbhost mongo-db -logLevel DEBUG
 
 
   cygnus:
@@ -60,9 +61,9 @@ services:
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
-      - orion
-      - historic-db-mysql
-      - historic-db-postgres
+      - mysql-db
+      - mongo-db
+      - postgres-db
     networks:
       - default
     expose:
@@ -73,12 +74,13 @@ services:
       - "5084:5084"
     environment:
       - "CYGNUS_MULTIAGENT=true"
-      - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
+      - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
+      - "CYGNUS_POSTGRESQL_HOST=postgres-db"
       - "CYGNUS_POSTGRESQL_PORT=5432"
       - "CYGNUS_POSTGRESQL_USER=postgres" 
       - "CYGNUS_POSTGRESQL_PASS=password" 
       - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
-      - "CYGNUS_MYSQL_HOST=historic-db-mysql"
+      - "CYGNUS_MYSQL_HOST=mysql-db"
       - "CYGNUS_MYSQL_PORT=3306"
       - "CYGNUS_MYSQL_USER=root" 
       - "CYGNUS_MYSQL_PASS=123" 
@@ -90,8 +92,7 @@ services:
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
-       - orion
-       - context-db
+       - mongo-db
     networks:
         - default
     ports:
@@ -104,7 +105,7 @@ services:
         - "IOTA_REGISTRY_TYPE=mongodb" #Whether to hold IoT device info in memory or in a database
         - "IOTA_LOG_LEVEL=DEBUG" #The log level of the IoT Agent
         - "IOTA_TIMESTAMP=true"
-        - "IOTA_MONGO_HOST=context-db" # The host name of ongoDB
+        - "IOTA_MONGO_HOST=mongo-db" # The host name of ongoDB
         - "IOTA_MONGO_PORT=27017" # The port mongoDB is listening on
         - "IOTA_MONGO_DB=iotagentul" # The name of the database used in mongoDB
         - "IOTA_HTTP_PORT=7896" # The port used for device traffic over HTTP

@@ -32,22 +32,43 @@ case "${command}" in
         echo "usage: services [mysql|postgres|start|stop]"
         ;;
     "start")
-		echo "Configuring with two databases"
-		echo "Starting containers"
+		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mContext-Provider\033[0m and \033[1;30mMongoDB\033[0m, \033[1;30mPostgreSQL\033[0m and \033[1;30mMySQL\033[0m databases."
+		echo -e "\033[1;34mOrion\033[0m is the context broker"
+		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB, PostgeSQL and MySQL"
+		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo ""
 		docker-compose -f docker-compose.yml -p fiware up -d --remove-orphans
 		loadData
 		;;
+	 "mongodb")
+		echo -e "Starting five containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mContext-Provider\033[0m and a \033[1;30mMongoDB\033[0m database."	
+		echo -e "\033[1;34mOrion\033[0m is the context broker"
+		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB only"
+		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo ""
+		docker-compose -f cygnus/docker-compose-mongo.yml -p fiware up -d --remove-orphans
+		loadData
+		;;
     "postgres")
-		echo -e "Configuring with a \033[1;31mPostgreSQL\033[0m database only"
-		echo "Starting containers"
+		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mContext-Provider\033[0m and \033[1;30mMongoDB\033[0m and \033[1;30mPostgreSQL\033[0m databases."
+		echo -e "\033[1;34mOrion\033[0m is the context broker"
+		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to PostgreSQL only"
+		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo ""
 		docker-compose -f cygnus/docker-compose-postgres.yml -p fiware up -d --remove-orphans
 		loadData
 		;;
 	"mysql")
-		echo  -e "Configuring with a \033[1;31mmySQL\033[0m database only"
-		echo "Starting containers"
+		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mContext-Provider\033[0m and \033[1;30mMongoDB\033[0m and \033[1;30mMySQL\033[0m databases."
+		echo -e "\033[1;34mOrion\033[0m is the context broker"
+		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
+		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo ""
 		docker-compose  -f cygnus/docker-compose-mysql.yml -p fiware up -d --remove-orphans
-		sleep 2
 		loadData
 		;;
 	"stop")
@@ -61,7 +82,7 @@ case "${command}" in
 		echo "Obtaining PostgreSQL DB image"
 		docker pull postgres:latest
 		echo "Obtaining MySQL DB image"
-		docker pull mysql:latest
+		docker pull mysql:5.7
 		echo "Obtaining Latest Orion Image"
 		docker pull fiware/orion
 		echo "Obtaining Latest UltraLight IoT Agent"
