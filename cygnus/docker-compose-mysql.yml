@@ -53,13 +53,13 @@ services:
     ports:
         - "5080:5080"
     environment:
-        - "CYGNUS_MYSQL_HOST=mysql-db"
-        - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=root" 
-        - "CYGNUS_MYSQL_PASS=123" 
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_SERVICE_PORT=5050"
-        - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_MYSQL_HOST=mysql-db" # Hostname of the MySQL server used to persist historical context data 
+        - "CYGNUS_MYSQL_PORT=3306" # Port that the MySQL server uses to listen to commands
+        - "CYGNUS_MYSQL_USER=root" # Username for the MySQL database user
+        - "CYGNUS_MYSQL_PASS=123" # Password for the MySQL database user
+        - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
+        - "CYGNUS_SERVICE_PORT=5050" # Notification Port that Cygnus listens when subcribing to context data changes
+        - "CYGNUS_API_PORT=5080" # Port that Cygnus listens on for operational reasons
 
   iot-agent:
     image: fiware/iotagent-ul:latest

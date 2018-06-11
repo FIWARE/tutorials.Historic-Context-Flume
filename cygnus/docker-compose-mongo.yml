@@ -40,10 +40,10 @@ services:
         - "5050:5050"
         - "5080:5080"
     environment:
-        - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_SERVICE_PORT=5050"
-        - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_MONGO_HOSTS=mongo-db:27017" # Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data
+        - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
+        - "CYGNUS_SERVICE_PORT=5050" # Notification Port that Cygnus listens when subcribing to context data changes
+        - "CYGNUS_API_PORT=5080" # Port that Cygnus listens on for operational reasons
 
   iot-agent:
     image: fiware/iotagent-ul:latest

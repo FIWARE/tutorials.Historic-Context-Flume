@@ -50,20 +50,20 @@ services:
     depends_on:
         - postgres-db
     expose:
-        - "5050"
         - "5080"
     ports:
         - "5050:5050"
         - "5080:5080"
     environment:
-        - "CYGNUS_POSTGRESQL_HOST=postgres-db"
-        - "CYGNUS_POSTGRESQL_PORT=5432"
-        - "CYGNUS_POSTGRESQL_USER=postgres" 
-        - "CYGNUS_POSTGRESQL_PASS=password" 
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_SERVICE_PORT=5050"
-        - "CYGNUS_API_PORT=5080"
-        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
+        - "CYGNUS_POSTGRESQL_HOST=postgres-db" # Hostname of the PostgreSQL server used to persist historical context data 
+        - "CYGNUS_POSTGRESQL_PORT=5432" # Port that the PostgreSQL server uses to listen to commands
+        - "CYGNUS_POSTGRESQL_USER=postgres" # Username for the PostgreSQL database user
+        - "CYGNUS_POSTGRESQL_PASS=password" # Password for the PostgreSQL database user 
+        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true" # Switch to enable caching within the PostgreSQL configuration 
+        - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
+        - "CYGNUS_SERVICE_PORT=5050" # Notification Port that Cygnus listens when subcribing to context data changes
+        - "CYGNUS_API_PORT=5080" # Port that Cygnus listens on for operational reasons
+      
 
   iot-agent:
     image: fiware/iotagent-ul:latest
@@ -82,7 +82,7 @@ services:
         - "IOTA_NORTH_PORT=4041"
         - "IOTA_REGISTRY_TYPE=mongodb" #Whether to hold IoT device info in memory or in a database
         - "IOTA_LOG_LEVEL=DEBUG" #The log level of the IoT Agent
-        - "IOTA_TIMESTAMP=true"
+        - "IOTA_TIMESTAMP=true" 
         - "IOTA_MONGO_HOST=mongo-db" # The host name of ongoDB
         - "IOTA_MONGO_PORT=27017" # The port mongoDB is listening on
         - "IOTA_MONGO_DB=iotagentul" # The name of the database used in mongoDB
