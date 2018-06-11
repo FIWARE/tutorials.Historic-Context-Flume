@@ -18,6 +18,36 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 > — Winston Churchill
 
 
+Previous tutorials have introduced a set of IoT Sensors (providing measurements of the
+state of the real world), and two FIWARE Components - the **Orion Context Broker** and an **IoT Agent**. 
+This tutorial will introduct a new data persistance component - FIWARE **Cygnus**.
+
+The system so far has been built up to handle the current context, in other words it holds the data entities
+defining the state of the real-world objects at a given moment in time.
+
+From this definition you can see - context is only interested in the **current** state of the system.
+It is not the responsibility of any of the existing components to report on the historical state of the system.
+
+In order to do this, we will need to extend the existing architecture to persist changes of state into a database whenever 
+the context is updated.
+
+Persisting historical context data is useful for big data analysis - it can be used to discover trends, or data 
+can be sampled and aggregated to remove the influence of outlying data measurement. However within each Smart Solution,
+the significance of each entity type will differ and entities and attributes may need to be sampled at different rates.
+
+Since the business requirements for using context data differ from application to appliation, there is no one standard use 
+case  for historical data persistence - each situation is unique - it is not the case that one size fits all.
+Therefore rather than overloading the context broker with the job of historical context data persistence, this role has been
+separated out into a separate, highly configurable component - **Cygnus**.
+
+As you would expect, **Cygnus**, as part of an Open Source platform, is technology agnostic regarding the database 
+to be used for data persistance. The database you choose to use will depend upon your own business needs. 
+
+However there is a cost to offering this flexibility - each part of the system must be separately configured and
+notifications must be set up to only pass the minimal data required as necessary.
+
+
+
 
 #### Device Monitor
 
@@ -36,7 +66,7 @@ This application builds on the components and dummy IoT devices created in
 the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the
 [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) and introduce the
 [Cygnus Generic Enabler](http://fiware-cygnus.readthedocs.io/en/latest/) for persisting context data to a database.
-Two databases are now involved - both the Orion Context Broker and the IoT Agent rely on [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold, and we will be persisting our historical context data into a **PostgreSQL** database.
+Additional databases are now involved - both the Orion Context Broker and the IoT Agent rely on [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold, and we will be persisting our historical context data another database - either **MySQL** , **PostgreSQL**  or **Mongo-DB** database.
 
 
 Therefore the overall architecture will consist of the following elements:
@@ -47,14 +77,16 @@ Therefore the overall architecture will consist of the following elements:
     using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert them to 
     [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) commands for 
     the devices
-  * FIWARE [Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) which will subscribe to context changes and persist them into a
-    **POSTGRES** database
-* Two **Databases**:
+  * FIWARE [Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) which will subscribe to context changes and persist them into a database (**MySQL** , **PostgreSQL**  or **Mongo-DB**)
+* One, two or three of the following **Databases**:
   * The underlying [MongoDB](https://www.mongodb.com/) database :
     + Used by the **Orion Context Broker** to hold context data information such as data entities, subscriptions and registrations
     + Used by the **IoT Agent** to hold device information such as device URLs and Keys
+    + Potentially used as a data sink to hold historical context data.
   * An additional **POSTGRES** database :
-    + Used as a data sink to hold historical context data.
+    + Potentially used as a data sink to hold historical context data.
+   * An additional **MySQL** database :
+    + Potentially used as a data sink to hold historical context data.
 * Three **Context Providers**:
   * The **Stock Management Frontend**  is used to do the following:
     + Display store information and allow users to interact with the dummy IoT devices
@@ -68,35 +100,151 @@ Therefore the overall architecture will consist of the following elements:
 
 Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run from exposed ports. 
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/architecture.png)
+The specific architecture of each section of the tutorial is discussed below.
 
+
+
+# Persisting Context Data into a Mongo DB Database
+
+Persisting historic context data using MongoDB technology is relatively simple to configure since
+we are already using a MongoDB instance to hold data related to the Orion Context Broker and the
+IoT Agent. The MongoDB instance is listening on the standard `27017` port and the overall architecture
+can be seen below:
+
+![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mongo.png)
+
+## Mongo DB Server Configuration
+
+```yaml
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    ports:
+        - "27017:27017"
+    networks:
+        - default
+    command: --bind_ip_all --smallfiles
+```
+
+## Cygnus Configuration to connect to Mongo DB
+
+```yaml
+  cygnus:
+    image: fiware/cygnus-ngsi:latest
+    hostname: cygnus
+    container_name: fiware-cygnus
+    depends_on:
+        - mongo-db
+    networks:
+        - default
+    expose:
+        - "5080"
+    ports:
+        - "5050:5050"
+        - "5080:5080"
+    environment:
+        - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
+        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_SERVICE_PORT=5050"
+        - "CYGNUS_API_PORT=5080"
+```
+
+
+The `cygnus` container is listening on two ports: 
+
+* The service will be listening on port `5050` for notifications from the Orion context broker
+* Port `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
+  without being part of the same network.
+
+
+The `cygnus` container is driven by environment variables as shown:
+
+| Key                           |Value         |Description|
+|-------------------------------|--------------|-----------|
+|CYGNUS_MONGO_HOSTS         |`mongo-db:27017` |  Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data |
+|CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
+|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
+|CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
+
+
+### Heartbeat
+
+### Subscribe
+
+
+#### Device Monitor
+The device monitor can be found at: `http://localhost:3000/device/monitor`
+
+
+### Reading Data from a Mongo-DB database
+
+To read mongo-db data from the command line, we will need access to the `mongo` tool run an interactive instance
+of the `mongo` image as shown to obtain a command line prompt:
+
+```console
+docker run -it --network fiware_default  --entrypoint /bin/bash mongo
+```
+
+You can then log into to the running `mongo-db` database by using the command line as shown:
+
+```bash
+mongo --host mongo-db
+```
+
+To read the data within a table, run the select statements as shown:
+
+#### Query:
+
+```
+show dbs
+use sth_openiot
+show collections
+db["sth_/_Door:001_Door"].find()
+```
+
+
+
+
+
+# Persisting Context Data into a PostgreSQL Database
+
+To persist historic context data into an alternative database such as **PostgreSQL**, we will
+need an additional container which hosts the PostgreSQL server - the default Docker image for this
+data can be used. The PostgreSQL instance is listening on the standard `5432` port and the overall architecture
+can be seen below:
+
+![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-postgres.png)
+
+We now have a system with two databases, since the MongoDB container is still required 
+to hold data relaed to the Orion Context Broker and the IoT Agent. 
 
 
 ## PostgreSQL Server Configuration
 
 ```yaml
-  historic-db-postgres:
-    image: postgres:latest
-    hostname: historic-db-postgres
-    container_name: db-postgres
-    expose:
-      - "5432"
-    ports:
-      - "5432:5432"
-    networks:
-      - default
-    environment:
-      - "POSTGRES_PASSWORD=password"
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_DB=postgres"
+  postgres-db:
+      image: postgres:latest
+      hostname: postgres-db
+      container_name: db-postgres
+      expose:
+        - "5432"
+      ports:
+        - "5432:5432"
+      networks:
+        - default
+      environment:
+        - "POSTGRES_PASSWORD=password"
+        - "POSTGRES_USER=postgres"
+        - "POSTGRES_DB=postgres"
 
 ```
 
-The `historic-db-postgres` container is listening on a single port: 
+The `postgres-db` container is listening on a single port: 
 
 * Port `5432` is the default port for a PostgreSQL server. It has been exposed so you can also run the `pgAdmin4` tool to display database data if you wish
 
-The `historic-db-postgres` container is driven by environment variables as shown:
+The `postgres-db` container is driven by environment variables as shown:
 
 | Key             |Value.    |Description                    |
 |-----------------|----------|-------------------------------|
@@ -112,15 +260,18 @@ The `historic-db-postgres` container is driven by environment variables as shown
   cygnus:
     image: fiware/cygnus-ngsi:latest
     hostname: cygnus
-    container_name: cygnus
+    container_name: fiware-cygnus
     networks:
         - default
+    depends_on:
+        - postgres-db
     expose:
         - "5080"
     ports:
+        - "5050:5050"
         - "5080:5080"
     environment:
-        - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
+        - "CYGNUS_POSTGRESQL_HOST=postgres-db"
         - "CYGNUS_POSTGRESQL_PORT=5432"
         - "CYGNUS_POSTGRESQL_USER=postgres" 
         - "CYGNUS_POSTGRESQL_PASS=password" 
@@ -132,7 +283,7 @@ The `historic-db-postgres` container is driven by environment variables as shown
 
 The `cygnus` container is listening on two ports: 
 
-* Port `5050` is exposed ....
+* The service will be listening on port `5050` for notifications from the Orion context broker
 * Port `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
   without being part of the same network.
 
@@ -141,7 +292,7 @@ The `cygnus` container is driven by environment variables as shown:
 
 | Key                           |Value         |Description|
 |-------------------------------|--------------|-----------|
-|CYGNUS_POSTGRESQL_HOST         |`historic-db-postgres` | Hostname of the PostgreSQL server used to persist historical context data |
+|CYGNUS_POSTGRESQL_HOST         |`postgres-db` | Hostname of the PostgreSQL server used to persist historical context data |
 |CYGNUS_POSTGRESQL_PORT         |`5432`        | Port that the PostgreSQL server uses to listen to commands |
 |CYGNUS_POSTGRESQL_USER         |`postgres`    | Username for the PostgreSQL database user | 
 |CYGNUS_POSTGRESQL_PASS         |`password`    | Password for the PostgreSQL database user |
@@ -152,25 +303,26 @@ The `cygnus` container is driven by environment variables as shown:
 
 
 
+### Heartbeat
 
-
-
-# Persisting Context Data into a POSTGRES Database
-
-To follow the tutorial correctly please ensure you have the device monitor page available in your browser and click on the page to enable audio before you enter any cUrl commands. The device monitor displays the current state of an array of dummy devices using Ultralight 2.0 syntax
+### Subscribe
 
 #### Device Monitor
 The device monitor can be found at: `http://localhost:3000/device/monitor`
 
 
+### Reading Data from a PostgreSQL database
 
-
+To read PostgreSQL data from the command line, we will need access to the `postgres` client, to do this, run an
+interactive instance of the `postgresql-client` image supplying the connection string as shown to obtain a command 
+line prompt:
 
 ```console
-docker run -it --rm  --network fiware_default jbergknoff/postgresql-client postgresql://postgres:password@historic-db-postgres:5432/postgres
+docker run -it --rm  --network fiware_default jbergknoff/postgresql-client postgresql://postgres:password@postgres-db:5432/postgres
 ```
 
-Once running a docker container within the network, it is possible to 
+Once running a docker container within the network, it is possible to obtain information about the running
+database.
 
 
 #### Query:
@@ -198,6 +350,10 @@ ORDER BY table_schema,table_name;
  openiot      | motion_004_motion
 (9 rows)
 ```
+
+The `table_schema` matches the `fiware-service` header supplied with the context data:
+
+To read the data within a table, run a select statement as shown:
 
 #### Query:
 
@@ -266,15 +422,24 @@ To leave the Postgres client and leave interactive mode, run the following:
 
 # Persisting Context Data into a MySQL Database
 
+Similarl to persisting historic context data into **MySQL**, we will
+need an additional container which hosts the MySQL server, once again the default Docker image for this
+data can be used. The MySQL instance is listening on the standard `3306` port and the overall architecture
+can be seen below:
+
+![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mysql.png)
+
+We now have a system with two databases, since the MongoDB container is still required 
+to hold data relaed to the Orion Context Broker and the IoT Agent. 
 
 
 ## MySQL Server Configuration
 
 ```yaml
-  historic-db-mysql:
+  mysql-db:
       restart: always
       image: mysql:5.7
-      hostname: historic-db-mysql
+      hostname: mysql-db
       container_name: db-mysql
       expose:
         - "3306"
@@ -287,11 +452,11 @@ To leave the Postgres client and leave interactive mode, run the following:
         - "MYSQL_ROOT_HOST=%"
 ```
 
-The `historic-db-mysql` container is listening on a single port: 
+The `mysql-db` container is listening on a single port: 
 
 * Port `3306` is the default port for a MySQL server. It has been exposed so you can also run other database tools to display data if you wish
 
-The `historic-db-mysql` container is driven by environment variables as shown:
+The `mysql-db` container is driven by environment variables as shown:
 
 | Key               |Value.    |Description                               |
 |-------------------|----------|------------------------------------------|
@@ -309,13 +474,13 @@ The `historic-db-mysql` container is driven by environment variables as shown:
     networks:
         - default
     depends_on:
-        - historic-db-mysql
+        - mysql-db
     expose:
         - "5080"
     ports:
         - "5080:5080"
     environment:
-        - "CYGNUS_MYSQL_HOST=historic-db-mysql"
+        - "CYGNUS_MYSQL_HOST=mysql-db"
         - "CYGNUS_MYSQL_PORT=3306"
         - "CYGNUS_MYSQL_USER=root" 
         - "CYGNUS_MYSQL_PASS=123" 
@@ -326,13 +491,57 @@ The `historic-db-mysql` container is driven by environment variables as shown:
 
 
 
+The `cygnus` container is listening on two ports: 
+
+* The service will be listening on port `5050` for notifications from the Orion context broker
+* Port `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
+  without being part of the same network.
+
+
+The `cygnus` container is driven by environment variables as shown:
+
+| Key                           |Value         |Description|
+|-------------------------------|--------------|-----------|
+|CYGNUS_MYSQL_HOST              |`mysql-db`    | Hostname of the MySQL server used to persist historical context data |
+|CYGNUS_MYSQL_PORT              |`3306`        | Port that the MySQL server uses to listen to commands |
+|CYGNUS_MYSQL_USER              |`root`        | Username for the MySQL database user | 
+|CYGNUS_MYSQL_PASS              |`123`         | Password for the MySQL database user |
+|CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
+|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
+|CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
+
+
+### Reading Data from a MySQL database
+
+To read MySQL data from the command line, we will need access to the `mysql` client, to do this, run an
+interactive instance of the `mysql` image supplying the connection string as shown to obtain a command 
+line prompt:
+
 ```console
-docker run -it --rm  --network fiware_default mysql mysql -h historic-db-mysql -P 3306  -u root -p123
+docker run -it --rm  --network fiware_default mysql mysql -h mysql-db -P 3306  -u root -p123
 ```
+
+To read the data within a table, run a select statement as shown:
+
+#### Query:
+
+```sql
+SELECT * FROM openiot.door_001_door limit 10;
+```
+
+
 
 
 # Persisting Context Data into a multiple Databases
 
+It is also possible to configure Cygnus to populate multiple databases simultaneously. We can combine
+the architecture from the three previous examples and configure cygnus to listen on multiple ports
+
+
+![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-all-three.png)
+
+We now have a system with three databases, since the MongoDB container is still required 
+to hold data relaed to the Orion Context Broker and the IoT Agent. 
 
 ## Cygnus Configuration for Multiple Agents
 
@@ -342,30 +551,82 @@ docker run -it --rm  --network fiware_default mysql mysql -h historic-db-mysql -
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
-      - orion
-      - historic-db-mysql
-      - historic-db-postgres
+      - mongo-db
+      - mysql-db
+      - postgres-db
     networks:
       - default
     expose:
       - "5080"
+      - "5081"
       - "5084"
     ports:
+      - "5050:5050"
+      - "5051:5051"
+      - "5054:5054"
       - "5080:5080"
+      - "5081:5081"
       - "5084:5084"
     environment:
       - "CYGNUS_MULTIAGENT=true"
-      - "CYGNUS_POSTGRESQL_HOST=historic-db-postgres"
+      - "CYGNUS_POSTGRESQL_HOST=postgres-sb"
       - "CYGNUS_POSTGRESQL_PORT=5432"
       - "CYGNUS_POSTGRESQL_USER=postgres" 
       - "CYGNUS_POSTGRESQL_PASS=password" 
       - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
-      - "CYGNUS_MYSQL_HOST=historic-db-mysql"
+      - "CYGNUS_MYSQL_HOST=mysql-db"
       - "CYGNUS_MYSQL_PORT=3306"
       - "CYGNUS_MYSQL_USER=root" 
       - "CYGNUS_MYSQL_PASS=123" 
       - "CYGNUS_LOG_LEVEL=DEBUG"
 ```
+
+
+
+In multi-agent mode, the `cygnus` container is listening on multiple ports: 
+
+* The service will be listening on ports `5050-5055` for notifications from the Orion context broker
+* Ports `5080-5085` are exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
+  without being part of the same network.
+
+The default port mapping can be seen below:
+
+| sink       | port | admin_port |
+|-----------:|-----:|-----------:|
+| mysql      | 5050 | 5080       |
+| mongo      | 5051 | 5081       |
+| ckan       | 5052 | 5082       |
+| hdfs       | 5053 | 5083       |
+| postgresql | 5054 | 5084       |
+| cartodb    | 5055 | 5085       |
+
+Since we are not persisting CKAN, HDFS or CartoDB data, there is no need to open those ports.
+
+
+
+
+The `cygnus` container is driven by environment variables as shown:
+
+| Key                           |Value         |Description|
+|-------------------------------|--------------|-----------|
+|CYGNUS_MULTIAGENT              |`true`        | Whether to persist data into multiple databases. |
+|CYGNUS_MONGO_HOSTS             |`mongo-db:27017` |  Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data |
+|CYGNUS_POSTGRESQL_HOST         |`postgres-db` | Hostname of the PostgreSQL server used to persist historical context data |
+|CYGNUS_POSTGRESQL_PORT         |`5432`        | Port that the PostgreSQL server uses to listen to commands |
+|CYGNUS_POSTGRESQL_USER         |`postgres`    | Username for the PostgreSQL database user | 
+|CYGNUS_POSTGRESQL_PASS         |`password`    | Password for the PostgreSQL database user |
+|CYGNUS_MYSQL_HOST              |`mysql-db`    | Hostname of the MySQL server used to persist historical context data |
+|CYGNUS_MYSQL_PORT              |`3306`        | Port that the MySQL server uses to listen to commands |
+|CYGNUS_MYSQL_USER              |`root`        | Username for the MySQL database user | 
+|CYGNUS_MYSQL_PASS              |`123`         | Password for the MySQL database user |
+|CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
+
+
+### Heartbeat
+
+### Subscribe
+
+### Read Data
 
 
 # Next Steps
