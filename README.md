@@ -9,50 +9,50 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 
 # Contents
 
-- [Contents](#contents)
 - [Data Persistence](#data-persistence)
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
   * [Docker and Docker Compose](#docker-and-docker-compose)
   * [Cygwin for Windows](#cygwin-for-windows)
 - [Start Up](#start-up)
-- [Persisting Context Data into a Mongo DB Database](#persisting-context-data-into-a-mongo-db-database)
-  * [Mongo DB Server Configuration](#mongo-db-server-configuration)
-  * [Cygnus Configuration to connect to Mongo DB](#cygnus-configuration-to-connect-to-mongo-db)
-  * [Mongo DB Start up](#mongo-db-start-up)
+- [Mongo DB - Persisting Context Data into a Database](#mongo-db---persisting-context-data-into-a-database)
+  * [Mongo DB - Database Server Configuration](#mongo-db---database-server-configuration)
+  * [Mongo DB - Cygnus Configuration](#mongo-db---cygnus-configuration)
+  * [Mongo DB - Start up](#mongo-db---start-up)
     + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health)
     + [Generating Context Data](#generating-context-data)
     + [Subscribing to Context Changes](#subscribing-to-context-changes)
-  * [Reading Data from a Mongo DB database](#reading-data-from-a-mongo-db-database)
+  * [Mongo DB - Reading Data from a database](#mongo-db----reading-data-from-a-database)
     + [Show Available Databases on the Mongo DB server](#show-available-databases-on-the-mongo-db-server)
-    + [Read Historical Context from the Mongo DB server](#read-historical-context-from-the-mongo-db-server)
-- [Persisting Context Data into a PostgreSQL Database](#persisting-context-data-into-a-postgresql-database)
-  * [PostgreSQL Server Configuration](#postgresql-server-configuration)
-  * [Cygnus Configuration to connect to PostgreSQL](#cygnus-configuration-to-connect-to-postgresql)
-  * [PostgreSQL Start up](#postgresql-start-up)
+    + [Read Historical Context from the server](#read-historical-context-from-the-server)
+- [PostgreSQL - Persisting Context Data into a Database](#postgresql---persisting-context-data-into-a-database)
+  * [PostgreSQL - Database Server Configuration](#postgresql---database-server-configuration)
+  * [PostgreSQL - Cygnus Configuration](#postgresql---cygnus-configuration)
+  * [PostgreSQL - Start up](#postgresql---start-up)
     + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health-1)
     + [Generating Context Data](#generating-context-data-1)
     + [Subscribing to Context Changes](#subscribing-to-context-changes-1)
-  * [Reading Data from a PostgreSQL database](#reading-data-from-a-postgresql-database)
+  * [PostgreSQL - Reading Data from a database](#postgresql---reading-data-from-a-database)
     + [Show Available Databases on the PostgreSQL server](#show-available-databases-on-the-postgresql-server)
     + [Read Historical Context from the PostgreSQL server](#read-historical-context-from-the-postgresql-server)
-- [Persisting Context Data into a MySQL Database](#persisting-context-data-into-a-mysql-database)
-  * [MySQL Server Configuration](#mysql-server-configuration)
-  * [Cygnus Configuration to connect to MySQL](#cygnus-configuration-to-connect-to-mysql)
-  * [MySQL Start up](#mysql-start-up)
+- [MySQL - Persisting Context Data into a Database](#mysql---persisting-context-data-into-a-database)
+  * [MySQL - Database Server Configuration](#mysql---database-server-configuration)
+  * [MySQL - Cygnus Configuration](#mysql---cygnus-configuration)
+  * [MySQL - Start up](#mysql---start-up)
     + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health-2)
     + [Generating Context Data](#generating-context-data-2)
     + [Subscribing to Context Changes](#subscribing-to-context-changes-2)
-  * [Reading Data from a MySQL database](#reading-data-from-a-mysql-database)
+  * [MySQL - Reading Data from a database](#mysql---reading-data-from-a-database)
     + [Show Available Databases on the MySQL server](#show-available-databases-on-the-mysql-server)
     + [Read Historical Context from the MySQL server](#read-historical-context-from-the-mysql-server)
-- [Persisting Context Data into a multiple Databases](#persisting-context-data-into-a-multiple-databases)
-  * [Cygnus Configuration for Multiple Agents](#cygnus-configuration-for-multiple-agents)
-  * [Multi-Agent Start up](#multi-agent-start-up)
+- [Multi-Agent - Persisting Context Data into a multiple Databases](#multi-agent---persisting-context-data-into-a-multiple-databases)
+  * [Multi-Agent - Cygnus Configuration for Multiple Databases](#multi-agent---cygnus-configuration-for-multiple-databases)
+  * [Multi-Agent - Start up](#multi-agent---start-up)
     + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health-3)
     + [Generating Context Data](#generating-context-data-3)
     + [Subscribing to Context Changes](#subscribing-to-context-changes-3)
-  * [Reading Persisted Data](#reading-persisted-data)
+  * [Multi-Agent - Reading Persisted Data](#multi-agent---reading-persisted-data)
+- [Next Steps](#next-steps)
 
 # Data Persistence
 
@@ -148,7 +148,7 @@ The specific architecture of each section of the tutorial is discussed below.
 
 ## Docker and Docker Compose 
 
-To keep things simple both components will be run using [Docker](https://www.docker.com). **Docker** is a container technology which allows to different components isolated into their respective environments. 
+To keep things simple all components will be run using [Docker](https://www.docker.com). **Docker** is a container technology which allows to different components isolated into their respective environments. 
 
 * To install Docker on Windows follow the instructions [here](https://docs.docker.com/docker-for-windows/)
 * To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
@@ -184,7 +184,7 @@ This command will also import seed data from the previous tutorials and provisio
 
 
 
-# Persisting Context Data into a Mongo DB Database
+# Mongo DB - Persisting Context Data into a Database
 
 Persisting historic context data using MongoDB technology is relatively simple to configure since
 we are already using a MongoDB instance to hold data related to the Orion Context Broker and the
@@ -193,7 +193,7 @@ can be seen below:
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mongo.png)
 
-## Mongo DB Server Configuration
+## Mongo DB - Database Server Configuration
 
 ```yaml
   mongo-db:
@@ -207,7 +207,7 @@ can be seen below:
     command: --bind_ip_all --smallfiles
 ```
 
-## Cygnus Configuration to connect to Mongo DB
+## Mongo DB - Cygnus Configuration 
 
 ```yaml
   cygnus:
@@ -247,7 +247,7 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 
-## Mongo DB Start up
+## Mongo DB - Start up
 
 To start the system with a **Mongo DB** database only, run the following command:
 
@@ -346,7 +346,7 @@ As you can see, the database used to persist context data has no impact on the d
 
 
 
-## Reading Data from a Mongo DB database
+## Mongo DB  - Reading Data from a database
 
 To read mongo-db data from the command line, we will need access to the `mongo` tool run an interactive instance
 of the `mongo` image as shown to obtain a command line prompt:
@@ -390,7 +390,7 @@ whereas the IoT device entities were created using the `openiot` `fiware-service
 As a result of the subscription of Cygnus to Orion Context Broker, a new database has been created called `sth_openiot`. The default value for a **Mongo DB** database holding historic context consists of the `sth_` prefix followed by the `fiware-service` header - therefore `sth_openiot` holds the historic context of the IoT devices.
 
 
-### Read Historical Context from the Mongo DB server
+### Read Historical Context from the server
 
 #### Query:
 
@@ -477,7 +477,7 @@ exit
 
 
 
-# Persisting Context Data into a PostgreSQL Database
+# PostgreSQL - Persisting Context Data into a Database
 
 To persist historic context data into an alternative database such as **PostgreSQL**, we will
 need an additional container which hosts the PostgreSQL server - the default Docker image for this
@@ -490,7 +490,7 @@ We now have a system with two databases, since the MongoDB container is still re
 to hold data related to the Orion Context Broker and the IoT Agent. 
 
 
-## PostgreSQL Server Configuration
+## PostgreSQL - Database Server Configuration
 
 ```yaml
   postgres-db:
@@ -524,7 +524,7 @@ The `postgres-db` container is driven by environment variables as shown:
 
 
 
-## Cygnus Configuration to connect to PostgreSQL
+## PostgreSQL - Cygnus Configuration
 
 ```yaml
   cygnus:
@@ -571,7 +571,7 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 |CYGNUS_POSTGRESQL_ENABLE_CACHE |`true`        | Switch to enable caching within the PostgreSQL configuration |
 
-## PostgreSQL Start up
+## PostgreSQL - Start up
 
 To start the system with a **PostgreSQL** database run the following command:
 
@@ -667,7 +667,7 @@ curl -X POST \
 As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
 
 
-## Reading Data from a PostgreSQL database
+## PostgreSQL - Reading Data from a database
 
 To read PostgreSQL data from the command line, we will need access to the `postgres` client, to do this, run an
 interactive instance of the `postgresql-client` image supplying the connection string as shown to obtain a command 
@@ -820,7 +820,7 @@ To leave the Postgres client and leave interactive mode, run the following:
 
 
 
-# Persisting Context Data into a MySQL Database
+# MySQL - Persisting Context Data into a Database
 
 Similarly, to persisting historic context data into **MySQL**, we will again
 need an additional container which hosts the MySQL server, once again the default Docker image for this
@@ -833,7 +833,7 @@ Once again we have a system with two databases, since the MongoDB container is s
 to hold data related to the Orion Context Broker and the IoT Agent. 
 
 
-## MySQL Server Configuration
+## MySQL - Database Server Configuration
 
 ```yaml
   mysql-db:
@@ -864,7 +864,7 @@ The `mysql-db` container is driven by environment variables as shown:
 |MYSQL_ROOT_HOST    |`postgres`| By default, MySQL creates the `root'@'localhost` account. This account can only be connected to from inside the container. Setting this environment variable allows root connections from other hosts | 
 
 
-## Cygnus Configuration to connect to MySQL
+## MySQL - Cygnus Configuration
 
 ```yaml
   cygnus:
@@ -911,7 +911,7 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 
 
-## MySQL Start up
+## MySQL - Start up
 
 To start the system with a **MySQL** database run the following command:
 
@@ -1005,7 +1005,7 @@ curl -X POST \
 As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
 
 
-## Reading Data from a MySQL database
+## MySQL - Reading Data from a database
 
 To read MySQL data from the command line, we will need access to the `mysql` client, to do this, run an
 interactive instance of the `mysql` image supplying the connection string as shown to obtain a command 
@@ -1160,7 +1160,7 @@ To leave the MySQL client and leave interactive mode, run the following:
 
 
 
-# Persisting Context Data into a multiple Databases
+# Multi-Agent - Persisting Context Data into a multiple Databases
 
 It is also possible to configure Cygnus to populate multiple databases simultaneously. We can combine
 the architecture from the three previous examples and configure cygnus to listen on multiple ports
@@ -1171,7 +1171,7 @@ the architecture from the three previous examples and configure cygnus to listen
 We now have a system with three databases, PostgreSQL and MySQL for data persistence and MongoDB 
 for both data persistence and holding data related to the Orion Context Broker and the IoT Agent. 
 
-## Cygnus Configuration for Multiple Agents
+## Multi-Agent - Cygnus Configuration for Multiple Databases
 
 ```yaml
   cygnus:
@@ -1250,7 +1250,7 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
 
 
-## Multi-Agent Start up
+## Multi-Agent - Start up
 
 To start the system with **multiple** databases run the following command:
 
@@ -1343,7 +1343,7 @@ curl -X POST \
 
 As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
 
-## Reading Persisted Data
+## Multi-Agent - Reading Persisted Data
 
 To read persisted data from the attached databases, please refer to the previous
 sections of this tutorial.
