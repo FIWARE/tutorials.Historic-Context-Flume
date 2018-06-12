@@ -1,6 +1,7 @@
 ![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context/img/fiware.png)
 
-This tutorial is an introduction to [FIWARE Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) - a generic enabler which is used to persist context data into third-party databases creating a historical view of the context.
+This tutorial is an introduction to [FIWARE Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) - a generic enabler which is used to persist context data into third-party databases creating a historical view of the context. The tutorial activates the IoT sensors connected in the [previous tutorial](https://github.com/Fiware/tutorials.IoT-Agent) and persists measurements
+from those sensors into a database for further analysis.
 
 The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as [Postman documentation](http://fiware.github.io/tutorials.Historic-Context/)
 
@@ -68,8 +69,9 @@ This tutorial will introduct a new data persistance component - FIWARE **Cygnus*
 The system so far has been built up to handle the current context, in other words it holds the data entities
 defining the state of the real-world objects at a given moment in time.
 
-From this definition you can see - context is only interested in the **current** state of the system.
-It is not the responsibility of any of the existing components to report on the historical state of the system.
+From this definition you can see - context is only interested in the **current** state of the system
+It is not the responsibility of any of the existing components to report on the historical state of the system,
+the context is based on the last measurement each sensor has sent data to the context broker.
 
 In order to do this, we will need to extend the existing architecture to persist changes of state into a database whenever 
 the context is updated.
@@ -166,7 +168,7 @@ We will start up our services using a simple Bash script. Windows users should d
 
 # Start Up
 
-Before you start you should ensure that you have obtained or built the necessary Docker locally. Please run
+Before you start you should ensure that you have obtained or built the necessary Docker images locally. Please run
 
 ```console
 ./services create
