@@ -4,12 +4,55 @@ This tutorial is an introduction to [FIWARE Cygnus](http://fiware-cygnus.readthe
 
 The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as [Postman documentation](http://fiware.github.io/tutorials.Historic-Context/)
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2150531e68299d46f937)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
 
 
 # Contents
 
-...etc
+- [Contents](#contents)
+- [Data Persistence](#data-persistence)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+  * [Docker and Docker Compose](#docker-and-docker-compose)
+  * [Cygwin for Windows](#cygwin-for-windows)
+- [Start Up](#start-up)
+- [Persisting Context Data into a Mongo DB Database](#persisting-context-data-into-a-mongo-db-database)
+  * [Mongo DB Server Configuration](#mongo-db-server-configuration)
+  * [Cygnus Configuration to connect to Mongo DB](#cygnus-configuration-to-connect-to-mongo-db)
+  * [Mongo DB Start up](#mongo-db-start-up)
+    + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health)
+    + [Generating Context Data](#generating-context-data)
+    + [Subscribing to Context Changes](#subscribing-to-context-changes)
+  * [Reading Data from a Mongo DB database](#reading-data-from-a-mongo-db-database)
+    + [Show Available Databases on the Mongo DB server](#show-available-databases-on-the-mongo-db-server)
+    + [Read Historical Context from the Mongo DB server](#read-historical-context-from-the-mongo-db-server)
+- [Persisting Context Data into a PostgreSQL Database](#persisting-context-data-into-a-postgresql-database)
+  * [PostgreSQL Server Configuration](#postgresql-server-configuration)
+  * [Cygnus Configuration to connect to PostgreSQL](#cygnus-configuration-to-connect-to-postgresql)
+  * [PostgreSQL Start up](#postgresql-start-up)
+    + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health-1)
+    + [Generating Context Data](#generating-context-data-1)
+    + [Subscribing to Context Changes](#subscribing-to-context-changes-1)
+  * [Reading Data from a PostgreSQL database](#reading-data-from-a-postgresql-database)
+    + [Show Available Databases on the PostgreSQL server](#show-available-databases-on-the-postgresql-server)
+    + [Read Historical Context from the PostgreSQL server](#read-historical-context-from-the-postgresql-server)
+- [Persisting Context Data into a MySQL Database](#persisting-context-data-into-a-mysql-database)
+  * [MySQL Server Configuration](#mysql-server-configuration)
+  * [Cygnus Configuration to connect to MySQL](#cygnus-configuration-to-connect-to-mysql)
+  * [MySQL Start up](#mysql-start-up)
+    + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health-2)
+    + [Generating Context Data](#generating-context-data-2)
+    + [Subscribing to Context Changes](#subscribing-to-context-changes-2)
+  * [Reading Data from a MySQL database](#reading-data-from-a-mysql-database)
+    + [Show Available Databases on the MySQL server](#show-available-databases-on-the-mysql-server)
+    + [Read Historical Context from the MySQL server](#read-historical-context-from-the-mysql-server)
+- [Persisting Context Data into a multiple Databases](#persisting-context-data-into-a-multiple-databases)
+  * [Cygnus Configuration for Multiple Agents](#cygnus-configuration-for-multiple-agents)
+  * [Multi-Agent Start up](#multi-agent-start-up)
+    + [Checking the Cygnus Service Health](#checking-the-cygnus-service-health-3)
+    + [Generating Context Data](#generating-context-data-3)
+    + [Subscribing to Context Changes](#subscribing-to-context-changes-3)
+  * [Reading Persisted Data](#reading-persisted-data)
 
 # Data Persistence
 
@@ -32,7 +75,7 @@ In order to do this, we will need to extend the existing architecture to persist
 the context is updated.
 
 Persisting historical context data is useful for big data analysis - it can be used to discover trends, or data 
-can be sampled and aggregated to remove the influence of outlying data measurement. However within each Smart Solution,
+can be sampled and aggregated to remove the influence of outlying data measurements. However within each Smart Solution,
 the significance of each entity type will differ and entities and attributes may need to be sampled at different rates.
 
 Since the business requirements for using context data differ from application to appliation, there is no one standard use 
@@ -45,9 +88,6 @@ to be used for data persistance. The database you choose to use will depend upon
 
 However there is a cost to offering this flexibility - each part of the system must be separately configured and
 notifications must be set up to only pass the minimal data required as necessary.
-
-
-
 
 #### Device Monitor
 
@@ -83,12 +123,12 @@ Therefore the overall architecture will consist of the following elements:
     + Used by the **Orion Context Broker** to hold context data information such as data entities, subscriptions and registrations
     + Used by the **IoT Agent** to hold device information such as device URLs and Keys
     + Potentially used as a data sink to hold historical context data.
-  * An additional **POSTGRES** database :
+  * An additional [PostgreSQL](https://www.postgresql.org/) database :
     + Potentially used as a data sink to hold historical context data.
-   * An additional **MySQL** database :
+  * An additional [MySQL](https://www.mysql.com/) database :
     + Potentially used as a data sink to hold historical context data.
 * Three **Context Providers**:
-  * The **Stock Management Frontend**  is used to do the following:
+  * The **Stock Management Frontend** is not used in this tutorial. It does the following:
     + Display store information and allow users to interact with the dummy IoT devices
     + Show which products can be bought at each store
     + Allow users to "buy" products and reduce the stock count.
@@ -101,6 +141,46 @@ Therefore the overall architecture will consist of the following elements:
 Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run from exposed ports. 
 
 The specific architecture of each section of the tutorial is discussed below.
+
+
+
+# Prerequisites
+
+## Docker and Docker Compose 
+
+To keep things simple both components will be run using [Docker](https://www.docker.com). **Docker** is a container technology which allows to different components isolated into their respective environments. 
+
+* To install Docker on Windows follow the instructions [here](https://docs.docker.com/docker-for-windows/)
+* To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
+* To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
+
+**Docker Compose** is a tool for defining and running multi-container Docker applications. A  series of [YAML files](https://raw.githubusercontent.com/Fiware/tutorials.Historic-Context/master/cygnus) are used configure the required
+services for the application. This means all container services can be brought up in a single command. Docker Compose is installed by default as part of Docker for Windows and  Docker for Mac, however Linux users will need to follow the instructions found [here](https://docs.docker.com/compose/install/)
+
+## Cygwin for Windows
+
+We will start up our services using a simple Bash script. Windows users should download [cygwin](http://www.cygwin.com/) to provide a command line functionality similar to a Linux distribution on Windows.
+
+
+
+
+# Start Up
+
+All services can be initialised from the command line by running the [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) Bash script provided within the repository:
+
+```console
+./services <command>
+``` 
+
+Where `<command>` will vary depending upon the databases we wish to activate.
+This command will also import seed data from the previous tutorials and provision the dummy IoT sensors on startup.
+
+>:information_source: **Note:** If you want to clean up and start over again you can do so with the following command:
+>
+>```console
+>./services stop
+>``` 
+>
 
 
 
@@ -167,17 +247,106 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 
+## Mongo DB Start up
 
-### Heartbeat
+To start the system with a **Mongo DB** database only, run the following command:
 
-### Subscribe
+```console
+./services mongodb
+``` 
+
+### Checking the Cygnus Service Health
+ 
+Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+If the response is blank, this is usually because Cygnus is not running or is listening on another port.
+
+#### Request:
+
+```console
+curl -X GET http://localhost:5080/v1/version
+```
+
+#### Response:
+
+The response will look similar to the following:
+
+```json
+{
+    "success": "true",
+    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+}
+```
+
+>**Troubleshooting:** What if the response is blank ?
+>
+> * To check that a docker container is running try
+>
+>```bash
+>docker ps
+>```
+>
+>You should see several containers running. If `cygnus` is not running, you can restart the containers as necessary.
 
 
-#### Device Monitor
-The device monitor can be found at: `http://localhost:3000/device/monitor`
+### Generating Context Data
+
+For the purpose of this tutorial, we must be monitoring a system where the context is periodically being updated.
+The dummy IoT Sensors can be used to do this. Open the device monitor page at `http://localhost:3000/device/monitor`
+and unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by selecting an appropriate the command 
+from the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then
+be seen on the same page:
+
+![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
 
 
-### Reading Data from a Mongo-DB database
+
+
+### Subscribing to Context Changes
+
+Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.
+
+This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
+* The notification `url` must match the configured `CYGNUS_API_PORT`
+* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
+* The `throttling` value defines the rate that changes are sampled.
+
+#### Request:
+
+```console
+curl -X POST \
+  'http://localhost:1026/v2/subscriptions/' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+  "description": "Notify Cygnus of all context changes",
+  "subject": {
+    "entities": [
+      {
+        "idPattern": ".*"
+      }
+    ]
+  },
+  "notification": {
+    "http": {
+      "url": "http://cygnus:5050/notify"
+    },
+    "attrsFormat": "legacy"
+  },
+  "throttling": 5
+}'
+```
+
+As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
+
+
+
+
+
+## Reading Data from a Mongo DB database
 
 To read mongo-db data from the command line, we will need access to the `mongo` tool run an interactive instance
 of the `mongo` image as shown to obtain a command line prompt:
@@ -192,17 +361,118 @@ You can then log into to the running `mongo-db` database by using the command li
 mongo --host mongo-db
 ```
 
-To read the data within a table, run the select statements as shown:
+### Show Available Databases on the Mongo DB server
+
+To show the list of available databases, run the statement as shown:
 
 #### Query:
 
 ```
 show dbs
-use sth_openiot
-show collections
-db["sth_/_Door:001_Door"].find()
 ```
 
+#### Result:
+
+```
+admin          0.000GB
+iotagentul     0.000GB
+local          0.000GB
+orion          0.000GB
+orion-openiot  0.000GB
+sth_openiot    0.000GB
+```
+
+The result include two databases `admin` and `local` which are set up by default by **MongoDB**, along with four databases
+created by the FIWARE platform. The Orion Context Broker has created two separate database instance for each `fiware-service`
+- the Store enitities were created without defining a `fiware-service` and therefore are held within the `orion` database,
+whereas the IoT device entities were created using the `openiot` `fiware-service` header and are held separately. The IoT Agent was intialized to hold the IoT sensor data in a separate  **MongoDB** database called `iotagentul`. 
+
+As a result of the subscription of Cygnus to Orion Context Broker, a new database has been created called `sth_openiot`. The default value for a **Mongo DB** database holding historic context consists of the `sth_` prefix followed by the `fiware-service` header - therefore `sth_openiot` holds the historic context of the IoT devices.
+
+
+### Read Historical Context from the Mongo DB server
+
+#### Query:
+
+```
+use sth_openiot
+show collections
+```
+
+#### Result:
+
+```
+switched to db sth_openiot
+
+sth_/_Door:001_Door
+sth_/_Door:001_Door.aggr
+sth_/_Lamp:001_Lamp
+sth_/_Lamp:001_Lamp.aggr
+sth_/_Motion:001_Motion
+sth_/_Motion:001_Motion.aggr
+```
+
+Looking within the `sth_openiot` you will see that a series of tables have been created. The names of each table consist
+of the `sth_` prefix followed by the `fiware-servicepath` header followed by the entity id. Two table are created for
+each entity - the `.aggr` table holds some aggregated data which will be accessed in a later tutorial. The raw data
+can be seen in the tables without the `.aggr` suffix. 
+
+The historical data can be seen by looking at the data within each table, by default each row will contain the sampled value of a single attribute. 
+
+#### Query:
+
+```
+db["sth_/_Door:001_Door"].find().limit(10)
+```
+
+#### Result:
+
+```
+{ "_id" : ObjectId("5b1fa48630c49e0012f7635d"), "recvTime" : ISODate("2018-06-12T10:46:30.897Z"), "attrName" : "TimeInstant", "attrType" : "ISO8601", "attrValue" : "2018-06-12T10:46:30.836Z" }
+{ "_id" : ObjectId("5b1fa48630c49e0012f7635e"), "recvTime" : ISODate("2018-06-12T10:46:30.897Z"), "attrName" : "close_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+{ "_id" : ObjectId("5b1fa48630c49e0012f7635f"), "recvTime" : ISODate("2018-06-12T10:46:30.897Z"), "attrName" : "lock_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+{ "_id" : ObjectId("5b1fa48630c49e0012f76360"), "recvTime" : ISODate("2018-06-12T10:46:30.897Z"), "attrName" : "open_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+{ "_id" : ObjectId("5b1fa48630c49e0012f76361"), "recvTime" : ISODate("2018-06-12T10:46:30.836Z"), "attrName" : "refStore", "attrType" : "Relationship", "attrValue" : "Store:001" }
+{ "_id" : ObjectId("5b1fa48630c49e0012f76362"), "recvTime" : ISODate("2018-06-12T10:46:30.836Z"), "attrName" : "state", "attrType" : "Text", "attrValue" : "CLOSED" }
+{ "_id" : ObjectId("5b1fa48630c49e0012f76363"), "recvTime" : ISODate("2018-06-12T10:45:26.368Z"), "attrName" : "unlock_info", "attrType" : "commandResult", "attrValue" : " unlock OK" }
+{ "_id" : ObjectId("5b1fa48630c49e0012f76364"), "recvTime" : ISODate("2018-06-12T10:45:26.368Z"), "attrName" : "unlock_status", "attrType" : "commandStatus", "attrValue" : "OK" }
+{ "_id" : ObjectId("5b1fa4c030c49e0012f76385"), "recvTime" : ISODate("2018-06-12T10:47:28.081Z"), "attrName" : "TimeInstant", "attrType" : "ISO8601", "attrValue" : "2018-06-12T10:47:28.038Z" }
+{ "_id" : ObjectId("5b1fa4c030c49e0012f76386"), "recvTime" : ISODate("2018-06-12T10:47:28.081Z"), "attrName" : "close_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+```
+
+The usual **Mongo-DB** query syntax can be used to filter appropriate fields and values. For example to read the rate at which the **Motion Sensor** with the `id=Motion:001_Motion` is accumulating, you would make a query as follows:
+
+#### Query:
+
+```
+db["sth_/_Motion:001_Motion"].find({attrName: "count"},{_id: 0, attrType: 0, attrName: 0 } ).limit(10)
+```
+
+#### Result:
+
+```
+{ "recvTime" : ISODate("2018-06-12T10:46:18.756Z"), "attrValue" : "8" }
+{ "recvTime" : ISODate("2018-06-12T10:46:36.881Z"), "attrValue" : "10" }
+{ "recvTime" : ISODate("2018-06-12T10:46:42.947Z"), "attrValue" : "11" }
+{ "recvTime" : ISODate("2018-06-12T10:46:54.893Z"), "attrValue" : "13" }
+{ "recvTime" : ISODate("2018-06-12T10:47:00.929Z"), "attrValue" : "15" }
+{ "recvTime" : ISODate("2018-06-12T10:47:06.954Z"), "attrValue" : "17" }
+{ "recvTime" : ISODate("2018-06-12T10:47:15.983Z"), "attrValue" : "19" }
+{ "recvTime" : ISODate("2018-06-12T10:47:49.090Z"), "attrValue" : "23" }
+{ "recvTime" : ISODate("2018-06-12T10:47:58.112Z"), "attrValue" : "25" }
+{ "recvTime" : ISODate("2018-06-12T10:48:28.218Z"), "attrValue" : "29" }
+```
+
+
+To leave the MongoDB client and leave interactive mode, run the following:
+
+```console
+exit
+```
+
+```console
+exit
+```
 
 
 
@@ -217,7 +487,7 @@ can be seen below:
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-postgres.png)
 
 We now have a system with two databases, since the MongoDB container is still required 
-to hold data relaed to the Orion Context Broker and the IoT Agent. 
+to hold data related to the Orion Context Broker and the IoT Agent. 
 
 
 ## PostgreSQL Server Configuration
@@ -301,25 +571,166 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 |CYGNUS_POSTGRESQL_ENABLE_CACHE |`true`        | Switch to enable caching within the PostgreSQL configuration |
 
+## PostgreSQL Start up
+
+To start the system with a **PostgreSQL** database run the following command:
+
+```console
+./services postgres
+``` 
+
+### Checking the Cygnus Service Health
+ 
+Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+If the response is blank, this is usually because Cygnus is not running or is listening on another port.
+
+#### Request:
+
+```console
+curl -X GET http://localhost:5080/v1/version
+```
+
+#### Response:
+
+The response will look similar to the following:
+
+```json
+{
+    "success": "true",
+    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+}
+```
+
+>**Troubleshooting:** What if the response is blank ?
+>
+> * To check that a docker container is running try
+>
+>```bash
+>docker ps
+>```
+>
+>You should see several containers running. If `cygnus` is not running, you can restart the containers as necessary.
 
 
-### Heartbeat
+### Generating Context Data
 
-### Subscribe
+For the purpose of this tutorial, we must be monitoring a system where the context is periodically being updated.
+The dummy IoT Sensors can be used to do this. Open the device monitor page at `http://localhost:3000/device/monitor`
+and unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by selecting an appropriate the command 
+from the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then
+be seen on the same page:
 
-#### Device Monitor
-The device monitor can be found at: `http://localhost:3000/device/monitor`
+![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
 
 
-### Reading Data from a PostgreSQL database
+
+
+### Subscribing to Context Changes
+
+Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.
+
+This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
+* The notification `url` must match the configured `CYGNUS_API_PORT`
+* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
+* The `throttling` value defines the rate that changes are sampled.
+
+#### Request:
+
+```console
+curl -X POST \
+  'http://localhost:1026/v2/subscriptions/' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+  "description": "Notify Cygnus of all context changes",
+  "subject": {
+    "entities": [
+      {
+        "idPattern": ".*"
+      }
+    ]
+  },
+  "notification": {
+    "http": {
+      "url": "http://cygnus:5050/notify"
+    },
+    "attrsFormat": "legacy"
+  },
+  "throttling": 5
+}'
+```
+
+As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
+
+
+## Reading Data from a PostgreSQL database
 
 To read PostgreSQL data from the command line, we will need access to the `postgres` client, to do this, run an
 interactive instance of the `postgresql-client` image supplying the connection string as shown to obtain a command 
 line prompt:
 
 ```console
-docker run -it --rm  --network fiware_default jbergknoff/postgresql-client postgresql://postgres:password@postgres-db:5432/postgres
+docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
+   postgresql://postgres:password@postgres-db:5432/postgres
 ```
+
+### Show Available Databases on the PostgreSQL server
+
+To show the list of available databases, run the statement as shown:
+
+#### Query:
+
+```
+\list
+```
+
+#### Result:
+
+```
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
+-----------+----------+----------+------------+------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+(3 rows)
+```
+
+The result include two template databases `template0` and `template1` as well as the `postgres` database setup when the docker container was started.
+
+
+To show the list of available schemas, run the statement as shown:
+
+#### Query:
+
+```
+\dn
+```
+
+#### Result:
+
+```
+  List of schemas
+  Name   |  Owner   
+---------+----------
+ openiot | postgres
+ public  | postgres
+(2 rows)
+```
+
+
+As a result of the subscription of Cygnus to Orion Context Broker, a new schema has been created called `openiot`. 
+The name of the schema matches the `fiware-service` header - therefore `openiot` holds the historic context of the
+IoT devices.
+
+
+
+### Read Historical Context from the PostgreSQL server
 
 Once running a docker container within the network, it is possible to obtain information about the running
 database.
@@ -340,48 +751,14 @@ ORDER BY table_schema,table_name;
  table_schema |    table_name     
 --------------+-------------------
  openiot      | door_001_door
- openiot      | door_002_door
- openiot      | door_003_door
- openiot      | door_004_door
  openiot      | lamp_001_lamp
  openiot      | motion_001_motion
- openiot      | motion_002_motion
- openiot      | motion_003_motion
- openiot      | motion_004_motion
-(9 rows)
+(3 rows)
 ```
 
 The `table_schema` matches the `fiware-service` header supplied with the context data:
 
 To read the data within a table, run a select statement as shown:
-
-#### Query:
-
-```sql
-SELECT * FROM openiot.door_001_door limit 10;
-```
-
-#### Result:
-
-```
-  recvtimets   |         recvtime         | fiwareservicepath | entityid | entitytype |   attrname   |   attrtype    |        attrvalue         |                                    attrmd                                    
----------------+--------------------------+-------------------+----------+------------+--------------+---------------+--------------------------+------
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | TimeInstant  | ISO8601       | 2018-06-05T12:34:06.642Z | []
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | close_info   | commandResult |                          | []
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | close_status | commandStatus | UNKNOWN                  | []
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | lock_info    | commandResult |                          | []
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | lock_status  | commandStatus | UNKNOWN                  | []
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | open_info    | commandResult |  open OK                 | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:33:06.591Z"}]
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | open_status  | commandStatus | OK                       | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:33:06.591Z"}]
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | refStore     | Relationship  | Store:001                | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:06.642Z"}]
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | state        | Text          | OPEN                     | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:06.642Z"}]
- 1528202046707 | 2018-06-05T12:34:06.707Z | /                 | Door:001 | Door       | unlock_info  | commandResult |                          | []
-(10 rows)
-```
 
 #### Query:
 
@@ -393,44 +770,67 @@ SELECT * FROM openiot.motion_001_motion limit 10;
 
 ```
   recvtimets   |         recvtime         | fiwareservicepath |  entityid  | entitytype |  attrname   |   attrtype   |        attrvalue         |                                    attrmd                                    
----------------+--------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+-----
- 1528202064795 | 2018-06-05T12:34:24.795Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:34:24.736Z | []
- 1528202064795 | 2018-06-05T12:34:24.795Z | /                 | Motion:001 | Motion     | count       | Integer      | 7                        | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:24.736Z"}]
- 1528202064795 | 2018-06-05T12:34:24.795Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:24.736Z"}]
- 1528202082820 | 2018-06-05T12:34:42.820Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:34:42.782Z | []
- 1528202082820 | 2018-06-05T12:34:42.820Z | /                 | Motion:001 | Motion     | count       | Integer      | 9                        | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:42.782Z"}]
- 1528202082820 | 2018-06-05T12:34:42.820Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:34:42.782Z"}]
- 1528202112977 | 2018-06-05T12:35:12.977Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:35:12.930Z | []
- 1528202112977 | 2018-06-05T12:35:12.977Z | /                 | Motion:001 | Motion     | count       | Integer      | 10                       | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:35:12.930Z"}]
- 1528202112977 | 2018-06-05T12:35:12.977Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | 
- [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-05T12:35:12.930Z"}]
- 1528202130992 | 2018-06-05T12:35:30.992Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-05T12:35:30.955Z | []
+---------------+--------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------
+ 1528803005491 | 2018-06-12T11:30:05.491Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:30:05.423Z | []
+ 1528803005491 | 2018-06-12T11:30:05.491Z | /                 | Motion:001 | Motion     | count       | Integer      | 7                        | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:05.423Z"}]
+ 1528803005491 | 2018-06-12T11:30:05.491Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:05.423Z"}]
+ 1528803035501 | 2018-06-12T11:30:35.501Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:30:35.480Z | []
+ 1528803035501 | 2018-06-12T11:30:35.501Z | /                 | Motion:001 | Motion     | count       | Integer      | 10                       | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:35.480Z"}]
+ 1528803035501 | 2018-06-12T11:30:35.501Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:35.480Z"}]
+ 1528803041563 | 2018-06-12T11:30:41.563Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:30:41.520Z | []
+ 1528803041563 | 2018-06-12T11:30:41.563Z | /                 | Motion:001 | Motion     | count       | Integer      | 12                       | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:41.520Z"}]
+ 1528803041563 | 2018-06-12T11:30:41.563Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:41.520Z"}]
+ 1528803047545 | 2018-06-12T11:30:47.545Z | /     
+```
+
+The usual **PostgreSQL** query syntax can be used to filter appropriate fields and values. For example to read the rate at which the **Motion Sensor** with the `id=Motion:001_Motion` is accumulating, you would make a query as follows:
+
+#### Query:
+
+```sql
+SELECT recvtime, attrvalue FROM openiot.motion_001_motion WHERE attrname ='count'  limit 10;
+```
+
+#### Result:
+
+```
+         recvtime         | attrvalue 
+--------------------------+-----------
+ 2018-06-12T11:30:05.491Z | 7
+ 2018-06-12T11:30:35.501Z | 10
+ 2018-06-12T11:30:41.563Z | 12
+ 2018-06-12T11:30:47.545Z | 13
+ 2018-06-12T11:31:02.617Z | 15
+ 2018-06-12T11:31:32.718Z | 20
+ 2018-06-12T11:31:38.733Z | 22
+ 2018-06-12T11:31:50.780Z | 24
+ 2018-06-12T11:31:56.825Z | 25
+ 2018-06-12T11:31:59.790Z | 26
+(10 rows)
 ```
 
 To leave the Postgres client and leave interactive mode, run the following:
 
-```sql
+```console
 \q
 ```
  You will then return to the commmand line.
 
 
+
+
+
 # Persisting Context Data into a MySQL Database
 
-Similarl to persisting historic context data into **MySQL**, we will
+Similarly, to persisting historic context data into **MySQL**, we will again
 need an additional container which hosts the MySQL server, once again the default Docker image for this
 data can be used. The MySQL instance is listening on the standard `3306` port and the overall architecture
 can be seen below:
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mysql.png)
 
-We now have a system with two databases, since the MongoDB container is still required 
-to hold data relaed to the Orion Context Broker and the IoT Agent. 
+Once again we have a system with two databases, since the MongoDB container is still required 
+to hold data related to the Orion Context Broker and the IoT Agent. 
 
 
 ## MySQL Server Configuration
@@ -511,7 +911,101 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 
 
-### Reading Data from a MySQL database
+## MySQL Start up
+
+To start the system with a **MySQL** database run the following command:
+
+```console
+./services mysql
+``` 
+
+### Checking the Cygnus Service Health
+ 
+Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+If the response is blank, this is usually because Cygnus is not running or is listening on another port.
+
+#### Request:
+
+```console
+curl -X GET http://localhost:5080/v1/version
+```
+
+#### Response:
+
+The response will look similar to the following:
+
+```json
+{
+    "success": "true",
+    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+}
+```
+
+>**Troubleshooting:** What if the response is blank ?
+>
+> * To check that a docker container is running try
+>
+>```bash
+>docker ps
+>```
+>
+>You should see several containers running. If `cygnus` is not running, you can restart the containers as necessary.
+
+
+### Generating Context Data
+
+For the purpose of this tutorial, we must be monitoring a system where the context is periodically being updated.
+The dummy IoT Sensors can be used to do this. Open the device monitor page at `http://localhost:3000/device/monitor`
+and unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by selecting an appropriate the command 
+from the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then
+be seen on the same page:
+
+![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+
+
+### Subscribing to Context Changes
+
+Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.
+
+This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
+* The notification `url` must match the configured `CYGNUS_API_PORT`
+* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
+* The `throttling` value defines the rate that changes are sampled.
+
+#### Request:
+
+```console
+curl -X POST \
+  'http://localhost:1026/v2/subscriptions/' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+  "description": "Notify Cygnus of all context changes",
+  "subject": {
+    "entities": [
+      {
+        "idPattern": ".*"
+      }
+    ]
+  },
+  "notification": {
+    "http": {
+      "url": "http://cygnus:5050/notify"
+    },
+    "attrsFormat": "legacy"
+  },
+  "throttling": 5
+}'
+```
+
+As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
+
+
+## Reading Data from a MySQL database
 
 To read MySQL data from the command line, we will need access to the `mysql` client, to do this, run an
 interactive instance of the `mysql` image supplying the connection string as shown to obtain a command 
@@ -521,14 +1015,148 @@ line prompt:
 docker run -it --rm  --network fiware_default mysql mysql -h mysql-db -P 3306  -u root -p123
 ```
 
+### Show Available Databases on the MySQL server
+
+To show the list of available databases, run the statement as shown:
+
+#### Query:
+
+```sql
+SHOW DATABASES;
+```
+
+#### Result:
+
+```
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| openiot            |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+
+To show the list of available schemas, run the statement as shown:
+
+#### Query:
+
+```sql
+SHOW SCHEMAS;
+```
+
+#### Result:
+
+```
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| openiot            |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+```
+
+
+As a result of the subscription of Cygnus to Orion Context Broker, a new schema has been created called `openiot`. 
+The name of the schema matches the `fiware-service` header - therefore `openiot` holds the historic context of the
+IoT devices.
+
+
+
+### Read Historical Context from the MySQL server
+
+Once running a docker container within the network, it is possible to obtain information about the running
+database.
+
+
+#### Query:
+
+```sql
+SHOW tables FROM openiot;
+```
+
+#### Result:
+
+```
+ table_schema |    table_name     
+--------------+-------------------
+ openiot      | door_001_door
+ openiot      | lamp_001_lamp
+ openiot      | motion_001_motion
+(3 rows)
+```
+
+The `table_schema` matches the `fiware-service` header supplied with the context data:
+
 To read the data within a table, run a select statement as shown:
 
 #### Query:
 
 ```sql
-SELECT * FROM openiot.door_001_door limit 10;
+SELECT * FROM openiot.Motion_001_Motion limit 10;
 ```
 
+#### Result:
+
+```
++---------------+-------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------+
+| recvTimeTs    | recvTime                | fiwareServicePath | entityId   | entityType | attrName    | attrType     | attrValue                | attrMd                                                                       |
++---------------+-------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------+
+| 1528804397955 | 2018-06-12T11:53:17.955 | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:53:17.923Z | []                                                                           |
+| 1528804397955 | 2018-06-12T11:53:17.955 | /                 | Motion:001 | Motion     | count       | Integer      | 3                        | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:17.923Z"}] |
+| 1528804397955 | 2018-06-12T11:53:17.955 | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:17.923Z"}] |
+| 1528804403954 | 2018-06-12T11:53:23.954 | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:53:23.928Z | []                                                                           |
+| 1528804403954 | 2018-06-12T11:53:23.954 | /                 | Motion:001 | Motion     | count       | Integer      | 5                        | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:23.928Z"}] |
+| 1528804403954 | 2018-06-12T11:53:23.954 | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:23.928Z"}] |
+| 1528804409970 | 2018-06-12T11:53:29.970 | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:53:29.948Z | []                                                                           |
+| 1528804409970 | 2018-06-12T11:53:29.970 | /                 | Motion:001 | Motion     | count       | Integer      | 7                        | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:29.948Z"}] |
+| 1528804409970 | 2018-06-12T11:53:29.970 | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:29.948Z"}] |
+| 1528804446083 | 2018-06-12T11:54:06.83  | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:54:06.062Z | []                                                                           |
++---------------+-------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------+    
+```
+
+The usual **MySQL** query syntax can be used to filter appropriate fields and values. For example to read the rate at which the **Motion Sensor** with the `id=Motion:001_Motion` is accumulating, you would make a query as follows:
+
+#### Query:
+
+```sql
+SELECT recvtime, attrvalue FROM openiot.Motion_001_Motion WHERE attrname ='count' LIMIT 10;
+```
+
+#### Result:
+
+```
++-------------------------+-----------+
+| recvtime                | attrvalue |
++-------------------------+-----------+
+| 2018-06-12T11:53:17.955 | 3         |
+| 2018-06-12T11:53:23.954 | 5         |
+| 2018-06-12T11:53:29.970 | 7         |
+| 2018-06-12T11:54:06.83  | 12        |
+| 2018-06-12T11:54:12.132 | 13        |
+| 2018-06-12T11:54:24.177 | 14        |
+| 2018-06-12T11:54:36.196 | 16        |
+| 2018-06-12T11:54:42.195 | 18        |
+| 2018-06-12T11:55:24.300 | 23        |
+| 2018-06-12T11:55:30.350 | 25        |
++-------------------------+-----------+
+10 rows in set (0.00 sec)
+```
+
+To leave the MySQL client and leave interactive mode, run the following:
+
+```console
+\q
+```
+ You will then return to the commmand line.
 
 
 
@@ -540,8 +1168,8 @@ the architecture from the three previous examples and configure cygnus to listen
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-all-three.png)
 
-We now have a system with three databases, since the MongoDB container is still required 
-to hold data relaed to the Orion Context Broker and the IoT Agent. 
+We now have a system with three databases, PostgreSQL and MySQL for data persistence and MongoDB 
+for both data persistence and holding data related to the Orion Context Broker and the IoT Agent. 
 
 ## Cygnus Configuration for Multiple Agents
 
@@ -622,11 +1250,103 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
 
 
-### Heartbeat
+## Multi-Agent Start up
 
-### Subscribe
+To start the system with **multiple** databases run the following command:
 
-### Read Data
+```console
+./services multiple
+``` 
+
+### Checking the Cygnus Service Health
+ 
+Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+If the response is blank, this is usually because Cygnus is not running or is listening on another port.
+
+#### Request:
+
+```console
+curl -X GET http://localhost:5080/v1/version
+```
+
+#### Response:
+
+The response will look similar to the following:
+
+```json
+{
+    "success": "true",
+    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+}
+```
+
+>**Troubleshooting:** What if the response is blank ?
+>
+> * To check that a docker container is running try
+>
+>```bash
+>docker ps
+>```
+>
+>You should see several containers running. If `cygnus` is not running, you can restart the containers as necessary.
+
+
+### Generating Context Data
+
+For the purpose of this tutorial, we must be monitoring a system where the context is periodically being updated.
+The dummy IoT Sensors can be used to do this. Open the device monitor page at `http://localhost:3000/device/monitor`
+and unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by selecting an appropriate the command 
+from the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then
+be seen on the same page:
+
+![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+
+
+### Subscribing to Context Changes
+
+Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.
+
+This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
+
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
+* The notification `url` must match the configured `CYGNUS_API_PORT`
+* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
+* The `throttling` value defines the rate that changes are sampled.
+
+#### Request:
+
+```console
+curl -X POST \
+  'http://localhost:1026/v2/subscriptions/' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+  "description": "Notify Cygnus of all context changes",
+  "subject": {
+    "entities": [
+      {
+        "idPattern": ".*"
+      }
+    ]
+  },
+  "notification": {
+    "http": {
+      "url": "http://cygnus:5050/notify"
+    },
+    "attrsFormat": "legacy"
+  },
+  "throttling": 5
+}'
+```
+
+As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
+
+## Reading Persisted Data
+
+To read persisted data from the attached databases, please refer to the previous
+sections of this tutorial.
 
 
 # Next Steps
