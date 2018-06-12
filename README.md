@@ -166,7 +166,22 @@ We will start up our services using a simple Bash script. Windows users should d
 
 # Start Up
 
-All services can be initialised from the command line by running the [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) Bash script provided within the repository:
+Before you start you should ensure that you have obtained or built the necessary Docker locally. Please run
+
+```console
+./services create
+``` 
+
+>**Note** The `context-provider` image has not yet been pushed to Docker hub.
+> Failing to build the Docker sources before proceeding will result in the following error:
+>
+>```
+>Pulling context-provider (fiware/cp-web-app:latest)...
+>ERROR: The image for the service you're trying to recreate has been removed.
+>```
+
+
+Thereafter, all services can be initialised from the command line by running the [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) Bash script provided within the repository:
 
 ```console
 ./services <command>
