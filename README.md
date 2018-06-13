@@ -64,14 +64,14 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 
 Previous tutorials have introduced a set of IoT Sensors (providing measurements of the
 state of the real world), and two FIWARE Components - the **Orion Context Broker** and an **IoT Agent**. 
-This tutorial will introduct a new data persistance component - FIWARE **Cygnus**.
+This tutorial will introduce a new data persistance component - FIWARE **Cygnus**.
 
 The system so far has been built up to handle the current context, in other words it holds the data entities
 defining the state of the real-world objects at a given moment in time.
 
 From this definition you can see - context is only interested in the **current** state of the system
 It is not the responsibility of any of the existing components to report on the historical state of the system,
-the context is based on the last measurement each sensor has sent data to the context broker.
+the context is based on the last measurement each sensor has sent to the context broker.
 
 In order to do this, we will need to extend the existing architecture to persist changes of state into a database whenever 
 the context is updated.
@@ -93,7 +93,7 @@ notifications must be set up to only pass the minimal data required as necessary
 
 #### Device Monitor
 
-For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context broker.
+For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context broker. Details of the architecture and protocol used can be found in the [IoT Sensors tutorial](https://github.com/Fiware/tutorials.IoT-Sensors)
 The state of each device can be seen on the UltraLight device monitor web-page found at: `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context/img/device-monitor.png)
@@ -115,10 +115,7 @@ Therefore the overall architecture will consist of the following elements:
 
 * Three **FIWARE Generic Enablers**:
   * The FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
-  * The FIWARE [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive southbound requests
-    using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert them to 
-    [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) commands for 
-    the devices
+  * The FIWARE [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive northbound measurements from the dummy IoT devices in [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) format and convert them to [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) requests for the context broker to alter the state of the context entities
   * FIWARE [Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) which will subscribe to context changes and persist them into a database (**MySQL** , **PostgreSQL**  or **Mongo-DB**)
 * One, two or three of the following **Databases**:
   * The underlying [MongoDB](https://www.mongodb.com/) database :
@@ -250,8 +247,8 @@ can be seen below:
 
 The `cygnus` container is listening on two ports: 
 
-* The service will be listening on port `5050` for notifications from the Orion context broker
-* Port `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
+* The Subscription Port for Cygnus - `5050` is where the service will be listening for notifications from the Orion context broker
+* The Management Port for Cygnus - `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
   without being part of the same network.
 
 
@@ -570,8 +567,8 @@ The `postgres-db` container is driven by environment variables as shown:
 
 The `cygnus` container is listening on two ports: 
 
-* The service will be listening on port `5050` for notifications from the Orion context broker
-* Port `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
+* The Subscription Port for Cygnus - `5050` is where the service will be listening for notifications from the Orion context broker
+* The Management Port for Cygnus - `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
   without being part of the same network.
 
 
@@ -910,8 +907,8 @@ The `mysql-db` container is driven by environment variables as shown:
 
 The `cygnus` container is listening on two ports: 
 
-* The service will be listening on port `5050` for notifications from the Orion context broker
-* Port `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
+* The Subscription Port for Cygnus - `5050` is where the service will be listening for notifications from the Orion context broker
+* The Management Port for Cygnus - `5080` is exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
   without being part of the same network.
 
 
@@ -1231,8 +1228,8 @@ for both data persistence and holding data related to the Orion Context Broker a
 In multi-agent mode, the `cygnus` container is listening on multiple ports: 
 
 * The service will be listening on ports `5050-5055` for notifications from the Orion context broker
-* Ports `5080-5085` are exposed purely for tutorial access - so that cUrl or Postman can make provisioning commands
-  without being part of the same network.
+* The Management Ports `5080-5085` are exposed purely for tutorial access - so that cUrl or Postman can 
+  make provisioning commands without being part of the same network.
 
 The default port mapping can be seen below:
 
