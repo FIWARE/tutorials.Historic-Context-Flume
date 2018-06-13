@@ -321,7 +321,7 @@ Once a dynamic context system is up and running, we need to inform **Cygnus** of
 
 This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
 
-* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors, since they had been provisioned using these settings
 * The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
 * The notification `url` must match the configured `CYGNUS_API_PORT`
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
@@ -645,7 +645,7 @@ Once a dynamic context system is up and running, we need to inform **Cygnus** of
 
 This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
 
-* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors, since they had been provisioned using these settings
 * The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
 * The notification `url` must match the configured `CYGNUS_API_PORT`
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
@@ -983,7 +983,7 @@ Once a dynamic context system is up and running, we need to inform **Cygnus** of
 
 This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
 
-* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors, since they had been provisioned using these settings
 * The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
 * The notification `url` must match the configured `CYGNUS_API_PORT`
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
@@ -1322,7 +1322,7 @@ Once a dynamic context system is up and running, we need to inform **Cygnus** of
 
 This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
 
-* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors, since they had been provisioned using these settings
 * The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
 * The notification `url` must match the configured `CYGNUS_API_PORT`
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
