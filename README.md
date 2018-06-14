@@ -892,6 +892,7 @@ The `mysql-db` container is driven by environment variables as shown:
     expose:
         - "5080"
     ports:
+        - "5050:5050"
         - "5080:5080"
     environment:
         - "CYGNUS_MYSQL_HOST=mysql-db"
