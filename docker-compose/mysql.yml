@@ -51,6 +51,7 @@ services:
     expose:
         - "5080"
     ports:
+        - "5050:5050"
         - "5080:5080"
     environment:
         - "CYGNUS_MYSQL_HOST=mysql-db" # Hostname of the MySQL server used to persist historical context data 

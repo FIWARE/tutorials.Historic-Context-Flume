@@ -68,9 +68,14 @@ services:
       - default
     expose:
       - "5080"
+      - "5081"
       - "5084"
     ports:
+      - "5050:5050"
+      - "5051:5051"
+      - "5054:5054"
       - "5080:5080"
+      - "5081:5081"
       - "5084:5084"
     environment:
       - "CYGNUS_MULTIAGENT=true" # Whether to persist data into multiple databases.
