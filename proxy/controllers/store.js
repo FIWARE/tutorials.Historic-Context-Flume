@@ -119,7 +119,7 @@ function displayWarehouseInfo(req, res) {
 
 // This function allows a Bell, Door or Lamp command to be sent to the Dummy IoT devices
 // via the Orion Context Broker and the UltraLight IoT Agent.
-function sendCommand(req, res) {
+function sendCommand(req) {
 
 
 	

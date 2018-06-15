@@ -74,6 +74,14 @@ block content
               } else {
                 li.css( "background-image", "url('/img/bell-off.svg')" );
               }
+              break;
+            case "motion":
+              // ON or OFF - Switch off the bell if it is still ringing
+              if (msg ==='c|0'){
+                 li.css( "background-image", "url('/img/motion-sensor.svg')");
+              } else {
+                li.css( "background-image", "url('/img/motion-sensor-active.svg')" );
+              }
               break;        
             case "lamp":
               if (msg.includes('s|ON')){
