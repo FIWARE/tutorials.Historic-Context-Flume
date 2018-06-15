@@ -7,6 +7,7 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
 
+* このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
 # Contents
 
@@ -64,7 +65,7 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 
 Previous tutorials have introduced a set of IoT Sensors (providing measurements of the
 state of the real world), and two FIWARE Components - the **Orion Context Broker** and an **IoT Agent**. 
-This tutorial will introduce a new data persistance component - FIWARE **Cygnus**.
+This tutorial will introduce a new data persistence component - FIWARE **Cygnus**.
 
 The system so far has been built up to handle the current context, in other words it holds the data entities
 defining the state of the real-world objects at a given moment in time.
@@ -80,20 +81,20 @@ Persisting historical context data is useful for big data analysis - it can be u
 can be sampled and aggregated to remove the influence of outlying data measurements. However within each Smart Solution,
 the significance of each entity type will differ and entities and attributes may need to be sampled at different rates.
 
-Since the business requirements for using context data differ from application to appliation, there is no one standard use 
+Since the business requirements for using context data differ from application to application, there is no one standard use 
 case  for historical data persistence - each situation is unique - it is not the case that one size fits all.
 Therefore rather than overloading the context broker with the job of historical context data persistence, this role has been
 separated out into a separate, highly configurable component - **Cygnus**.
 
 As you would expect, **Cygnus**, as part of an Open Source platform, is technology agnostic regarding the database 
-to be used for data persistance. The database you choose to use will depend upon your own business needs. 
+to be used for data persistence. The database you choose to use will depend upon your own business needs. 
 
 However there is a cost to offering this flexibility - each part of the system must be separately configured and
 notifications must be set up to only pass the minimal data required as necessary.
 
 #### Device Monitor
 
-For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context broker. Details of the architecture and protocol used can be found in the [IoT Sensors tutorial](https://github.com/Fiware/tutorials.IoT-Sensors)
+For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context broker. Details of the architecture and protocol used can be found in the [IoT Sensors tutorial](https://github.com/Fiware/tutorials.IoT-Sensors).
 The state of each device can be seen on the UltraLight device monitor web-page found at: `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context/img/device-monitor.png)
@@ -106,7 +107,7 @@ The state of each device can be seen on the UltraLight device monitor web-page f
 This application builds on the components and dummy IoT devices created in 
 [previous tutorials](https://github.com/Fiware/tutorials.IoT-Agent/). It will make use of three FIWARE components - 
 the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the
-[IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) and introduce the
+[IoT Agent for Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) and introduce the
 [Cygnus Generic Enabler](http://fiware-cygnus.readthedocs.io/en/latest/) for persisting context data to a database.
 Additional databases are now involved - both the Orion Context Broker and the IoT Agent rely on [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold, and we will be persisting our historical context data another database - either **MySQL** , **PostgreSQL**  or **Mongo-DB** database.
 
@@ -115,7 +116,7 @@ Therefore the overall architecture will consist of the following elements:
 
 * Three **FIWARE Generic Enablers**:
   * The FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
-  * The FIWARE [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive northbound measurements from the dummy IoT devices in [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) format and convert them to [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) requests for the context broker to alter the state of the context entities
+  * The FIWARE [IoT Agent for Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive northbound measurements from the dummy IoT devices in [Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) format and convert them to [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) requests for the context broker to alter the state of the context entities
   * FIWARE [Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) which will subscribe to context changes and persist them into a database (**MySQL** , **PostgreSQL**  or **Mongo-DB**)
 * One, two or three of the following **Databases**:
   * The underlying [MongoDB](https://www.mongodb.com/) database :
@@ -131,10 +132,10 @@ Therefore the overall architecture will consist of the following elements:
     + Display store information and allow users to interact with the dummy IoT devices
     + Show which products can be bought at each store
     + Allow users to "buy" products and reduce the stock count.
-  * A webserver acting as set of [dummy IoT devices](https://github.com/Fiware/tutorials.IoT-Sensors) using the [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) protocol running over HTTP.
+  * A webserver acting as set of [dummy IoT devices](https://github.com/Fiware/tutorials.IoT-Sensors) using the [Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) protocol running over HTTP.
   * The **Context Provider NGSI** proxy is not used in this tutorial. It does the following:
     + receive requests using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
-    + makes requests to publicly available data sources using their own APIs in a proprietory format 
+    + makes requests to publicly available data sources using their own APIs in a proprietary format 
     + returns context data back to the Orion Context Broker in [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) format.
 
 Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run from exposed ports. 
@@ -180,7 +181,7 @@ Before you start you should ensure that you have obtained or built the necessary
 >```
 
 
-Thereafter, all services can be initialised from the command line by running the [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) Bash script provided within the repository:
+Thereafter, all services can be initialized from the command line by running the [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) Bash script provided within the repository:
 
 ```console
 ./services <command>
@@ -258,7 +259,7 @@ The `cygnus` container is driven by environment variables as shown:
 |-------------------------------|--------------|-----------|
 |CYGNUS_MONGO_HOSTS         |`mongo-db:27017` |  Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data |
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
-|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
+|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subscribing to context data changes|
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 
 ## Mongo DB - Start up
@@ -271,7 +272,7 @@ To start the system with a **Mongo DB** database only, run the following command
 
 ### Checking the Cygnus Service Health
  
-Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
 #### Request:
@@ -398,8 +399,8 @@ sth_openiot    0.000GB
 
 The result include two databases `admin` and `local` which are set up by default by **MongoDB**, along with four databases
 created by the FIWARE platform. The Orion Context Broker has created two separate database instance for each `fiware-service`
-- the Store enitities were created without defining a `fiware-service` and therefore are held within the `orion` database,
-whereas the IoT device entities were created using the `openiot` `fiware-service` header and are held separately. The IoT Agent was intialized to hold the IoT sensor data in a separate  **MongoDB** database called `iotagentul`. 
+- The Store entities were created without defining a `fiware-service` and therefore are held within the `orion` database,
+whereas the IoT device entities were created using the `openiot` `fiware-service` header and are held separately. The IoT Agent was initialized to hold the IoT sensor data in a separate  **MongoDB** database called `iotagentul`. 
 
 As a result of the subscription of Cygnus to Orion Context Broker, a new database has been created called `sth_openiot`. The default value for a **Mongo DB** database holding historic context consists of the `sth_` prefix followed by the `fiware-service` header - therefore `sth_openiot` holds the historic context of the IoT devices.
 
@@ -581,7 +582,7 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_POSTGRESQL_USER         |`postgres`    | Username for the PostgreSQL database user | 
 |CYGNUS_POSTGRESQL_PASS         |`password`    | Password for the PostgreSQL database user |
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
-|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
+|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subscribing to context data changes|
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 |CYGNUS_POSTGRESQL_ENABLE_CACHE |`true`        | Switch to enable caching within the PostgreSQL configuration |
 
@@ -595,7 +596,7 @@ To start the system with a **PostgreSQL** database run the following command:
 
 ### Checking the Cygnus Service Health
  
-Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
 #### Request:
@@ -828,7 +829,7 @@ To leave the Postgres client and leave interactive mode, run the following:
 ```console
 \q
 ```
- You will then return to the commmand line.
+ You will then return to the command line.
 
 
 
@@ -922,7 +923,7 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_MYSQL_USER              |`root`        | Username for the MySQL database user | 
 |CYGNUS_MYSQL_PASS              |`123`         | Password for the MySQL database user |
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
-|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
+|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subscribing to context data changes|
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 
 
@@ -936,7 +937,7 @@ To start the system with a **MySQL** database run the following command:
 
 ### Checking the Cygnus Service Health
  
-Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
 #### Request:
@@ -1171,7 +1172,7 @@ To leave the MySQL client and leave interactive mode, run the following:
 ```console
 \q
 ```
- You will then return to the commmand line.
+ You will then return to the command line.
 
 
 
@@ -1275,7 +1276,7 @@ To start the system with **multiple** databases run the following command:
 
 ### Checking the Cygnus Service Health
  
-Once Cygnus is running, You can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
+Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
 #### Request:
