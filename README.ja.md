@@ -306,7 +306,7 @@ curl -X GET http://localhost:5080/v1/version
 #### リクエスト :
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -619,7 +619,7 @@ curl -X GET http://localhost:5080/v1/version
 #### リクエスト :
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -951,7 +951,7 @@ curl -X GET http://localhost:5080/v1/version
 #### リクエスト :
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -1284,7 +1284,7 @@ curl -X GET http://localhost:5080/v1/version
 #### リクエスト :
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \

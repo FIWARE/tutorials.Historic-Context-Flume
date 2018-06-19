@@ -331,7 +331,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### Request:
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -655,7 +655,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### Request:
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -994,7 +994,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### Request:
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -1333,7 +1333,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 #### Request:
 
 ```console
-curl -X POST \
+curl -iX POST \
   'http://localhost:1026/v2/subscriptions/' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
