@@ -278,7 +278,8 @@ If the response is blank, this is usually because Cygnus is not running or is li
 #### Request:
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### Response:
@@ -332,7 +333,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -602,7 +603,8 @@ If the response is blank, this is usually because Cygnus is not running or is li
 #### Request:
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### Response:
@@ -656,7 +658,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -943,7 +945,8 @@ If the response is blank, this is usually because Cygnus is not running or is li
 #### Request:
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### Response:
@@ -995,7 +998,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -1282,7 +1285,8 @@ If the response is blank, this is usually because Cygnus is not running or is li
 #### Request:
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### Response:
@@ -1334,7 +1338,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \

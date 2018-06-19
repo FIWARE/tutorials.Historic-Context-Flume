@@ -256,7 +256,8 @@ Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへ
 #### リクエスト :
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### レスポンス :
@@ -307,7 +308,7 @@ curl -X GET http://localhost:5080/v1/version
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -569,7 +570,8 @@ Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへ
 #### リクエスト :
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### レスポンス :
@@ -620,7 +622,7 @@ curl -X GET http://localhost:5080/v1/version
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -902,7 +904,8 @@ Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへ
 #### リクエスト :
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### レスポンス :
@@ -952,7 +955,7 @@ curl -X GET http://localhost:5080/v1/version
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -1235,7 +1238,8 @@ Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへ
 #### リクエスト :
 
 ```console
-curl -X GET http://localhost:5080/v1/version
+curl -X GET \
+  'http://localhost:5080/v1/version'
 ```
 
 #### レスポンス :
@@ -1285,7 +1289,7 @@ curl -X GET http://localhost:5080/v1/version
 
 ```console
 curl -iX POST \
-  'http://localhost:1026/v2/subscriptions/' \
+  'http://localhost:1026/v2/subscriptions' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
