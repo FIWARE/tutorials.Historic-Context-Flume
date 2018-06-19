@@ -275,7 +275,7 @@ To start the system with a **Mongo DB** database only, run the following command
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### Request:
+#### :one: Request:
 
 ```console
 curl -X GET \
@@ -329,7 +329,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 * The `throttling` value defines the rate that changes are sampled.
 
-#### Request:
+#### :two: Request:
 
 ```console
 curl -iX POST \
@@ -600,7 +600,7 @@ To start the system with a **PostgreSQL** database run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### Request:
+#### :three: Request:
 
 ```console
 curl -X GET \
@@ -654,7 +654,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 * The `throttling` value defines the rate that changes are sampled.
 
-#### Request:
+#### :four: Request:
 
 ```console
 curl -iX POST \
@@ -942,7 +942,7 @@ To start the system with a **MySQL** database run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### Request:
+#### :five: Request:
 
 ```console
 curl -X GET \
@@ -994,7 +994,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 * The `throttling` value defines the rate that changes are sampled.
 
-#### Request:
+#### :six: Request:
 
 ```console
 curl -iX POST \
@@ -1282,7 +1282,7 @@ To start the system with **multiple** databases run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### Request:
+#### :seven: Request:
 
 ```console
 curl -X GET \
@@ -1334,7 +1334,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 * The `throttling` value defines the rate that changes are sampled.
 
-#### Request:
+#### :eight: Request:
 
 ```console
 curl -iX POST \
