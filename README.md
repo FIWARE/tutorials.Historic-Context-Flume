@@ -166,9 +166,12 @@ We will start up our services using a simple Bash script. Windows users should d
 
 # Start Up
 
-Before you start you should ensure that you have obtained or built the necessary Docker images locally. Please run
+Before you start you should ensure that you have obtained or built the necessary Docker images locally. Please clone the repository and create the necessary images by running the commands as shown:
 
 ```console
+git clone git@github.com:Fiware/tutorials.Historic-Context.git
+cd tutorials.Historic-Context
+
 ./services create
 ``` 
 
