@@ -253,7 +253,7 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
  
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
-#### リクエスト :
+#### :one: リクエスト :
 
 ```console
 curl -X GET \
@@ -304,7 +304,7 @@ curl -X GET \
 * Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
 * `throttling` 値は、変更がサンプリングされる割合を定義します
 
-#### リクエスト :
+#### :two: リクエスト :
 
 ```console
 curl -iX POST \
@@ -567,7 +567,7 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
  
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
-#### リクエスト :
+#### :three: リクエスト :
 
 ```console
 curl -X GET \
@@ -618,7 +618,7 @@ curl -X GET \
 * Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
 * `throttling` 値は、変更がサンプリングされる割合を定義します
 
-#### リクエスト :
+#### :four: リクエスト :
 
 ```console
 curl -iX POST \
@@ -901,7 +901,7 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
  
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
-#### リクエスト :
+#### :five: リクエスト :
 
 ```console
 curl -X GET \
@@ -951,7 +951,7 @@ curl -X GET \
 * Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
 * `throttling` 値は、変更がサンプリングされる割合を定義します
 
-#### リクエスト :
+#### :six: リクエスト :
 
 ```console
 curl -iX POST \
@@ -1235,7 +1235,7 @@ CKAN、HDFS、または CartoDB データを保持していないため、これ
  
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
-#### リクエスト :
+#### :seven: リクエスト :
 
 ```console
 curl -X GET \
@@ -1285,7 +1285,7 @@ curl -X GET \
 * Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
 * `throttling` 値は、変更がサンプリングされる割合を定義します
 
-#### リクエスト :
+#### :eight: リクエスト :
 
 ```console
 curl -iX POST \
