@@ -147,9 +147,12 @@
 <a name="start-up"></a>
 # 起動
 
-開始する前に、必要なDockerイメージをローカルで取得または構築しておく必要があります。以下を実行してください :
+開始する前に、必要なDockerイメージをローカルで取得または構築しておく必要があります。リポジトリを複製し、以下のコマンドを実行して必要なイメージを作成してください :
 
 ```console
+git clone git@github.com:Fiware/tutorials.Historic-Context.git
+cd tutorials.Historic-Context
+
 ./services create
 ``` 
 
