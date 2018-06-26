@@ -41,7 +41,7 @@ case "${command}" in
 		echo -e "\033[1;34mOrion\033[0m is the context broker"
 		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB, PostgeSQL and MySQL"
 		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
-		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		loadData
@@ -52,7 +52,7 @@ case "${command}" in
 		echo -e "\033[1;34mOrion\033[0m is the context broker"
 		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB only"
 		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
-		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
 		loadData
@@ -63,7 +63,7 @@ case "${command}" in
 		echo -e "\033[1;34mOrion\033[0m is the context broker"
 		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to PostgreSQL only"
 		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
-		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		loadData
@@ -74,7 +74,7 @@ case "${command}" in
 		echo -e "\033[1;34mOrion\033[0m is the context broker"
 		echo -e "\033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
 		echo -e "\033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
-		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors"
+		echo -e "\033[1;30mContext-Provider\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
 		loadData
