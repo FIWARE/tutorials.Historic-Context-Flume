@@ -361,9 +361,15 @@ curl -iX POST \
 
 As you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database. The response will be **201 - Created**
 
-
-
-
+> :information_source: **Note:**  if you see errors of the following form within the **Cygnus** log:
+>
+>```
+>Received bad request from client. 
+>cygnus         | org.apache.flume.source.http.HTTPBadRequestException: 'fiware-servicepath' header 
+>value does not match the number of notified context responses
+>```
+>
+> This is usually because the `"attrsFormat": "legacy"` flag has been omitted.
 
 ## Mongo DB  - Reading Data from a database
 
@@ -1388,5 +1394,7 @@ You can find out by reading the other tutorials in this series:
 &nbsp; 202. [Provisioning an IoT Agent](https://github.com/Fiware/tutorials.IoT-Agent)<br/>
 &nbsp; 203. [IoT over MQTT](https://github.com/Fiware/tutorials.IoT-over-MQTT)<br/>
 &nbsp; 250. [Introduction to Fast-RTPS and Micro-RTPS ](https://github.com/Fiware/tutorials.Fast-RTPS-Micro-RTPS)<br/>
-&nbsp; 301. [Persisting Context Data](https://github.com/Fiware/tutorials.Historic-Context)<br/>
-&nbsp; 302. [Querying Time Series Data](https://github.com/Fiware/tutorials.Short-Term-History)<br/>
+
+&nbsp; 301. [Persisting Context Data (Mongo-DB, MySQL, PostgreSQL)](https://github.com/Fiware/tutorials.Historic-Context)<br/>
+&nbsp; 302. [Querying Time Series Data (Mongo-DB)](https://github.com/Fiware/tutorials.Short-Term-History)<br/>
+&nbsp; 303. [Querying Time Series Data (Crate-DB)](https://github.com/Fiware/tutorials.Time-Series-Data)<br/>
