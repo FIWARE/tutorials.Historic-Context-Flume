@@ -5,25 +5,29 @@ services:
     hostname: mongo-db
     container_name: db-mongo
     ports:
-        - "27017:27017"
+      - "27017:27017"
     networks:
-        - default
+      - default
     command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
 
   mysql-db:
-      restart: always
-      image: mysql:5.7
-      hostname: mysql-db
-      container_name: db-mysql
-      expose:
-        - "3306"
-      ports:
-        - "3306:3306"
-      networks:
-        - default
-      environment:
-        - "MYSQL_ROOT_PASSWORD=123"
-        - "MYSQL_ROOT_HOST=%"
+    restart: always
+    image: mysql:5.7
+    hostname: mysql-db
+    container_name: db-mysql
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    networks:
+      - default
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123"
+      - "MYSQL_ROOT_HOST=%"
+    volumes:
+      - mysql-db:/var/lib/mysql
 
   orion:
     image: fiware/orion:latest
@@ -32,11 +36,11 @@ services:
     depends_on:
       - mongo-db
     networks:
-        - default
+      - default
     expose:
-        - "1026"
+      - "1026"
     ports:
-        - "1026:1026"
+      - "1026:1026"
     command: -dbhost mongo-db -logLevel DEBUG
 
 
@@ -114,3 +118,7 @@ services:
 
 networks:
   default:
+
+volumes:
+  mongo-db:
+  mysql-db:

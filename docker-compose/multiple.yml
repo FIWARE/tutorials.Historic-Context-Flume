@@ -5,41 +5,47 @@ services:
     hostname: mongo-db
     container_name: db-mongo
     ports:
-        - "27017:27017"
+      - "27017:27017"
     networks:
-        - default
+      - default
     command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
 
 
   mysql-db:
-      restart: always
-      image: mysql:5.7
-      hostname: mysql-db
-      container_name: db-mysql
-      expose:
-        - "3306"
-      ports:
-        - "3306:3306"
-      networks:
-        - default
-      environment:
-        - "MYSQL_ROOT_PASSWORD=123"
-        - "MYSQL_ROOT_HOST=%"
+    restart: always
+    image: mysql:5.7
+    hostname: mysql-db
+    container_name: db-mysql
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    networks:
+      - default
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123"
+      - "MYSQL_ROOT_HOST=%"
+    volumes:
+      - mysql-db:/var/lib/mysql
 
   postgres-db:
-      image: postgres:latest
-      hostname: postgres-db
-      container_name: db-postgres
-      expose:
-        - "5432"
-      ports:
-        - "5432:5432"
-      networks:
-        - default
-      environment:
-        - "POSTGRES_PASSWORD=password"
-        - "POSTGRES_USER=postgres"
-        - "POSTGRES_DB=postgres"
+    image: postgres:latest
+    hostname: postgres-db
+    container_name: db-postgres
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+    environment:
+      - "POSTGRES_PASSWORD=password"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_DB=postgres"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
 
   orion:
     image: fiware/orion:latest
@@ -144,3 +150,8 @@ services:
 
 networks:
   default:
+
+volumes:
+  mongo-db:
+  postgres-db:
+  mysql-db:
