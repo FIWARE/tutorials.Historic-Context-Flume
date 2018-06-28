@@ -336,7 +336,15 @@ curl -iX POST \
 
 ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブスクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは **201 - Created** です。
 
-
+> :information_source: **注 :**  **Cygnus** ログ内で次のフォームのエラーが表示された場合 :
+>
+>```
+>Received bad request from client. 
+>cygnus         | org.apache.flume.source.http.HTTPBadRequestException: 'fiware-servicepath' header 
+>value does not match the number of notified context responses
+>```
+>
+> これは通常、`"attrsFormat": "legacy"` フラグが省略されているためです。
 
 
 <a name="mongo-db----reading-data-from-a-database"></a>
