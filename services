@@ -23,14 +23,14 @@ stoppingContainers () {
 
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
-    echo "usage: services [mysql|postgres|mongodb|multiple|stop]"
+    echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
     exit 1
 fi
 
 command="$1"
 case "${command}" in
 	"help")
-        echo "usage: services [mysql|postgres|mongodb|multiple|stop]"
+        echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
         ;;
     "multiple")
 		stoppingContainers
@@ -94,6 +94,10 @@ case "${command}" in
 		docker pull fiware/cygnus-ngsi
 		echo "Recreate Context-Providers proxy"
 		docker build -t fiware/cp-web-app ./proxy
-		
+		;;
+	*)
+		echo "Command not Found."
+		echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
+		exit 127;
 		;;
 esac
