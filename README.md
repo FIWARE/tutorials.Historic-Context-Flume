@@ -371,6 +371,74 @@ As you can see, the database used to persist context data has no impact on the d
 >
 > This is usually because the `"attrsFormat": "legacy"` flag has been omitted.
 
+
+
+If a subscription has been created, you can check to see if it is firing by making a GET 
+request to the `/v2/subscriptions` endpoint.
+
+#### :three: Request:
+
+```console
+curl -X GET \
+  'http://localhost:1026/v2/subscriptions/' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /'
+```
+
+#### Response:
+
+```json
+[
+    {
+        "id": "5b39d7c866df40ed84284174",
+        "description": "Notify Cygnus of all context changes",
+        "status": "active",
+        "subject": {
+            "entities": [
+                {
+                    "idPattern": ".*"
+                }
+            ],
+            "condition": {
+                "attrs": []
+            }
+        },
+        "notification": {
+            "timesSent": 158,
+            "lastNotification": "2018-07-02T07:59:21.00Z",
+            "attrs": [],
+            "attrsFormat": "legacy",
+            "http": {
+                "url": "http://cygnus:5050/notify"
+            },
+            "lastSuccess": "2018-07-02T07:59:21.00Z"
+        },
+        "throttling": 5
+    }
+]
+```
+
+
+Within the `notification` section of the response, you can see several additional `attributes` which describe the health of the subscription
+
+If the criteria of the subscription have been met, `timesSent` should be greater than `0`.
+A zero value would indicate that the `subject` of the subscription is incorrect or the subscription 
+has created with the wrong `fiware-service-path` or `fiware-service` header
+
+The `lastNotification` should be a recent timestamp - if this is not the case, then the devices
+are not regularly sending data. Remember to unlock the **Smart Door** and switch on the **Smart Lamp**
+
+The `lastSuccess` should match the `lastNotification` date - if this is not the case 
+then **Cygnus** is not receiving the subscription properly. Check that the host name
+and port are correct. 
+
+Finally, check that the `status` of the subscription is `active` - an expired subscription
+will not fire.
+
+
+
+
+
 ## Mongo DB  - Reading Data from a database
 
 To read mongo-db data from the command line, we will need access to the `mongo` tool run an interactive instance
@@ -609,7 +677,7 @@ To start the system with a **PostgreSQL** database run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### :three: Request:
+#### :four: Request:
 
 ```console
 curl -X GET \
@@ -663,7 +731,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 * The `throttling` value defines the rate that changes are sampled.
 
-#### :four: Request:
+#### :five: Request:
 
 ```console
 curl -iX POST \
@@ -951,7 +1019,7 @@ To start the system with a **MySQL** database run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### :five: Request:
+#### :six: Request:
 
 ```console
 curl -X GET \
@@ -1003,7 +1071,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 * The `throttling` value defines the rate that changes are sampled.
 
-#### :six: Request:
+#### :seven: Request:
 
 ```console
 curl -iX POST \
@@ -1291,7 +1359,7 @@ To start the system with **multiple** databases run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. 
 If the response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### :seven: Request:
+#### :eight: Request:
 
 ```console
 curl -X GET \
@@ -1337,13 +1405,27 @@ Once a dynamic context system is up and running, we need to inform **Cygnus** of
 
 This is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.
 
-* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors, since they had been provisioned using these settings
+* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors
 * The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
-* The notification `url` must match the configured `CYGNUS_API_PORT`
 * The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 * The `throttling` value defines the rate that changes are sampled.
 
-#### :eight: Request:
+When running in **multi-agent** mode, the  notification `url` for each subscription must match the defaults for the given database.
+
+The default port mapping can be seen below:
+
+| sink       | port |
+|-----------:|-----:|
+| mysql      | 5050 |
+| mongo      | 5051 |
+| ckan       | 5052 |
+| hdfs       | 5053 |
+| postgresql | 5054 | 
+| cartodb    | 5055 | 
+
+Since this subscription is using port `5050` the context data will eventually be persisted to the *MySQL* database.
+
+#### :nine: Request:
 
 ```console
 curl -iX POST \
@@ -1352,7 +1434,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus of all context changes",
+  "description": "Notify Cygnus of all context changes for MySQL on port 5050",
   "subject": {
     "entities": [
       {

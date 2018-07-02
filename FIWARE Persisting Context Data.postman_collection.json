@@ -68,6 +68,40 @@
 						"description": "Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.\n\nThis is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.\n\n* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors\n* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.\n* The notification `url` must match the configured `CYGNUS_API_PORT`\n* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.\n* The `throttling` value defines the rate that changes are sampled.\n\nAs you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database."
 					},
 					"response": []
+				},
+				{
+					"name": "Orion - Check Subscription is working",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "openiot"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{orion}}/v2/subscriptions/",
+							"protocol": "http",
+							"host": [
+								"{{orion}}"
+							],
+							"path": [
+								"v2",
+								"subscriptions",
+								""
+							]
+						},
+						"description": "If a subscription has been created, you can check to see if it is firing by making a GET \nrequest to the `/v2/subscriptions` endpoint.\n\nWithin the `notification` section of the response, you can see several additional `attributes` which describe the health of the subscription\n\nIf the criteria of the subscription have been met, `timesSent` should be greater than `0`.\nA zero value would indicate that the `subject` of the subscription is incorrect or the subscription \nhas created with the wrong `fiware-service-path` or `fiware-service` header\n\nThe `lastNotification` should be a recent timestamp - if this is not the case, then the devices\nare not regularly sending data. Remember to unlock the **Smart Door** and switch on the **Smart Lamp**\n\nThe `lastSuccess` should match the `lastNotification` date - if this is not the case \nthen **Cygnus** is not receiving the subscription properly. Check that the host name\nand port are correct. \n\nFinally, check that the `status` of the subscription is `active` - an expired subscription\nwill not fire."
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -180,6 +214,40 @@
 							]
 						},
 						"description": "Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.\n\nThis is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.\n\n* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors\n* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.\n* The notification `url` must match the configured `CYGNUS_API_PORT`\n* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.\n* The `throttling` value defines the rate that changes are sampled.\n\nAs you can see, the database used to persist context data has no impact on the details of the subscription.It is the same for each database."
+					},
+					"response": []
+				},
+				{
+					"name": "Orion - Check Subscription is working",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "openiot"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{orion}}/v2/subscriptions/",
+							"protocol": "http",
+							"host": [
+								"{{orion}}"
+							],
+							"path": [
+								"v2",
+								"subscriptions",
+								""
+							]
+						},
+						"description": "If a subscription has been created, you can check to see if it is firing by making a GET \nrequest to the `/v2/subscriptions` endpoint.\n\nWithin the `notification` section of the response, you can see several additional `attributes` which describe the health of the subscription\n\nIf the criteria of the subscription have been met, `timesSent` should be greater than `0`.\nA zero value would indicate that the `subject` of the subscription is incorrect or the subscription \nhas created with the wrong `fiware-service-path` or `fiware-service` header\n\nThe `lastNotification` should be a recent timestamp - if this is not the case, then the devices\nare not regularly sending data. Remember to unlock the **Smart Door** and switch on the **Smart Lamp**\n\nThe `lastSuccess` should match the `lastNotification` date - if this is not the case \nthen **Cygnus** is not receiving the subscription properly. Check that the host name\nand port are correct. \n\nFinally, check that the `status` of the subscription is `active` - an expired subscription\nwill not fire."
 					},
 					"response": []
 				}
@@ -296,6 +364,40 @@
 						"description": "Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.\n\nThis is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.\n\n* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors\n* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.\n* The notification `url` must match the configured `CYGNUS_API_PORT`\n* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.\n* The `throttling` value defines the rate that changes are sampled.\n\nAs you can see, the database used to persist context data has no impact on the details of the subscription. It is the same for each database."
 					},
 					"response": []
+				},
+				{
+					"name": "Orion - Check Subscription is working",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "openiot"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{orion}}/v2/subscriptions/",
+							"protocol": "http",
+							"host": [
+								"{{orion}}"
+							],
+							"path": [
+								"v2",
+								"subscriptions",
+								""
+							]
+						},
+						"description": "If a subscription has been created, you can check to see if it is firing by making a GET \nrequest to the `/v2/subscriptions` endpoint.\n\nWithin the `notification` section of the response, you can see several additional `attributes` which describe the health of the subscription\n\nIf the criteria of the subscription have been met, `timesSent` should be greater than `0`.\nA zero value would indicate that the `subject` of the subscription is incorrect or the subscription \nhas created with the wrong `fiware-service-path` or `fiware-service` header\n\nThe `lastNotification` should be a recent timestamp - if this is not the case, then the devices\nare not regularly sending data. Remember to unlock the **Smart Door** and switch on the **Smart Lamp**\n\nThe `lastSuccess` should match the `lastNotification` date - if this is not the case \nthen **Cygnus** is not receiving the subscription properly. Check that the host name\nand port are correct. \n\nFinally, check that the `status` of the subscription is `active` - an expired subscription\nwill not fire."
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -410,6 +512,40 @@
 						"description": "Once a dynamic context system is up and running, we need to inform **Cygnus** of changes in context.\n\nThis is done by making a POST request to the `/v2/subscription` endpoint of the Orion Context Broker.\n\n* The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to measurements from the attached IoT Sensors\n* The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.\n* The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.\n* The `throttling` value defines the rate that changes are sampled.\n\nWhen running in **multi-agent** mode, the  notification `url` for each subscription must match the defaults for the given database.\n\nThe default port mapping can be seen below:\n\n| sink       | port |\n|-----------:|-----:|\n| mysql      | 5050 |\n| mongo      | 5051 |\n| ckan       | 5052 |\n| hdfs       | 5053 |\n| postgresql | 5054 | \n| cartodb    | 5055 | \n\nSince this subscription is using port `5050` the context data will eventually be persisted to the *MySQL* database."
 					},
 					"response": []
+				},
+				{
+					"name": "Orion - Check Subscription is working",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "openiot"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{orion}}/v2/subscriptions/",
+							"protocol": "http",
+							"host": [
+								"{{orion}}"
+							],
+							"path": [
+								"v2",
+								"subscriptions",
+								""
+							]
+						},
+						"description": "If a subscription has been created, you can check to see if it is firing by making a GET \nrequest to the `/v2/subscriptions` endpoint.\n\nWithin the `notification` section of the response, you can see several additional `attributes` which describe the health of the subscription\n\nIf the criteria of the subscription have been met, `timesSent` should be greater than `0`.\nA zero value would indicate that the `subject` of the subscription is incorrect or the subscription \nhas created with the wrong `fiware-service-path` or `fiware-service` header\n\nThe `lastNotification` should be a recent timestamp - if this is not the case, then the devices\nare not regularly sending data. Remember to unlock the **Smart Door** and switch on the **Smart Lamp**\n\nThe `lastSuccess` should match the `lastNotification` date - if this is not the case \nthen **Cygnus** is not receiving the subscription properly. Check that the host name\nand port are correct. \n\nFinally, check that the `status` of the subscription is `active` - an expired subscription\nwill not fire."
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -460,14 +596,14 @@
 	],
 	"variable": [
 		{
-			"id": "9664e050-05ca-4f59-80e2-adfebd10a5ca",
+			"id": "bc8585be-9690-4d75-b4a0-85c0cabb170d",
 			"key": "orion",
 			"value": "localhost:1026",
 			"type": "string",
 			"description": ""
 		},
 		{
-			"id": "d785ff32-948d-49d1-ada3-5aaa92f49da9",
+			"id": "fa2dbeaa-2793-4054-b099-253c92c79b7d",
 			"key": "cygnus",
 			"value": "localhost:5080",
 			"type": "string",
