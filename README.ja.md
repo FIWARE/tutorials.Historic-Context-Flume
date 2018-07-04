@@ -346,6 +346,60 @@ curl -iX POST \
 >
 > これは通常、`"attrsFormat": "legacy"` フラグが省略されているためです。
 
+サブスクリプションが作成されている場合は、`/v2/subscriptions` エンドポイントに対して GET リクエストを出すことで、それが起動しているかどうかを確認することができます。
+
+#### :three: リクエスト :
+
+```console
+curl -X GET \
+  'http://localhost:1026/v2/subscriptions/' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /'
+```
+
+#### レスポンス :
+
+```json
+[
+    {
+        "id": "5b39d7c866df40ed84284174",
+        "description": "Notify Cygnus of all context changes",
+        "status": "active",
+        "subject": {
+            "entities": [
+                {
+                    "idPattern": ".*"
+                }
+            ],
+            "condition": {
+                "attrs": []
+            }
+        },
+        "notification": {
+            "timesSent": 158,
+            "lastNotification": "2018-07-02T07:59:21.00Z",
+            "attrs": [],
+            "attrsFormat": "legacy",
+            "http": {
+                "url": "http://cygnus:5050/notify"
+            },
+            "lastSuccess": "2018-07-02T07:59:21.00Z"
+        },
+        "throttling": 5
+    }
+]
+```
+
+レスポンスの `notification` セクション内には、サブスクリプションの健全性を表すいくつかの追加の  `attributes` があります
+
+サブスクリプションの基準が満たされている場合、`timesSent` は` 0` より大きくなければなりません。
+ゼロの値は、サブスクリプションの `subject` が間違っているか、サブスクリプションが間違った `fiware-service-path` または `fiware-service` ヘッダで作成されたことを示します
+
+`lastNotification` は最近のタイム・スタンプでなければなりません。そうでなければ、デバイスは定期的にデータを送信しません。 **スマート・ドア**のロックを解除し、**スマート・ランプ**をオンにすることを忘れないでください
+
+`lastSuccess` は `lastNotification` の日付と一致する必要があります。そうでない場合、**Cygnus** はサブスクリプションを正しく受信していません。 ホスト名とポートが正しいことを確認してください。
+
+最後に、サブスクリプションの `status` が `active` であることを確認します。期限切れのサブスクリプションは起動しません。
 
 <a name="mongo-db----reading-data-from-a-database"></a>
 ## Mongo DB - データベースからデータを読み込む
@@ -578,7 +632,7 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
  
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
-#### :three: リクエスト :
+#### :four: リクエスト :
 
 ```console
 curl -X GET \
@@ -629,7 +683,7 @@ curl -X GET \
 * Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
 * `throttling` 値は、変更がサンプリングされる割合を定義します
 
-#### :four: リクエスト :
+#### :five: リクエスト :
 
 ```console
 curl -iX POST \
@@ -912,7 +966,7 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
  
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
-#### :five: リクエスト :
+#### :six: リクエスト :
 
 ```console
 curl -X GET \
@@ -962,7 +1016,7 @@ curl -X GET \
 * Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
 * `throttling` 値は、変更がサンプリングされる割合を定義します
 
-#### :six: リクエスト :
+#### :seven: リクエスト :
 
 ```console
 curl -iX POST \
@@ -1246,7 +1300,7 @@ CKAN、HDFS、または CartoDB データを保持していないため、これ
  
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
-#### :seven: リクエスト :
+#### :eight: リクエスト :
 
 ```console
 curl -X GET \
@@ -1290,13 +1344,27 @@ curl -X GET \
 
 これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエストを行うことによって行われます。
 
-* `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィルタリングして、接続されている IoT センサからの測定値だけをリッスンするために使用します。センサがこれらの設定を使用してプロビジョニングされているためです
-* リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が Cygnus に通知されるようにします
+* `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィルタリングして、接続されている IoT センサからの測定値だけをリッスンするために使用します
 * 通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
 * Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
 * `throttling` 値は、変更がサンプリングされる割合を定義します
 
-#### :eight: リクエスト :
+**マルチ・エージェント**・モードで実行している場合、各サブスクリプションの通知 `url` は、指定されたデータベースのデフォルトと一致する必要があります。
+
+デフォルトのポートマッピングを以下に示します :
+
+| sink       | port |
+|-----------:|-----:|
+| mysql      | 5050 |
+| mongo      | 5051 |
+| ckan       | 5052 |
+| hdfs       | 5053 |
+| postgresql | 5054 | 
+| cartodb    | 5055 | 
+
+このサブスクリプションはポート `5050` を使用しているため、コンテキスト・データは最終的に、*MySQL* データベースに永続化されます。
+
+#### :nine: リクエスト :
 
 ```console
 curl -iX POST \
@@ -1305,7 +1373,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus of all context changes",
+  "description": "Notify Cygnus of all context changes for MySQL on port 5050",
   "subject": {
     "entities": [
       {
