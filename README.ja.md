@@ -1,5 +1,10 @@
 [![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context/img/fiware.png)](https://www.fiware.org/developers)
 
+[![FIWARE Core Context](https://img.shields.io/badge/FIWARE-Core_Context-233c68.svg)](https://www.fiware.org/developers/catalogue/)
+[![Documentation](https://readthedocs.org/projects/fiware-tutorials/badge/?version=latest)](https://fiware-tutorials.readthedocs.io/en/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![NGSI v1](https://img.shields.io/badge/NGSI-v1-ff69b4.svg)](https://forge.fi-ware.org/docman/view.php/7/3213/FI-WARE_NGSI_RESTful_binding_v1.0.zip)
+
 このチュートリアルは、コンテキスト・データをサードパーティのデータベースに保存してコンテキストの履歴ビューを作成するために使用する汎用イネーブラである、[FIWARE Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) の概要です。このチュートリアルでは、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent)で接続した IoT センサをアクティブにし、これらのセンサからの測定値をデータベースに保存してさらに分析します。
 
 このチュートリアルでは、全体で [cUrl](https://ec.haxx.se/) コマンドを使用していますが、[Postman documentation](http://fiware.github.io/tutorials.Historic-Context/) も利用できます。
@@ -1333,20 +1338,6 @@ curl -iX POST \
 <a name="next-steps"></a>
 # 次のステップ
 
-高度な機能を追加することで、アプリケーションに複雑さを加える方法を知りたいですか？このシリーズの他のチュートリアルを読むことで見つけることができます :
+高度な機能を追加することで、アプリケーションに複雑さを加える方法を知りたいですか？このシリーズの他のチュー[トリアルを読むことで](https://www.letsfiware.jp/fiware-tutorials)見つけることができます :
 
-&nbsp; 101. [Getting Started](https://github.com/Fiware/tutorials.Getting-Started)<br/>
-&nbsp; 102. [Entity Relationships](https://github.com/Fiware/tutorials.Entity-Relationships)<br/>
-&nbsp; 103. [CRUD Operations](https://github.com/Fiware/tutorials.CRUD-Operations)<br/>
-&nbsp; 104. [Context Providers](https://github.com/Fiware/tutorials.Context-Providers)<br/>
-&nbsp; 105. [Altering the Context Programmatically](https://github.com/Fiware/tutorials.Accessing-Context)<br/> 
-&nbsp; 106. [Subscribing to Changes in Context](https://github.com/Fiware/tutorials.Subscriptions)<br/>
 
-&nbsp; 201. [Introduction to IoT Sensors](https://github.com/Fiware/tutorials.IoT-Sensors)<br/>
-&nbsp; 202. [Provisioning an IoT Agent](https://github.com/Fiware/tutorials.IoT-Agent)<br/>
-&nbsp; 203. [IoT over MQTT](https://github.com/Fiware/tutorials.IoT-over-MQTT)<br/>
-&nbsp; 250. [Introduction to Fast-RTPS and Micro-RTPS ](https://github.com/Fiware/tutorials.Fast-RTPS-Micro-RTPS)<br/>
-
-&nbsp; 301. [Persisting Context Data (Mongo-DB, MySQL, PostgreSQL)](https://github.com/Fiware/tutorials.Historic-Context)<br/>
-&nbsp; 302. [Querying Time Series Data (Mongo-DB)](https://github.com/Fiware/tutorials.Short-Term-History)<br/>
-&nbsp; 303. [Querying Time Series Data (Crate-DB)](https://github.com/Fiware/tutorials.Time-Series-Data)<br/>

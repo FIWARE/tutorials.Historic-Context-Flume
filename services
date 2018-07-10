@@ -92,8 +92,8 @@ case "${command}" in
 		docker pull fiware/iotagent-ul
 		echo "Obtaining Latest Cygnus"
 		docker pull fiware/cygnus-ngsi
-		echo "Recreate Context-Providers proxy"
-		docker build -t fiware/cp-web-app ./proxy
+		echo "Obtaining Tutorial Context-Provider"
+		docker pull fiware/tutorials.context-provider
 		;;
 	*)
 		echo "Command not Found."
