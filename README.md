@@ -159,7 +159,7 @@ To keep things simple all components will be run using [Docker](https://www.dock
 * To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
 * To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
 
-**Docker Compose** is a tool for defining and running multi-container Docker applications. A  series of [YAML files](https://github.com/Fiware/tutorials.Short-Term-History/tree/master/docker-compose) are used configure the required
+**Docker Compose** is a tool for defining and running multi-container Docker applications. A  series of [YAML files](https://github.com/Fiware/tutorials.Historic-Context/tree/master/docker-compose) are used configure the required
 services for the application. This means all container services can be brought up in a single command. Docker Compose is installed by default as part of Docker for Windows and  Docker for Mac, however Linux users will need to follow the instructions found [here](https://docs.docker.com/compose/install/)
 
 You can check your current **Docker** and **Docker Compose** versions using the following commands:
