@@ -624,6 +624,11 @@ The `postgres-db` container is driven by environment variables as shown:
 |POSTGRES_DB      |`postgres`| The name of the PostgreSQL database      |
 
 
+> :information_source: **Note:** Passing the Username and Password in plain text environment variables
+> like this is a security risk. Whereas this is acceptable practice in a tutorial, for a production
+> environment, you can avoid this risk by applying
+> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+
 
 ## PostgreSQL - Cygnus Configuration
 
@@ -671,6 +676,11 @@ The `cygnus` container is driven by environment variables as shown:
 |CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subscribing to context data changes|
 |CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
 |CYGNUS_POSTGRESQL_ENABLE_CACHE |`true`        | Switch to enable caching within the PostgreSQL configuration |
+
+> :information_source: **Note:** Passing the Username and Password in plain text environment variables
+> like this is a security risk. Whereas this is acceptable practice in a tutorial, for a production
+> environment, `CYGNUS_POSTGRESQL_USER` and `CYGNUS_POSTGRESQL_PASS` should be injected using
+> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 ## PostgreSQL - Start up
 
@@ -954,6 +964,12 @@ to hold data related to the Orion Context Broker and the IoT Agent.
         - "MYSQL_ROOT_HOST=%"
 ```
 
+> :information_source: **Note:** Using the default `root` user and displaying the password
+> in an environment variables like this is a security risk. Whereas this is acceptable practice in
+> a tutorial, for a production  environment, you can avoid this risk by setting up another user
+> and applying [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+
+
 The `mysql-db` container is listening on a single port:
 
 * Port `3306` is the default port for a MySQL server. It has been exposed so you can also run other database tools to display data if you wish
@@ -992,6 +1008,10 @@ The `mysql-db` container is driven by environment variables as shown:
         - "CYGNUS_API_PORT=5080"
 ```
 
+> :information_source: **Note:** Passing the Username and Password in plain text environment variables
+> like this is a security risk. Whereas this is acceptable practice in a tutorial, for a production
+> environment, `CYGNUS_MYSQL_USER` and `CYGNUS_MYSQL_PASS` should be injected using
+> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 
 The `cygnus` container is listening on two ports:
