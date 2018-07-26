@@ -577,6 +577,7 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
 |POSTGRES_USER    |`postgres`| PostgreSQL データベース・ユーザのユーザ名 |
 |POSTGRES_DB      |`postgres`| PostgreSQL データベースの名前 |
 
+> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは許容される方法ですが、プロダクション環境では、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を適用することでこのリスクを回避できます。
 
 <a name="postgresql---cygnus-configuration"></a>
 ## PostgreSQL - Cygnus の設定
@@ -623,6 +624,8 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
 |CYGNUS_SERVICE_PORT            |`5050`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート |
 |CYGNUS_API_PORT                |`5080`        | Cygnus が操作上の理由でリッスンするポート |
 |CYGNUS_POSTGRESQL_ENABLE_CACHE |`true`        | PostgreSQL 設定内でキャッシングを有効にするためのスイッチ |
+
+> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは許容される方法ですが、プロダクション環境では、`CYGNUS_POSTGRESQL_USER` と `CYGNUS_POSTGRESQL_PASS` は、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を使用して渡す必要があります。
 
 <a name="postgresql---start-up"></a>
 ## PostgreSQL - 起動
@@ -898,6 +901,8 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
         - "MYSQL_ROOT_HOST=%"
 ```
 
+> :information_source: **注:** デフォルトの `root` ユーザを使用し、このような環境変数にパスワードを表示することはセキュリティ上のリスクです。これはチュートリアルでは受け入れられるものですが、本番環境では別のユーザを設定して [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を適用することでこのリスクを回避できます。
+
 `mysql-db` コンテナは、単一ポートで待機しています :
 
 * ポート `3306` は MySQL サーバのデフォルト・ポートです。これは公開されているので、必要に応じて他のデータベース・ツールを実行してデータを表示することもできます
@@ -937,7 +942,7 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
         - "CYGNUS_API_PORT=5080"
 ```
 
-
+> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは許容される方法ですが、プロダクション環境では、`CYGNUS_MYSQL_USER` と `CYGNUS_MYSQL_PASS` は、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を使用して渡す必要があります。
 
 `cygnus` コンテナは、2つのポートでリッスンしています :
 
