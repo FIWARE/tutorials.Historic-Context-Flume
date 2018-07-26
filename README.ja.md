@@ -101,7 +101,7 @@
 したがって、全体のアーキテクチャーは以下の要素で構成されます :
 
 * 3つの **FIWARE 汎用イネーブラー** :
-  * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)は、[NGSI](http://fiware.github.io/specifications/ngsiv2/latest/) を使用してリクエストを受信します 
+  * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)は、[NGSI](http://fiware.github.io/specifications/ngsiv2/latest/) を使用してリクエストを受信します
   * FIWARE [IoT Agent for Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し、Context Broker がコンテキスト・エンティティの状態を変更するための [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエストに変換します
  * FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース (**MySQL** , **PostgreSQL** , **Mongo-DB**) に保持します。
 * 以下の**データベース**の 1つ、2つまたは3つ :
@@ -143,6 +143,15 @@
 
 **Docker Compose** は、マルチコンテナ Docker アプリケーションを定義して実行するためのツールです。[YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Getting-Started/master/docker-compose.yml) ファイルは、アプリケーションのために必要なサービスを構成するために使用します。つまり、すべてのコンテナ・サービスは1つのコマンドで呼び出すことができます。Docker Compose は、デフォルトで Docker for Windows とDocker for Mac の一部としてインストールされますが、Linux ユーザは[ここ](https://docs.docker.com/compose/install/)に記載されている手順に従う必要があります。
 
+次のコマンドを使用して、現在の **Docker** バージョンと **Docker Compose** バージョンを確認できます :
+
+```console
+docker-compose -v
+docker version
+```
+
+Docker バージョン 18.03 以降と Docker Compose 1.21 以上を使用していることを確認し、必要に応じてアップグレードしてください。
+
 <a name="cygwin-for-windows"></a>
 ## Cygwin for Windows
 
@@ -159,13 +168,13 @@ git clone git@github.com:Fiware/tutorials.Historic-Context.git
 cd tutorials.Historic-Context
 
 ./services create
-``` 
+```
 
 その後、リポジトリ内で提供される [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) の Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初期化できます :
 
 ```console
 ./services <command>
-``` 
+```
 
 ここで、`<command>` は、有効にしたいデータベースによって異なります。このコマンドは、前のチュートリアルのシード・データをインポートし、起動時にダミー IoT センサをプロビジョニングします。
 
@@ -173,7 +182,7 @@ cd tutorials.Historic-Context
 >
 >```console
 >./services stop
->``` 
+>```
 >
 
 
@@ -246,11 +255,11 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
 
 ```console
 ./services mongodb
-``` 
+```
 
 <a name="checking-the-cygnus-service-health"></a>
 ### Cygnus サービスの健全性をチェック
- 
+
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :one: リクエスト :
@@ -336,8 +345,8 @@ curl -iX POST \
 > :information_source: **注 :**  **Cygnus** ログ内で次のフォームのエラーが表示された場合 :
 >
 >```
->Received bad request from client. 
->cygnus         | org.apache.flume.source.http.HTTPBadRequestException: 'fiware-servicepath' header 
+>Received bad request from client.
+>cygnus         | org.apache.flume.source.http.HTTPBadRequestException: 'fiware-servicepath' header
 >value does not match the number of notified context responses
 >```
 >
@@ -566,7 +575,7 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
 |-----------------|----------|-------------------------------|
 |POSTGRES_PASSWORD|`password`| PostgreSQL データベース・ユーザのパスワード |
 |POSTGRES_USER    |`postgres`| PostgreSQL データベース・ユーザのユーザ名 |
-|POSTGRES_DB      |`postgres`| PostgreSQL データベースの名前 | 
+|POSTGRES_DB      |`postgres`| PostgreSQL データベースの名前 |
 
 
 <a name="postgresql---cygnus-configuration"></a>
@@ -589,8 +598,8 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
     environment:
         - "CYGNUS_POSTGRESQL_HOST=postgres-db"
         - "CYGNUS_POSTGRESQL_PORT=5432"
-        - "CYGNUS_POSTGRESQL_USER=postgres" 
-        - "CYGNUS_POSTGRESQL_PASS=password" 
+        - "CYGNUS_POSTGRESQL_USER=postgres"
+        - "CYGNUS_POSTGRESQL_PASS=password"
         - "CYGNUS_LOG_LEVEL=DEBUG"
         - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"
@@ -608,7 +617,7 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
 |-------------------------------|--------------|-----------|
 |CYGNUS_POSTGRESQL_HOST         |`postgres-db` | 履歴コンテキスト・データの永続化に使用される PostgreSQL サーバのホスト名 |
 |CYGNUS_POSTGRESQL_PORT         |`5432`        | PostgreSQL サーバがコマンドをリッスンするために使うポート|
-|CYGNUS_POSTGRESQL_USER         |`postgres`    | PostgreSQL データベース・ユーザのユーザ名 | 
+|CYGNUS_POSTGRESQL_USER         |`postgres`    | PostgreSQL データベース・ユーザのユーザ名 |
 |CYGNUS_POSTGRESQL_PASS         |`password`    | PostgreSQL データベース・ユーザのパスワード |
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | Cygnus のログレベル|
 |CYGNUS_SERVICE_PORT            |`5050`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート |
@@ -622,11 +631,11 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
 
 ```console
 ./services postgres
-``` 
+```
 
 <a name="checking-the-cygnus-service-health-1"></a>
 ### Cygnus サービスの健全性をチェック
- 
+
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :four: リクエスト :
@@ -734,9 +743,9 @@ docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
 #### 結果 :
 
 ```
-   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges
 -----------+----------+----------+------------+------------+-----------------------
- postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
  template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
            |          |          |            |            | postgres=CTc/postgres
  template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
@@ -759,7 +768,7 @@ docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
 
 ```
   List of schemas
-  Name   |  Owner   
+  Name   |  Owner
 ---------+----------
  openiot | postgres
  public  | postgres
@@ -788,7 +797,7 @@ ORDER BY table_schema,table_name;
 #### 結果 :
 
 ```
- table_schema |    table_name     
+ table_schema |    table_name
 --------------+-------------------
  openiot      | door_001_door
  openiot      | lamp_001_lamp
@@ -809,7 +818,7 @@ SELECT * FROM openiot.motion_001_motion limit 10;
 #### 結果 :
 
 ```
-  recvtimets   |         recvtime         | fiwareservicepath |  entityid  | entitytype |  attrname   |   attrtype   |        attrvalue         |                                    attrmd                                    
+  recvtimets   |         recvtime         | fiwareservicepath |  entityid  | entitytype |  attrname   |   attrtype   |        attrvalue         |                                    attrmd
 ---------------+--------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------
  1528803005491 | 2018-06-12T11:30:05.491Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:30:05.423Z | []
  1528803005491 | 2018-06-12T11:30:05.491Z | /                 | Motion:001 | Motion     | count       | Integer      | 7                        | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:05.423Z"}]
@@ -820,7 +829,7 @@ SELECT * FROM openiot.motion_001_motion limit 10;
  1528803041563 | 2018-06-12T11:30:41.563Z | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:30:41.520Z | []
  1528803041563 | 2018-06-12T11:30:41.563Z | /                 | Motion:001 | Motion     | count       | Integer      | 12                       | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:41.520Z"}]
  1528803041563 | 2018-06-12T11:30:41.563Z | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:30:41.520Z"}]
- 1528803047545 | 2018-06-12T11:30:47.545Z | /     
+ 1528803047545 | 2018-06-12T11:30:47.545Z | /
 ```
 
 通常の **PostgreSQL** クエリ構文を使用して、適切なフィールドと値をフィルタリングすることができます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積しているレートを読み取るには、次のようにクエリを作成します :
@@ -834,7 +843,7 @@ SELECT recvtime, attrvalue FROM openiot.motion_001_motion WHERE attrname ='count
 #### 結果 :
 
 ```
-         recvtime         | attrvalue 
+         recvtime         | attrvalue
 --------------------------+-----------
  2018-06-12T11:30:05.491Z | 7
  2018-06-12T11:30:35.501Z | 10
@@ -898,7 +907,7 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
 | キー              | 値       | 説明                                     |
 |-------------------|----------|------------------------------------------|
 |MYSQL_ROOT_PASSWORD|`123`     | MySQL `root` アカウントに設定されているパスワードを指定します |
-|MYSQL_ROOT_HOST    |`postgres`| デフォルトでは、MySQL によって `root'@'localhost` アカウントが作成されます。このアカウントはコンテナ内からのみ接続できます。この環境変数を設定すると、他のホストからのルート接続が可能になります | 
+|MYSQL_ROOT_HOST    |`postgres`| デフォルトでは、MySQL によって `root'@'localhost` アカウントが作成されます。このアカウントはコンテナ内からのみ接続できます。この環境変数を設定すると、他のホストからのルート接続が可能になります |
 
 
 <a name="mysql---cygnus-configuration"></a>
@@ -921,8 +930,8 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
     environment:
         - "CYGNUS_MYSQL_HOST=mysql-db"
         - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=root" 
-        - "CYGNUS_MYSQL_PASS=123" 
+        - "CYGNUS_MYSQL_USER=root"
+        - "CYGNUS_MYSQL_PASS=123"
         - "CYGNUS_LOG_LEVEL=DEBUG"
         - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"
@@ -942,7 +951,7 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
 |-------------------------------|--------------|-----------|
 |CYGNUS_MYSQL_HOST              |`mysql-db`    | Hostname of the MySQL server used to persist historical context data |
 |CYGNUS_MYSQL_PORT              |`3306`        | Port that the MySQL server uses to listen to commands |
-|CYGNUS_MYSQL_USER              |`root`        | Username for the MySQL database user | 
+|CYGNUS_MYSQL_USER              |`root`        | Username for the MySQL database user |
 |CYGNUS_MYSQL_PASS              |`123`         | Password for the MySQL database user |
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
 |CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
@@ -956,11 +965,11 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
 
 ```console
 ./services mysql
-``` 
+```
 
 <a name="checking-the-cygnus-service-health-2"></a>
 ### Cygnus サービスの健全性をチェック
- 
+
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :six: リクエスト :
@@ -1121,7 +1130,7 @@ SHOW tables FROM openiot;
 #### 結果 :
 
 ```
- table_schema |    table_name     
+ table_schema |    table_name
 --------------+-------------------
  openiot      | door_001_door
  openiot      | lamp_001_lamp
@@ -1155,7 +1164,7 @@ SELECT * FROM openiot.Motion_001_Motion limit 10;
 | 1528804409970 | 2018-06-12T11:53:29.970 | /                 | Motion:001 | Motion     | count       | Integer      | 7                        | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:29.948Z"}] |
 | 1528804409970 | 2018-06-12T11:53:29.970 | /                 | Motion:001 | Motion     | refStore    | Relationship | Store:001                | [{"name":"TimeInstant","type":"ISO8601","value":"2018-06-12T11:53:29.948Z"}] |
 | 1528804446083 | 2018-06-12T11:54:06.83  | /                 | Motion:001 | Motion     | TimeInstant | ISO8601      | 2018-06-12T11:54:06.062Z | []                                                                           |
-+---------------+-------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------+    
++---------------+-------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------+
 ```
 
 通常の **MySQL** クエリ構文を使用して、適切なフィールドと値をフィルタリングすることができます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積しているレートを読み取るには、次のようにクエリを作成します :
@@ -1233,13 +1242,13 @@ MySQL クライアントを終了し、インタラクティブ・モードを�
       - "CYGNUS_MULTIAGENT=true"
       - "CYGNUS_POSTGRESQL_HOST=postgres-sb"
       - "CYGNUS_POSTGRESQL_PORT=5432"
-      - "CYGNUS_POSTGRESQL_USER=postgres" 
-      - "CYGNUS_POSTGRESQL_PASS=password" 
+      - "CYGNUS_POSTGRESQL_USER=postgres"
+      - "CYGNUS_POSTGRESQL_PASS=password"
       - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
       - "CYGNUS_MYSQL_HOST=mysql-db"
       - "CYGNUS_MYSQL_PORT=3306"
-      - "CYGNUS_MYSQL_USER=root" 
-      - "CYGNUS_MYSQL_PASS=123" 
+      - "CYGNUS_MYSQL_USER=root"
+      - "CYGNUS_MYSQL_PASS=123"
       - "CYGNUS_LOG_LEVEL=DEBUG"
 ```
 
@@ -1274,11 +1283,11 @@ CKAN、HDFS、または CartoDB データを保持していないため、これ
 |CYGNUS_MONGO_HOSTS             |`mongo-db:27017` | Cygnus が履歴コンテキスト・データを保持するために接続する Mongo-DB サーバのカンマ区切りリスト|
 |CYGNUS_POSTGRESQL_HOST         |`postgres-db` | 履歴コンテキスト・データの永続化に使用される PostgreSQL サーバのホスト名 |
 |CYGNUS_POSTGRESQL_PORT         |`5432`        | PostgreSQL サーバがコマンドをリッスンするために使うポート |
-|CYGNUS_POSTGRESQL_USER         |`postgres`    | PostgreSQL データベース・ユーザのユーザ名| 
+|CYGNUS_POSTGRESQL_USER         |`postgres`    | PostgreSQL データベース・ユーザのユーザ名|
 |CYGNUS_POSTGRESQL_PASS         |`password`    | PostgreSQL データベース・ユーザのパスワード |
 |CYGNUS_MYSQL_HOST              |`mysql-db`    | 履歴コンテキスト・データの永続化に使用される MySQL サーバのホスト名 |
 |CYGNUS_MYSQL_PORT              |`3306`        | MySQL サーバがコマンドをリッスンするために使用するポート |
-|CYGNUS_MYSQL_USER              |`root`        | MySQL データベース・ユーザのユーザ名 | 
+|CYGNUS_MYSQL_USER              |`root`        | MySQL データベース・ユーザのユーザ名 |
 |CYGNUS_MYSQL_PASS              |`123`         | MySQL データベース・ユーザのパスワード |
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | Cygnus のログレベル |
 
@@ -1290,11 +1299,11 @@ CKAN、HDFS、または CartoDB データを保持していないため、これ
 
 ```console
 ./services multiple
-``` 
+```
 
 <a name="checking-the-cygnus-service-health-3"></a>
 ### Cygnus サービスの健全性をチェック
- 
+
 Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :eight: リクエスト :
@@ -1306,7 +1315,7 @@ curl -X GET \
 
 #### レスポンス :
 
-レスポンスは次のようになります 
+レスポンスは次のようになります
 
 ```json
 {
@@ -1356,8 +1365,8 @@ curl -X GET \
 | mongo      | 5051 |
 | ckan       | 5052 |
 | hdfs       | 5053 |
-| postgresql | 5054 | 
-| cartodb    | 5055 | 
+| postgresql | 5054 |
+| cartodb    | 5055 |
 
 このサブスクリプションはポート `5050` を使用しているため、コンテキスト・データは最終的に、*MySQL* データベースに永続化されます。
 
