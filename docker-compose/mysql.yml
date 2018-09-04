@@ -30,7 +30,7 @@ services:
       - mysql-db:/var/lib/mysql
 
   orion:
-    image: fiware/orion:latest
+    image: fiware/orion
     hostname: orion
     container_name: fiware-orion
     depends_on:
@@ -45,7 +45,7 @@ services:
 
 
   cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: fiware/cygnus-ngsi
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
@@ -67,7 +67,7 @@ services:
         - "CYGNUS_API_PORT=5080" # Port that Cygnus listens on for operational reasons
 
   iot-agent:
-    image: fiware/iotagent-ul:latest
+    image: fiware/iotagent-ul
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
@@ -94,6 +94,9 @@ services:
     image: fiware/tutorials.context-provider
     hostname: context-provider
     container_name: context-provider
+    depends_on:
+        - orion
+        - iot-agent
     networks:
         - default
     expose:
