@@ -70,7 +70,7 @@ case "${command}" in
 		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		loadData
 		echo ""
-		echo -e "Now open \033[4mttp://localhost:3000/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	"mysql")
 		stoppingContainers
