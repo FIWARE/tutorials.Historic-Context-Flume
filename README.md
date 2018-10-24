@@ -102,7 +102,7 @@ notifications must be set up to only pass the minimal data required as necessary
 #### Device Monitor
 
 For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context broker. Details of the architecture and protocol used can be found in the [IoT Sensors tutorial](https://github.com/Fiware/tutorials.IoT-Sensors).
-The state of each device can be seen on the UltraLight device monitor web-page found at: `http://localhost:3000/device/monitor`
+The state of each device can be seen on the UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context/img/device-monitor.png)
 
@@ -175,7 +175,7 @@ Please ensure that you are using Docker version 18.03 or higher and Docker Compo
 
 ## Cygwin for Windows
 
-We will start up our services using a simple Bash script. Windows users should download [cygwin](http://www.cygwin.com/) to provide a command line functionality similar to a Linux distribution on Windows.
+We will start up our services using a simple Bash script. Windows users should download [cygwin](http://www.cygwin.com/) to provide a command-line functionality similar to a Linux distribution on Windows.
 
 
 
@@ -194,7 +194,7 @@ cd tutorials.Historic-Context
 
 
 
-Thereafter, all services can be initialized from the command line by running the [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) Bash script provided within the repository:
+Thereafter, all services can be initialized from the command-line by running the [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) Bash script provided within the repository:
 
 ```console
 ./services <command>
@@ -451,14 +451,14 @@ will not fire.
 
 ## Mongo DB  - Reading Data from a database
 
-To read mongo-db data from the command line, we will need access to the `mongo` tool run an interactive instance
-of the `mongo` image as shown to obtain a command line prompt:
+To read mongo-db data from the command-line, we will need access to the `mongo` tool run an interactive instance
+of the `mongo` image as shown to obtain a command-line prompt:
 
 ```console
 docker run -it --network fiware_default  --entrypoint /bin/bash mongo
 ```
 
-You can then log into to the running `mongo-db` database by using the command line as shown:
+You can then log into to the running `mongo-db` database by using the command-line as shown:
 
 ```bash
 mongo --host mongo-db
@@ -516,7 +516,7 @@ sth_/_Motion:001_Motion.aggr
 ```
 
 Looking within the `sth_openiot` you will see that a series of tables have been created. The names of each table consist
-of the `sth_` prefix followed by the `fiware-servicepath` header followed by the entity id. Two table are created for
+of the `sth_` prefix followed by the `fiware-servicepath` header followed by the entity ID. Two table are created for
 each entity - the `.aggr` table holds some aggregated data which will be accessed in a later tutorial. The raw data
 can be seen in the tables without the `.aggr` suffix.
 
@@ -783,7 +783,7 @@ As you can see, the database used to persist context data has no impact on the d
 
 ## PostgreSQL - Reading Data from a database
 
-To read PostgreSQL data from the command line, we will need access to the `postgres` client, to do this, run an
+To read PostgreSQL data from the command-line, we will need access to the `postgres` client, to do this, run an
 interactive instance of the `postgresql-client` image supplying the connection string as shown to obtain a command
 line prompt:
 
@@ -928,7 +928,7 @@ To leave the Postgres client and leave interactive mode, run the following:
 ```console
 \q
 ```
- You will then return to the command line.
+ You will then return to the command-line.
 
 
 
@@ -1133,7 +1133,7 @@ As you can see, the database used to persist context data has no impact on the d
 
 ## MySQL - Reading Data from a database
 
-To read MySQL data from the command line, we will need access to the `mysql` client, to do this, run an
+To read MySQL data from the command-line, we will need access to the `mysql` client, to do this, run an
 interactive instance of the `mysql` image supplying the connection string as shown to obtain a command
 line prompt:
 
@@ -1282,7 +1282,7 @@ To leave the MySQL client and leave interactive mode, run the following:
 ```console
 \q
 ```
- You will then return to the command line.
+ You will then return to the command-line.
 
 
 
