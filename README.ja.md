@@ -7,9 +7,9 @@
 <br/>
 [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
-このチュートリアルは、コンテキスト・データをサードパーティのデータベースに保存してコンテキストの履歴ビューを作成するために使用する汎用イネーブラである、[FIWARE Cygnus](http://fiware-cygnus.readthedocs.io/en/latest/) の概要です。このチュートリアルでは、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent)で接続した IoT センサをアクティブにし、これらのセンサからの測定値をデータベースに保存してさらに分析します。
+このチュートリアルは、コンテキスト・データをサードパーティのデータベースに保存してコンテキストの履歴ビューを作成するために使用する汎用イネーブラである、[FIWARE Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) の概要です。このチュートリアルでは、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent)で接続した IoT センサをアクティブにし、これらのセンサからの測定値をデータベースに保存してさらに分析します。
 
-このチュートリアルでは、全体で [cUrl](https://ec.haxx.se/) コマンドを使用していますが、[Postman documentation](http://fiware.github.io/tutorials.Historic-Context/) も利用できます。
+このチュートリアルでは、全体で [cUrl](https://ec.haxx.se/) コマンドを使用していますが、[Postman documentation](https://fiware.github.io/tutorials.Historic-Context/) も利用できます。
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
 
@@ -98,13 +98,13 @@
 <a name="architecture"></a>
 # アーキテクチャ
 
-このアプリケーションは、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent/)で作成したコンポーネントと ダミー IoT デバイスをベースにしています。3つの FIWARE コンポーネントを使用します。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), [IoT Agent for Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/), コンテキスト・データをデータベースに永続化するための [Cygnus Generic Enabler](http://fiware-cygnus.readthedocs.io/en/latest/) を導入しました。Orion Context Broker と IoT Agent の両方が [MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の永続性を維持しています。**MySQL**, **PostgreSQL**, **MongoDB** データベースのいずれかで、履歴コンテキスト・データを永続化します。
+このアプリケーションは、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent/)で作成したコンポーネントと ダミー IoT デバイスをベースにしています。3つの FIWARE コンポーネントを使用します。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/), コンテキスト・データをデータベースに永続化するための [Cygnus Generic Enabler](https://fiware-cygnus.readthedocs.io/en/latest/) を導入しました。Orion Context Broker と IoT Agent の両方が [MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の永続性を維持しています。**MySQL**, **PostgreSQL**, **MongoDB** データベースのいずれかで、履歴コンテキスト・データを永続化します。
 
 したがって、全体のアーキテクチャーは以下の要素で構成されます :
 
 * 3つの **FIWARE 汎用イネーブラー** :
-  * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)は、[NGSI](http://fiware.github.io/specifications/ngsiv2/latest/) を使用してリクエストを受信します
-  * FIWARE [IoT Agent for Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し、Context Broker がコンテキスト・エンティティの状態を変更するための [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエストに変換します
+  * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)は、[NGSI](https://fiware.github.io/specifications/ngsiv2/latest/) を使用してリクエストを受信します
+  * FIWARE [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し、Context Broker がコンテキスト・エンティティの状態を変更するための [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエストに変換します
  * FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース (**MySQL** , **PostgreSQL** , **Mongo-DB**) に保持します。
 * 以下の**データベース**の 1つ、2つまたは3つ :
   * 基礎となる [MongoDB](https://www.mongodb.com/) データベース :
@@ -120,7 +120,7 @@
     + 店舗情報を表示し、ユーザーがダミー IoT デバイスと対話できるようにします
     + 各店舗で購入できる商品を表示します
     + ユーザが製品を購入して在庫数を減らすことを許可します
-  * HTTP 上で動作する [Ultralight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) プロトコルを使用して、[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)のセットとして機能する Web サーバ
+  * HTTP 上で動作する [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) プロトコルを使用して、[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)のセットとして機能する Web サーバ
   * このチュートリアルでは、**コンテキスト・プロバイダのNGSI proxy** は使用しません。これは以下を行います :
     + [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してリクエストを受信します
     + 独自の API を独自のフォーマットで使用して、公開されているデータ・ソースへのリクエストを行います
