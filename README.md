@@ -34,15 +34,15 @@ available as
     -   [Docker and Docker Compose](#docker-and-docker-compose)
     -   [Cygwin for Windows](#cygwin-for-windows)
 -   [Start Up](#start-up)
--   [Mongo DB - Persisting Context Data into a Database](#mongo-db---persisting-context-data-into-a-database)
-    -   [Mongo DB - Database Server Configuration](#mongo-db---database-server-configuration)
-    -   [Mongo DB - Cygnus Configuration](#mongo-db---cygnus-configuration)
-    -   [Mongo DB - Start up](#mongo-db---start-up)
+-   [MongoDB - Persisting Context Data into a Database](#mongodb---persisting-context-data-into-a-database)
+    -   [MongoDB - Database Server Configuration](#mongodb---database-server-configuration)
+    -   [MongoDB - Cygnus Configuration](#mongodb---cygnus-configuration)
+    -   [MongoDB - Start up](#mongodb---start-up)
         -   [Checking the Cygnus Service Health](#checking-the-cygnus-service-health)
         -   [Generating Context Data](#generating-context-data)
         -   [Subscribing to Context Changes](#subscribing-to-context-changes)
-    -   [Mongo DB - Reading Data from a database](#mongo-db----reading-data-from-a-database)
-        -   [Show Available Databases on the Mongo DB server](#show-available-databases-on-the-mongo-db-server)
+    -   [MongoDB - Reading Data from a database](#mongodb----reading-data-from-a-database)
+        -   [Show Available Databases on the MongoDB server](#show-available-databases-on-the-mongodb-server)
         -   [Read Historical Context from the server](#read-historical-context-from-the-server)
 -   [PostgreSQL - Persisting Context Data into a Database](#postgresql---persisting-context-data-into-a-database)
     -   [PostgreSQL - Database Server Configuration](#postgresql---database-server-configuration)
@@ -141,7 +141,7 @@ persisting context data to a database. Additional databases are now involved -
 both the Orion Context Broker and the IoT Agent rely on
 [MongoDB](https://www.mongodb.com/) technology to keep persistence of the
 information they hold, and we will be persisting our historical context data
-another database - either **MySQL** , **PostgreSQL** or **Mongo-DB** database.
+another database - either **MySQL** , **PostgreSQL** or **MongoDB** database.
 
 Therefore the overall architecture will consist of the following elements:
 
@@ -159,7 +159,7 @@ Therefore the overall architecture will consist of the following elements:
         for the context broker to alter the state of the context entities
     -   FIWARE [Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) which
         will subscribe to context changes and persist them into a database
-        (**MySQL** , **PostgreSQL** or **Mongo-DB**)
+        (**MySQL** , **PostgreSQL** or **MongoDB**)
 -   One, two or three of the following **Databases**:
     -   The underlying [MongoDB](https://www.mongodb.com/) database :
         -   Used by the **Orion Context Broker** to hold context data
@@ -271,7 +271,7 @@ provision the dummy IoT sensors on startup.
 > ./services stop
 > ```
 
-# Mongo DB - Persisting Context Data into a Database
+# MongoDB - Persisting Context Data into a Database
 
 Persisting historic context data using MongoDB technology is relatively simple
 to configure since we are already using a MongoDB instance to hold data related
@@ -280,7 +280,7 @@ on the standard `27017` port and the overall architecture can be seen below:
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mongo.png)
 
-## Mongo DB - Database Server Configuration
+## MongoDB - Database Server Configuration
 
 ```yaml
 mongo-db:
@@ -294,7 +294,7 @@ mongo-db:
     command: --bind_ip_all --smallfiles
 ```
 
-## Mongo DB - Cygnus Configuration
+## MongoDB - Cygnus Configuration
 
 ```yaml
 cygnus:
@@ -329,14 +329,14 @@ The `cygnus` container is driven by environment variables as shown:
 
 | Key                 | Value            | Description                                                                                           |
 | ------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
-| CYGNUS_MONGO_HOSTS  | `mongo-db:27017` | Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data |
+| CYGNUS_MONGO_HOSTS  | `mongo-db:27017` | Comma separated list of MongoDB servers which Cygnus will contact to persist historical context data |
 | CYGNUS_LOG_LEVEL    | `DEBUG`          | The logging level for Cygnus                                                                          |
 | CYGNUS_SERVICE_PORT | `5050`           | Notification Port that Cygnus listens when subscribing to context data changes                        |
 | CYGNUS_API_PORT     | `5080`           | Port that Cygnus listens on for operational reasons                                                   |
 
-## Mongo DB - Start up
+## MongoDB - Start up
 
-To start the system with a **Mongo DB** database only, run the following
+To start the system with a **MongoDB** database only, run the following
 command:
 
 ```console
@@ -509,14 +509,14 @@ Door** and switch on the **Smart Lamp**
 
 The `lastSuccess` should match the `lastNotification` date - if this is not the
 case then **Cygnus** is not receiving the subscription properly. Check that the
-host name and port are correct.
+hostname and port are correct.
 
 Finally, check that the `status` of the subscription is `active` - an expired
 subscription will not fire.
 
-## Mongo DB - Reading Data from a database
+## MongoDB - Reading Data from a database
 
-To read mongo-db data from the command-line, we will need access to the `mongo`
+To read MongoDB data from the command-line, we will need access to the `mongo`
 tool run an interactive instance of the `mongo` image as shown to obtain a
 command-line prompt:
 
@@ -531,7 +531,7 @@ command-line as shown:
 mongo --host mongo-db
 ```
 
-### Show Available Databases on the Mongo DB server
+### Show Available Databases on the MongoDB server
 
 To show the list of available databases, run the statement as shown:
 
@@ -622,7 +622,7 @@ db["sth_/_Door:001_Door"].find().limit(10)
 { "_id" : ObjectId("5b1fa4c030c49e0012f76386"), "recvTime" : ISODate("2018-06-12T10:47:28.081Z"), "attrName" : "close_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
 ```
 
-The usual **Mongo-DB** query syntax can be used to filter appropriate fields and
+The usual **MongoDB** query syntax can be used to filter appropriate fields and
 values. For example to read the rate at which the **Motion Sensor** with the
 `id=Motion:001_Motion` is accumulating, you would make a query as follows:
 
@@ -871,7 +871,7 @@ be **201 - Created**
 To read PostgreSQL data from the command-line, we will need access to the
 `postgres` client, to do this, run an interactive instance of the
 `postgresql-client` image supplying the connection string as shown to obtain a
-command line prompt:
+command-line prompt:
 
 ```console
 docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
@@ -1227,7 +1227,7 @@ be **201 - Created**
 
 To read MySQL data from the command-line, we will need access to the `mysql`
 client, to do this, run an interactive instance of the `mysql` image supplying
-the connection string as shown to obtain a command line prompt:
+the connection string as shown to obtain a command-line prompt:
 
 ```console
 docker run -it --rm  --network fiware_default mysql mysql -h mysql-db -P 3306  -u root -p123
@@ -1453,7 +1453,7 @@ The `cygnus` container is driven by environment variables as shown:
 | Key                    | Value            | Description                                                                                           |
 | ---------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
 | CYGNUS_MULTIAGENT      | `true`           | Whether to persist data into multiple databases.                                                      |
-| CYGNUS_MONGO_HOSTS     | `mongo-db:27017` | Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data |
+| CYGNUS_MONGO_HOSTS     | `mongo-db:27017` | Comma separated list of MongoDB servers which Cygnus will contact to persist historical context data |
 | CYGNUS_POSTGRESQL_HOST | `postgres-db`    | Hostname of the PostgreSQL server used to persist historical context data                             |
 | CYGNUS_POSTGRESQL_PORT | `5432`           | Port that the PostgreSQL server uses to listen to commands                                            |
 | CYGNUS_POSTGRESQL_USER | `postgres`       | Username for the PostgreSQL database user                                                             |

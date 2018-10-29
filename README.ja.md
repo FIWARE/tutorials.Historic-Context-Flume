@@ -22,15 +22,15 @@
   * [Docker と Docker Compose](#docker-and-docker-compose)
   * [Cygwin for Windows](#cygwin-for-windows)
 - [起動](#start-up)
-- [Mongo DB - コンテキスト・データをデータベースに永続化](#mongo-db---persisting-context-data-into-a-database)
-  * [Mongo DB - データベース・サーバの設定](#mongo-db---database-server-configuration)
-  * [Mongo DB - Cygnus の設定](#mongo-db---cygnus-configuration)
-  * [Mongo DB - 起動](#mongo-db---start-up)
+- [MongoDB - コンテキスト・データをデータベースに永続化](#mongodb---persisting-context-data-into-a-database)
+  * [MongoDB - データベース・サーバの設定](#mongodb---database-server-configuration)
+  * [MongoDB - Cygnus の設定](#mongodb---cygnus-configuration)
+  * [MongoDB - 起動](#mongodb---start-up)
     + [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health)
     + [コンテキスト・データの生成](#generating-context-data)
     + [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes)
-  * [Mongo DB - データベースからデータを読み込む](#mongo-db----reading-data-from-a-database)
-    + [Mongo DB サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mongo-db-server)
+  * [MongoDB - データベースからデータを読み込む](#mongodb----reading-data-from-a-database)
+    + [MongoDB サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mongodb-server)
     + [サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-server)
 - [PostgreSQL - コンテキスト・データをデータベースに永続化](#postgresql---persisting-context-data-into-a-database)
   * [PostgreSQL - データベース・サーバの設定](#postgresql---database-server-configuration)
@@ -105,7 +105,7 @@
 * 3つの **FIWARE 汎用イネーブラー** :
   * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)は、[NGSI](https://fiware.github.io/specifications/ngsiv2/latest/) を使用してリクエストを受信します
   * FIWARE [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し、Context Broker がコンテキスト・エンティティの状態を変更するための [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエストに変換します
- * FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース (**MySQL** , **PostgreSQL** , **Mongo-DB**) に保持します。
+ * FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース (**MySQL** , **PostgreSQL** , **MongoDB**) に保持します。
 * 以下の**データベース**の 1つ、2つまたは3つ :
   * 基礎となる [MongoDB](https://www.mongodb.com/) データベース :
     + **Orion Context Broker** が、データ・エンティティなどのコンテキスト・データ情報を保持し、サブスクリプション、レジストレーションするために使用します
@@ -188,15 +188,15 @@ cd tutorials.Historic-Context
 >
 
 
-<a name="mongo-db---persisting-context-data-into-a-database"></a>
-# Mongo DB - コンテキスト・データをデータベースに永続化
+<a name="mongodb---persisting-context-data-into-a-database"></a>
+# MongoDB - コンテキスト・データをデータベースに永続化
 
 MongoDB テクノロジーを使用して、履歴コンテキスト・データを永続化することは、Orion Context Broker と IoT Agent に関連するデータを保持するために既に MongoDB インスタンスを使用しているため、比較的簡単に構成できます。MongoDB インスタンスは標準 `27017` ポートをリッスンしており、全体のアーキテクチャは以下のようになります :
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mongo.png)
 
-<a name="mongo-db---database-server-configuration"></a>
-## Mongo DB - データベース・サーバの設定
+<a name="mongodb---database-server-configuration"></a>
+## MongoDB - データベース・サーバの設定
 
 ```yaml
   mongo-db:
@@ -210,8 +210,8 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
     command: --bind_ip_all --smallfiles
 ```
 
-<a name="mongo-db---cygnus-configuration"></a>
-## Mongo DB - Cygnus の設定
+<a name="mongodb---cygnus-configuration"></a>
+## MongoDB - Cygnus の設定
 
 ```yaml
   cygnus:
@@ -245,15 +245,15 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
 
 | キー	                        | 値           | 説明      |
 |-------------------------------|--------------|-----------|
-|CYGNUS_MONGO_HOSTS         |`mongo-db:27017` |  Cygnus が履歴コンテキスト・データを保持するために接続する Mongo-DB サーバのカンマ区切りリスト |
+|CYGNUS_MONGO_HOSTS         |`mongo-db:27017` |  Cygnus が履歴コンテキスト・データを保持するために接続する MongoDB サーバのカンマ区切りリスト |
 |CYGNUS_LOG_LEVEL               |`DEBUG`       | Cygnus のログレベル |
 |CYGNUS_SERVICE_PORT            |`5050`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート|
 |CYGNUS_API_PORT                |`5080`        | Cygnus が操作上の理由でリッスンするポート |
 
-<a name="mongo-db---start-up"></a>
-## Mongo DB - 起動
+<a name="mongodb---start-up"></a>
+## MongoDB - 起動
 
-**Mongo DB** データベースのみでシステムを起動するには、次のコマンドを実行します :
+**MongoDB** データベースのみでシステムを起動するには、次のコマンドを実行します :
 
 ```console
 ./services mongodb
@@ -409,8 +409,8 @@ curl -X GET \
 
 最後に、サブスクリプションの `status` が `active` であることを確認します。期限切れのサブスクリプションは起動しません。
 
-<a name="mongo-db----reading-data-from-a-database"></a>
-## Mongo DB - データベースからデータを読み込む
+<a name="mongodb----reading-data-from-a-database"></a>
+## MongoDB - データベースからデータを読み込む
 
 コマンドラインから `mongo-db` データを読み込むには、コマンドライン・プロンプトを表示するために、`mongo` ツールにアクセスして `mongo` イメージのインタラクティブなインスタンスを実行する必要があります :
 
@@ -424,8 +424,8 @@ docker run -it --network fiware_default  --entrypoint /bin/bash mongo
 mongo --host mongo-db
 ```
 
-<a name="show-available-databases-on-the-mongo-db-server"></a>
-### Mongo DB サーバ上で利用可能なデータベースを表示
+<a name="show-available-databases-on-the-mongodb-server"></a>
+### MongoDB サーバ上で利用可能なデータベースを表示
 
 使用可能なデータベースのリストを表示するには、次のように文を実行します :
 
@@ -450,7 +450,7 @@ sth_openiot    0.000GB
 
 - IoT デバイスのエンティティは、`openiot` `fiware-service` ヘッダを使用して作成され、別々に保持されるのに対し、ストア・エンティティは、`fiware-service` を定義することなく作成され、したがって `orion` データベース内に保持されます。 IoT Agent は、IoT センサ・データ`iotagentul` という別の **MongoDB** データベースに保持するように初期化されました。
 
-Orgn Context Broker に Cygnus をサブスクリプションした結果、`sth_openiot` という新しいデータベースが作成されました。履歴コンテキストを保持する **Mongo DB** データベースのデフォルト値は、`sth_` プレフィックスの後ろに `fiware-service` ヘッダが続くため、`sth_openiot` は IoT デバイスの履歴コンテキストを保持します。
+Orgn Context Broker に Cygnus をサブスクリプションした結果、`sth_openiot` という新しいデータベースが作成されました。履歴コンテキストを保持する **MongoDB** データベースのデフォルト値は、`sth_` プレフィックスの後ろに `fiware-service` ヘッダが続くため、`sth_openiot` は IoT デバイスの履歴コンテキストを保持します。
 
 
 <a name="read-historical-context-from-the-server"></a>
@@ -501,7 +501,7 @@ db["sth_/_Door:001_Door"].find().limit(10)
 { "_id" : ObjectId("5b1fa4c030c49e0012f76386"), "recvTime" : ISODate("2018-06-12T10:47:28.081Z"), "attrName" : "close_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
 ```
 
-通常の **Mongo-DB** クエリ構文は、適切なフィールドと値をフィルタリングするために使用できます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積しているレートを読み取るには、次のようにクエリを作成します :
+通常の **MongoDB** クエリ構文は、適切なフィールドと値をフィルタリングするために使用できます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積しているレートを読み取るには、次のようにクエリを作成します :
 
 #### クエリ :
 
@@ -1287,7 +1287,7 @@ CKAN、HDFS、または CartoDB データを保持していないため、これ
 | キー                          | 値           | 説明      |
 |-------------------------------|--------------|-----------|
 |CYGNUS_MULTIAGENT              |`true`        | データを複数のデータベースに保持するかどうか |
-|CYGNUS_MONGO_HOSTS             |`mongo-db:27017` | Cygnus が履歴コンテキスト・データを保持するために接続する Mongo-DB サーバのカンマ区切りリスト|
+|CYGNUS_MONGO_HOSTS             |`mongo-db:27017` | Cygnus が履歴コンテキスト・データを保持するために接続する MongoDB サーバのカンマ区切りリスト|
 |CYGNUS_POSTGRESQL_HOST         |`postgres-db` | 履歴コンテキスト・データの永続化に使用される PostgreSQL サーバのホスト名 |
 |CYGNUS_POSTGRESQL_PORT         |`5432`        | PostgreSQL サーバがコマンドをリッスンするために使うポート |
 |CYGNUS_POSTGRESQL_USER         |`postgres`    | PostgreSQL データベース・ユーザのユーザ名|
