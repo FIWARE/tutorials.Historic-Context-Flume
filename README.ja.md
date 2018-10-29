@@ -7,163 +7,251 @@
 <br/>
 [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
-このチュートリアルは、コンテキスト・データをサードパーティのデータベースに保存してコンテキストの履歴ビューを作成するために使用する汎用イネーブラである、[FIWARE Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) の概要です。このチュートリアルでは、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent)で接続した IoT センサをアクティブにし、これらのセンサからの測定値をデータベースに保存してさらに分析します。
+このチュートリアルは、コンテキスト・データをサードパーティのデータベースに保存し
+てコンテキストの履歴ビューを作成するために使用する汎用イネーブラである
+、[FIWARE Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) の概要です。
+このチュートリアルでは
+、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent)で接続した
+IoT センサをアクティブにし、これらのセンサからの測定値をデータベースに保存してさ
+らに分析します。
 
-このチュートリアルでは、全体で [cUrl](https://ec.haxx.se/) コマンドを使用していますが、[Postman documentation](https://fiware.github.io/tutorials.Historic-Context/) も利用できます。
+このチュートリアルでは、全体で [cUrl](https://ec.haxx.se/) コマンドを使用してい
+ますが
+、[Postman documentation](https://fiware.github.io/tutorials.Historic-Context/)
+も利用できます。
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
 
-
 # 内容
 
-- [データの永続性](#data-persistence)
-- [アーキテクチャ](#architecture)
-- [前提条件](#prerequisites)
-  * [Docker と Docker Compose](#docker-and-docker-compose)
-  * [Cygwin for Windows](#cygwin-for-windows)
-- [起動](#start-up)
-- [MongoDB - コンテキスト・データをデータベースに永続化](#mongodb---persisting-context-data-into-a-database)
-  * [MongoDB - データベース・サーバの設定](#mongodb---database-server-configuration)
-  * [MongoDB - Cygnus の設定](#mongodb---cygnus-configuration)
-  * [MongoDB - 起動](#mongodb---start-up)
-    + [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health)
-    + [コンテキスト・データの生成](#generating-context-data)
-    + [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes)
-  * [MongoDB - データベースからデータを読み込む](#mongodb----reading-data-from-a-database)
-    + [MongoDB サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mongodb-server)
-    + [サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-server)
-- [PostgreSQL - コンテキスト・データをデータベースに永続化](#postgresql---persisting-context-data-into-a-database)
-  * [PostgreSQL - データベース・サーバの設定](#postgresql---database-server-configuration)
-  * [PostgreSQL - Cygnusの設定](#postgresql---cygnus-configuration)
-  * [PostgreSQL - 起動](#postgresql---start-up)
-    + [Cygnusサービスの健全性をチェック](#checking-the-cygnus-service-health-1)
-    + [コンテキスト・データの生成](#generating-context-data-1)
-    + [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-1)
-  * [PostgreSQL - データベースからデータを読み込む](#postgresql---reading-data-from-a-database)
-    + [PostgreSQL サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-postgresql-server)
-    + [PostgreSQL サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-postgresql-server)
-- [MySQL - コンテキスト・データをデータベースに永続化](#mysql---persisting-context-data-into-a-database)
-  * [MySQL - データベース・サーバの設定](#mysql---database-server-configuration)
-  * [MySQL - Cygnus の設定](#mysql---cygnus-configuration)
-  * [MySQL - 起動](#mysql---start-up)
-    + [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-2)
-    + [コンテキスト・データの生成](#generating-context-data-2)
-    + [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-2)
-  * [MySQL - データベースからデータを読み込む](#mysql---reading-data-from-a-database)
-    + [MySQL サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mysql-server)
-    + [MySQL サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-mysql-server)
-- [マルチ・エージェント - 複数のデータベースへのコンテキスト・データの永続化](#multi-agent---persisting-context-data-into-a-multiple-databases)
-  * [マルチ・エージェント - 複数のデータベースのための Cygnus 設定](#multi-agent---cygnus-configuration-for-multiple-databases)
-  * [マルチ・エージェント - 起動](#multi-agent---start-up)
-    + [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-3)
-    + [コンテキスト・データの生成](#generating-context-data-3)
-    + [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-3)
-  * [マルチ・エージェント - 永続化データの読み込み](#multi-agent---reading-persisted-data)
-- [次のステップ](#next-steps)
-
+-   [データの永続性](#data-persistence)
+-   [アーキテクチャ](#architecture)
+-   [前提条件](#prerequisites)
+    -   [Docker と Docker Compose](#docker-and-docker-compose)
+    -   [Cygwin for Windows](#cygwin-for-windows)
+-   [起動](#start-up)
+-   [MongoDB - コンテキスト・データをデータベースに永続化](#mongodb---persisting-context-data-into-a-database)
+    -   [MongoDB - データベース・サーバの設定](#mongodb---database-server-configuration)
+    -   [MongoDB - Cygnus の設定](#mongodb---cygnus-configuration)
+    -   [MongoDB - 起動](#mongodb---start-up)
+        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health)
+        -   [コンテキスト・データの生成](#generating-context-data)
+        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes)
+    -   [MongoDB - データベースからデータを読み込む](#mongodb----reading-data-from-a-database)
+        -   [MongoDB サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mongodb-server)
+        -   [サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-server)
+-   [PostgreSQL - コンテキスト・データをデータベースに永続化](#postgresql---persisting-context-data-into-a-database)
+    -   [PostgreSQL - データベース・サーバの設定](#postgresql---database-server-configuration)
+    -   [PostgreSQL - Cygnus の設定](#postgresql---cygnus-configuration)
+    -   [PostgreSQL - 起動](#postgresql---start-up)
+        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-1)
+        -   [コンテキスト・データの生成](#generating-context-data-1)
+        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-1)
+    -   [PostgreSQL - データベースからデータを読み込む](#postgresql---reading-data-from-a-database)
+        -   [PostgreSQL サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-postgresql-server)
+        -   [PostgreSQL サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-postgresql-server)
+-   [MySQL - コンテキスト・データをデータベースに永続化](#mysql---persisting-context-data-into-a-database)
+    -   [MySQL - データベース・サーバの設定](#mysql---database-server-configuration)
+    -   [MySQL - Cygnus の設定](#mysql---cygnus-configuration)
+    -   [MySQL - 起動](#mysql---start-up)
+        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-2)
+        -   [コンテキスト・データの生成](#generating-context-data-2)
+        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-2)
+    -   [MySQL - データベースからデータを読み込む](#mysql---reading-data-from-a-database)
+        -   [MySQL サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mysql-server)
+        -   [MySQL サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-mysql-server)
+-   [マルチ・エージェント - 複数のデータベースへのコンテキスト・データの永続化](#multi-agent---persisting-context-data-into-a-multiple-databases)
+    -   [マルチ・エージェント - 複数のデータベースのための Cygnus 設定](#multi-agent---cygnus-configuration-for-multiple-databases)
+    -   [マルチ・エージェント - 起動](#multi-agent---start-up)
+        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-3)
+        -   [コンテキスト・データの生成](#generating-context-data-3)
+        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-3)
+    -   [マルチ・エージェント - 永続化データの読み込み](#multi-agent---reading-persisted-data)
+-   [次のステップ](#next-steps)
 
 <a name="data-persistence"></a>
+
 # データの永続性
 
 > "History will be kind to me for I intend to write it."
 >
 > — Winston Churchill
 
+以前のチュートリアルでは、実世界の状態の測定値を提供する IoT センサと、**Orion
+Context Broker** と **IoT Agent** の 2 つの FIWARE コンポーネントを紹介しました
+。このチュートリアルでは、新しいデータ永続化コンポーネント FIWARE **Cygnus** を
+紹介します。
 
-以前のチュートリアルでは、実世界の状態の測定値を提供する IoT センサと、**Orion Context Broker** と **IoT Agent** の 2つの FIWARE コンポーネントを紹介しました。このチュートリアルでは、新しいデータ永続化コンポーネント FIWARE **Cygnus** を紹介します。
+これまでのシステムは、現在のコンテキストを扱うように構築されています。つまり、与
+えられた瞬間に現実のオブジェクトの状態を定義するデータ・エンティティを保持してい
+ます。
 
-これまでのシステムは、現在のコンテキストを扱うように構築されています。つまり、与えられた瞬間に現実のオブジェクトの状態を定義するデータ・エンティティを保持しています。
+この定義から、コンテキストはシステムの**現在**の状態のみに関心があります。システ
+ムの履歴状態を報告するのは既存コンポーネントの責任ではありません。コンテキストは
+、各センサが Context Broker に送信した最後の測定値に基づいています。
 
-この定義から、コンテキストはシステムの**現在**の状態のみに関心があります。システムの履歴状態を報告するのは既存コンポーネントの責任ではありません。コンテキストは、各センサが Context Broker に送信した最後の測定値に基づいています。
+これを行うためには、コンテキストが更新されるたびに、状態の変化をデータベースに永
+続化するために、既存のアーキテクチャを拡張する必要があります。
 
-これを行うためには、コンテキストが更新されるたびに、状態の変化をデータベースに永続化するために、既存のアーキテクチャを拡張する必要があります。
+過去のコンテキスト・データを永続化することは、大規模なデータ分析に役立ちます。傾
+向を発見するために使用することができます。また、データをサンプリングして集約して
+、外部データ測定の影響を取り除くこともできます。ただし、各スマート・ソリューショ
+ンでは、各エンティティ型の重要性が異なり、エンティティと属性を異なるレートでサン
+プリングする必要があります。
 
-過去のコンテキスト・データを永続化することは、大規模なデータ分析に役立ちます。傾向を発見するために使用することができます。また、データをサンプリングして集約して、外部データ測定の影響を取り除くこともできます。ただし、各スマート・ソリューションでは、各エンティティ型の重要性が異なり、エンティティと属性を異なるレートでサンプリングする必要があります。
+コンテキスト・データを使用するためのビジネス要件はアプリケーションごとに異なりま
+すので、履歴データの永続化のための標準的な使用例は 1 つもありません。それぞれの
+状況は固有のものであり、1 つのサイズがすべてに適合するケースではありません。した
+がって、Context Broker に履歴的なコンテキスト・データの永続性を与えることではな
+く、この役割は、構成可能な別のコンポーネント **Cygnus** に分離されています。
 
-コンテキスト・データを使用するためのビジネス要件はアプリケーションごとに異なりますので、履歴データの永続化のための標準的な使用例は1つもありません。それぞれの状況は固有のものであり、1つのサイズがすべてに適合するケースではありません。したがって、Context Broker に履歴的なコンテキスト・データの永続性を与えることではなく、この役割は、構成可能な別のコンポーネント **Cygnus** に分離されています。
+ご想像のとおり、オープンソース・プラットフォームの一部としての **Cygnus** は、デ
+ータの永続化に使用されるデータベースに関する技術に依存しません。使用するデータベ
+ースは、ビジネス・ニーズに応じて異なります。
 
-ご想像のとおり、オープンソース・プラットフォームの一部としての **Cygnus** は、データの永続化に使用されるデータベースに関する技術に依存しません。使用するデータベースは、ビジネス・ニーズに応じて異なります。
-
-ただし、この柔軟性を提供するにはコストがかかります。システムの各部分を個別に設定し、必要な最小限のデータだけを通知するように通知を設定する必要があります。
-
+ただし、この柔軟性を提供するにはコストがかかります。システムの各部分を個別に設定
+し、必要な最小限のデータだけを通知するように通知を設定する必要があります。
 
 #### デバイス・モニタ
 
-このチュートリアルの目的のために、一連のダミー IoT デバイスが作成され、Context Broker に接続されます。使用しているアーキテクチャとプロトコルの詳細は、[IoT Sensors チュートリアル](https://github.com/Fiware/tutorials.IoT-Sensors)にあります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確認できます : `http://localhost:3000/device/monitor`
+このチュートリアルの目的のために、一連のダミー IoT デバイスが作成され、Context
+Broker に接続されます。使用しているアーキテクチャとプロトコルの詳細は
+、[IoT Sensors チュートリアル](https://github.com/Fiware/tutorials.IoT-Sensors)に
+あります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確
+認できます : `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context/img/device-monitor.png)
 
-
-
 <a name="architecture"></a>
+
 # アーキテクチャ
 
-このアプリケーションは、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent/)で作成したコンポーネントと ダミー IoT デバイスをベースにしています。3つの FIWARE コンポーネントを使用します。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/), コンテキスト・データをデータベースに永続化するための [Cygnus Generic Enabler](https://fiware-cygnus.readthedocs.io/en/latest/) を導入しました。Orion Context Broker と IoT Agent の両方が [MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の永続性を維持しています。**MySQL**, **PostgreSQL**, **MongoDB** データベースのいずれかで、履歴コンテキスト・データを永続化します。
+このアプリケーションは
+、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent/)で作成した
+コンポーネントと ダミー IoT デバイスをベースにしています。3 つの FIWARE コンポー
+ネントを使用します
+。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
+[IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/),
+コンテキスト・データをデータベースに永続化するための
+[Cygnus Generic Enabler](https://fiware-cygnus.readthedocs.io/en/latest/) を導入
+しました。Orion Context Broker と IoT Agent の両方が
+[MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の永続性
+を維持しています。**MySQL**, **PostgreSQL**, **MongoDB** データベースのいずれか
+で、履歴コンテキスト・データを永続化します。
 
 したがって、全体のアーキテクチャーは以下の要素で構成されます :
 
-* 3つの **FIWARE 汎用イネーブラー** :
-  * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)は、[NGSI](https://fiware.github.io/specifications/ngsiv2/latest/) を使用してリクエストを受信します
-  * FIWARE [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し、Context Broker がコンテキスト・エンティティの状態を変更するための [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエストに変換します
- * FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース (**MySQL** , **PostgreSQL** , **MongoDB**) に保持します。
-* 以下の**データベース**の 1つ、2つまたは3つ :
-  * 基礎となる [MongoDB](https://www.mongodb.com/) データベース :
-    + **Orion Context Broker** が、データ・エンティティなどのコンテキスト・データ情報を保持し、サブスクリプション、レジストレーションするために使用します
-    + **IoT Agent** がデバイスの URL やキーなどのデバイス情報を保持するために使用します
-    + 履歴コンテキスト・データを保持するためのデータ・シンクとして潜在的に使用します
-  * 追加の [PostgreSQL](https://www.postgresql.org/) データベース :
-    + 履歴データを保持するためのデータ・シンクとして潜在的に使用します
-  * 追加の [MySQL](https://www.mysql.com/) データベース :
-    + 履歴データを保持するためのデータ・シンクとして潜在的に使用します
-* 3つの**コンテキストプロバイダ** :
-  * **在庫管理フロントエンド**は、このチュートリアルで使用していません。これは以下を行います :
-    + 店舗情報を表示し、ユーザーがダミー IoT デバイスと対話できるようにします
-    + 各店舗で購入できる商品を表示します
-    + ユーザが製品を購入して在庫数を減らすことを許可します
-  * HTTP 上で動作する [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) プロトコルを使用して、[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)のセットとして機能する Web サーバ
-  * このチュートリアルでは、**コンテキスト・プロバイダのNGSI proxy** は使用しません。これは以下を行います :
-    + [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してリクエストを受信します
-    + 独自の API を独自のフォーマットで使用して、公開されているデータ・ソースへのリクエストを行います
-    + [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式でコンテキスト・データOrion Context Broker に返します
+-   3 つの **FIWARE 汎用イネーブラー** :
+    -   FIWARE
+        [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/)は
+        、[NGSI](https://fiware.github.io/specifications/ngsiv2/latest/) を使用
+        してリクエストを受信します
+    -   FIWARE
+        [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/)
+        は
+        、[Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+        フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し
+        、Context Broker がコンテキスト・エンティティの状態を変更するための
+        [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエス
+        トに変換します
+-   FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース
+    (**MySQL** , **PostgreSQL** , **MongoDB**) に保持します。
+-   以下の**データベース**の 1 つ、2 つまたは 3 つ :
+    -   基礎となる [MongoDB](https://www.mongodb.com/) データベース :
+        -   **Orion Context Broker** が、データ・エンティティなどのコンテキスト
+            ・データ情報を保持し、サブスクリプション、レジストレーションするため
+            に使用します
+        -   **IoT Agent** がデバイスの URL やキーなどのデバイス情報を保持するた
+            めに使用します
+        -   履歴コンテキスト・データを保持するためのデータ・シンクとして潜在的に
+            使用します
+    -   追加の [PostgreSQL](https://www.postgresql.org/) データベース :
+        -   履歴データを保持するためのデータ・シンクとして潜在的に使用します
+    -   追加の [MySQL](https://www.mysql.com/) データベース :
+        -   履歴データを保持するためのデータ・シンクとして潜在的に使用します
+-   3 つの**コンテキストプロバイダ** :
+    -   **在庫管理フロントエンド**は、このチュートリアルで使用していません。これ
+        は以下を行います :
+        -   店舗情報を表示し、ユーザーがダミー IoT デバイスと対話できるようにし
+            ます
+        -   各店舗で購入できる商品を表示します
+        -   ユーザが製品を購入して在庫数を減らすことを許可します
+    -   HTTP 上で動作する
+        [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+        プロトコルを使用して
+        、[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)の
+        セットとして機能する Web サーバ
+    -   このチュートリアルでは、**コンテキスト・プロバイダの NGSI proxy** は使用
+        しません。これは以下を行います :
+        -   [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使
+            用してリクエストを受信します
+        -   独自の API を独自のフォーマットで使用して、公開されているデータ・ソ
+            ースへのリクエストを行います
+        -   [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式
+            でコンテキスト・データ Orion Context Broker に返します
 
-要素間のすべての対話は HTTP リクエストによって開始されるため、エンティティはコンテナ化され、公開されたポートから実行されます。
+要素間のすべての対話は HTTP リクエストによって開始されるため、エンティティはコン
+テナ化され、公開されたポートから実行されます。
 
-チュートリアルの各セクションの具体的なアーキテクチャについては、以下で説明します。
-
+チュートリアルの各セクションの具体的なアーキテクチャについては、以下で説明します
+。
 
 <a name="prerequisites"></a>
+
 # 前提条件
 
 <a name="docker-and-docker-compose"></a>
+
 ## Dokcer と Docker Compose
 
-物事を単純にするために、両方のコンポーネントが [Docker](https://www.docker.com) を使用して実行されます。**Docker** は、さまざまコンポーネントをそれぞれの環境に分離することを可能にするコンテナ・テクノロジです。
+物事を単純にするために、両方のコンポーネントが [Docker](https://www.docker.com)
+を使用して実行されます。**Docker** は、さまざまコンポーネントをそれぞれの環境に
+分離することを可能にするコンテナ・テクノロジです。
 
-* Docker Windows にインストールするには、[こちら](https://docs.docker.com/docker-for-windows/)の手順に従ってください
-* Docker Mac にインストールするには、[こちら](https://docs.docker.com/docker-for-mac/)の手順に従ってください
-* Docker Linux にインストールするには、[こちら](https://docs.docker.com/install/)の手順に従ってください
+-   Docker Windows にインストールするには
+    、[こちら](https://docs.docker.com/docker-for-windows/)の手順に従ってくださ
+    い
+-   Docker Mac にインストールするには
+    、[こちら](https://docs.docker.com/docker-for-mac/)の手順に従ってください
+-   Docker Linux にインストールするには
+    、[こちら](https://docs.docker.com/install/)の手順に従ってください
 
-**Docker Compose** は、マルチコンテナ Docker アプリケーションを定義して実行するためのツールです。[YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Historic-Context/master/docker-compose.yml) ファイルは、アプリケーションのために必要なサービスを構成するために使用します。つまり、すべてのコンテナ・サービスは1つのコマンドで呼び出すことができます。Docker Compose は、デフォルトで Docker for Windows とDocker for Mac の一部としてインストールされますが、Linux ユーザは[ここ](https://docs.docker.com/compose/install/)に記載されている手順に従う必要があります。
+**Docker Compose** は、マルチコンテナ Docker アプリケーションを定義して実行する
+ためのツールです
+。[YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Historic-Context/master/docker-compose.yml)
+ファイルは、アプリケーションのために必要なサービスを構成するために使用します。つ
+まり、すべてのコンテナ・サービスは 1 つのコマンドで呼び出すことができます
+。Docker Compose は、デフォルトで Docker for Windows と Docker for Mac の一部と
+してインストールされますが、Linux ユーザ
+は[ここ](https://docs.docker.com/compose/install/)に記載されている手順に従う必要
+があります。
 
-次のコマンドを使用して、現在の **Docker** バージョンと **Docker Compose** バージョンを確認できます :
+次のコマンドを使用して、現在の **Docker** バージョンと **Docker Compose** バージ
+ョンを確認できます :
 
 ```console
 docker-compose -v
 docker version
 ```
 
-Docker バージョン 18.03 以降と Docker Compose 1.21 以上を使用していることを確認し、必要に応じてアップグレードしてください。
+Docker バージョン 18.03 以降と Docker Compose 1.21 以上を使用していることを確認
+し、必要に応じてアップグレードしてください。
 
 <a name="cygwin-for-windows"></a>
+
 ## Cygwin for Windows
 
-シンプルな bash スクリプトを使用してサービスを開始します。Windows ユーザは [cygwin](http://www.cygwin.com/) をダウンロードして、Windows 上の Linux ディストリビューションと同様のコマンドライン機能を提供する必要があります。
-
+シンプルな bash スクリプトを使用してサービスを開始します。Windows ユーザは
+[cygwin](http://www.cygwin.com/) をダウンロードして、Windows 上の Linux ディスト
+リビューションと同様のコマンドライン機能を提供する必要があります。
 
 <a name="start-up"></a>
+
 # 起動
 
-開始する前に、必要なDockerイメージをローカルで取得または構築しておく必要があります。リポジトリを複製し、以下のコマンドを実行して必要なイメージを作成してください :
+開始する前に、必要な Docker イメージをローカルで取得または構築しておく必要があり
+ます。リポジトリを複製し、以下のコマンドを実行して必要なイメージを作成してくださ
+い :
 
 ```console
 git clone git@github.com:Fiware/tutorials.Historic-Context.git
@@ -172,34 +260,44 @@ cd tutorials.Historic-Context
 ./services create
 ```
 
-その後、リポジトリ内で提供される [services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services) の Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初期化できます :
+その後、リポジトリ内で提供される
+[services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services)
+の Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初
+期化できます :
 
 ```console
 ./services <command>
 ```
 
-ここで、`<command>` は、有効にしたいデータベースによって異なります。このコマンドは、前のチュートリアルのシード・データをインポートし、起動時にダミー IoT センサをプロビジョニングします。
+ここで、`<command>` は、有効にしたいデータベースによって異なります。このコマンド
+は、前のチュートリアルのシード・データをインポートし、起動時にダミー IoT センサ
+をプロビジョニングします。
 
->:information_source: **注:** クリーンアップをやり直したい場合は、次のコマンドを使用して再起動することができます :
+> :information_source: **注:** クリーンアップをやり直したい場合は、次のコマンド
+> を使用して再起動することができます :
 >
->```console
->./services stop
->```
->
-
+> ```console
+> ./services stop
+> ```
 
 <a name="mongodb---persisting-context-data-into-a-database"></a>
+
 # MongoDB - コンテキスト・データをデータベースに永続化
 
-MongoDB テクノロジーを使用して、履歴コンテキスト・データを永続化することは、Orion Context Broker と IoT Agent に関連するデータを保持するために既に MongoDB インスタンスを使用しているため、比較的簡単に構成できます。MongoDB インスタンスは標準 `27017` ポートをリッスンしており、全体のアーキテクチャは以下のようになります :
+MongoDB テクノロジーを使用して、履歴コンテキスト・データを永続化することは
+、Orion Context Broker と IoT Agent に関連するデータを保持するために既に MongoDB
+インスタンスを使用しているため、比較的簡単に構成できます。MongoDB インスタンスは
+標準 `27017` ポートをリッスンしており、全体のアーキテクチャは以下のようになりま
+す :
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mongo.png)
 
 <a name="mongodb---database-server-configuration"></a>
+
 ## MongoDB - データベース・サーバの設定
 
 ```yaml
-  mongo-db:
+mongo-db:
     image: mongo:3.6
     hostname: mongo-db
     container_name: db-mongo
@@ -211,10 +309,11 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
 ```
 
 <a name="mongodb---cygnus-configuration"></a>
+
 ## MongoDB - Cygnus の設定
 
 ```yaml
-  cygnus:
+cygnus:
     image: fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
@@ -234,23 +333,25 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
         - "CYGNUS_API_PORT=5080"
 ```
 
+`cygnus` コンテナは、2 つのポートでリッスンしています :
 
-`cygnus` コンテナは、2つのポートでリッスンしています :
-
-* Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion context broker からの通知をリッスンするポートです
-* Cygnus の管理ポート : `5080`は、純粋にチュートリアル・アクセスのために公開されているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョニング・コマンドを作成できます
-
+-   Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion context
+    broker からの通知をリッスンするポートです
+-   Cygnus の管理ポート : `5080`は、純粋にチュートリアル・アクセスのために公開さ
+    れているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョ
+    ニング・コマンドを作成できます
 
 `cygnus` コンテナは、示されているように環境変数によって制御できます :
 
-| キー	                        | 値           | 説明      |
-|-------------------------------|--------------|-----------|
-|CYGNUS_MONGO_HOSTS         |`mongo-db:27017` |  Cygnus が履歴コンテキスト・データを保持するために接続する MongoDB サーバのカンマ区切りリスト |
-|CYGNUS_LOG_LEVEL               |`DEBUG`       | Cygnus のログレベル |
-|CYGNUS_SERVICE_PORT            |`5050`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート|
-|CYGNUS_API_PORT                |`5080`        | Cygnus が操作上の理由でリッスンするポート |
+| キー                | 値               | 説明                                                                                         |
+| ------------------- | ---------------- | -------------------------------------------------------------------------------------------- |
+| CYGNUS_MONGO_HOSTS  | `mongo-db:27017` | Cygnus が履歴コンテキスト・データを保持するために接続する MongoDB サーバのカンマ区切りリスト |
+| CYGNUS_LOG_LEVEL    | `DEBUG`          | Cygnus のログレベル                                                                          |
+| CYGNUS_SERVICE_PORT | `5050`           | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート         |
+| CYGNUS_API_PORT     | `5080`           | Cygnus が操作上の理由でリッスンするポート                                                    |
 
 <a name="mongodb---start-up"></a>
+
 ## MongoDB - 起動
 
 **MongoDB** データベースのみでシステムを起動するには、次のコマンドを実行します :
@@ -260,9 +361,12 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
 ```
 
 <a name="checking-the-cygnus-service-health"></a>
+
 ### Cygnus サービスの健全性をチェック
 
-Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
+Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエスト
+を行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常
+、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :one: リクエスト :
 
@@ -282,38 +386,51 @@ curl -X GET \
 }
 ```
 
->**トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
+> **トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
 >
-> * Dokcer コンテナが動作していることを確認するには :
+> -   Dokcer コンテナが動作していることを確認するには :
 >
->```bash
->docker ps
->```
+> ```bash
+> docker ps
+> ```
 >
->いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていない場合は、必要に応じてコンテナを再起動できます。
-
+> いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていな
+> い場合は、必要に応じてコンテナを再起動できます。
 
 <a name="generating-context-data"></a>
+
 ### コンテキスト・データの生成
 
-このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要があります。ダミー IoT センサを使用してこれを行うことができます。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**スマート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって行うことができます。デバイスからの測定値のストリームは、同じページに表示されます :
+このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要が
+あります。ダミー IoT センサを使用してこれを行うことができます
+。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**ス
+マート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロ
+ップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって
+行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
+:
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
 
-
-
 <a name="subscribing-to-context-changes"></a>
+
 ### コンテキスト変更のサブスクライブ
 
-動的コンテキスト・システムが起動したら、**Cygnus** にコンテキストの変更を通知する必要があります。
+動的コンテキスト・システムが起動したら、**Cygnus** にコンテキストの変更を通知す
+る必要があります。
 
-これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエストを行うことによって行われます。
+これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエ
+ストを行うことによって行われます。
 
-* `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィルタリングして、接続されている IoT センサからの測定値だけをリッスンするために使用します。センサがこれらの設定を使用してプロビジョニングされているためです
-* リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が Cygnus に通知されるようにします
-* 通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
-* Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
-* `throttling` 値は、変更がサンプリングされる割合を定義します
+-   `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィ
+    ルタリングして、接続されている IoT センサからの測定値だけをリッスンするため
+    に使用します。センサがこれらの設定を使用してプロビジョニングされているためで
+    す
+-   リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が
+    Cygnus に通知されるようにします
+-   通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
+-   Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため
+    、`attrsFormat=legacy` が必要です
+-   `throttling` 値は、変更がサンプリングされる割合を定義します
 
 #### :two: リクエスト :
 
@@ -342,19 +459,24 @@ curl -iX POST \
 }'
 ```
 
-ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブスクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは **201 - Created** です。
+ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブ
+スクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは
+**201 - Created** です。
 
-> :information_source: **注 :**  **Cygnus** ログ内で次のフォームのエラーが表示された場合 :
+> :information_source: **注 :** **Cygnus** ログ内で次のフォームのエラーが表示さ
+> れた場合 :
 >
->```
->Received bad request from client.
->cygnus         | org.apache.flume.source.http.HTTPBadRequestException: 'fiware-servicepath' header
->value does not match the number of notified context responses
->```
+> ```
+> Received bad request from client.
+> cygnus         | org.apache.flume.source.http.HTTPBadRequestException: 'fiware-servicepath' header
+> value does not match the number of notified context responses
+> ```
 >
 > これは通常、`"attrsFormat": "legacy"` フラグが省略されているためです。
 
-サブスクリプションが作成されている場合は、`/v2/subscriptions` エンドポイントに対して GET リクエストを出すことで、それが起動しているかどうかを確認することができます。
+サブスクリプションが作成されている場合は、`/v2/subscriptions` エンドポイントに対
+して GET リクエストを出すことで、それが起動しているかどうかを確認することができ
+ます。
 
 #### :three: リクエスト :
 
@@ -398,33 +520,46 @@ curl -X GET \
 ]
 ```
 
-レスポンスの `notification` セクション内には、サブスクリプションの健全性を表すいくつかの追加の  `attributes` があります
+レスポンスの `notification` セクション内には、サブスクリプションの健全性を表すい
+くつかの追加の `attributes` があります
 
-サブスクリプションの基準が満たされている場合、`timesSent` は` 0` より大きくなければなりません。
-ゼロの値は、サブスクリプションの `subject` が間違っているか、サブスクリプションが間違った `fiware-service-path` または `fiware-service` ヘッダで作成されたことを示します
+サブスクリプションの基準が満たされている場合、`timesSent` は`0` より大きくなけれ
+ばなりません。ゼロの値は、サブスクリプションの `subject` が間違っているか、サブ
+スクリプションが間違った `fiware-service-path` または `fiware-service` ヘッダで
+作成されたことを示します
 
-`lastNotification` は最近のタイム・スタンプでなければなりません。そうでなければ、デバイスは定期的にデータを送信しません。 **スマート・ドア**のロックを解除し、**スマート・ランプ**をオンにすることを忘れないでください
+`lastNotification` は最近のタイム・スタンプでなければなりません。そうでなければ
+、デバイスは定期的にデータを送信しません。 **スマート・ドア**のロックを解除し
+、**スマート・ランプ**をオンにすることを忘れないでください
 
-`lastSuccess` は `lastNotification` の日付と一致する必要があります。そうでない場合、**Cygnus** はサブスクリプションを正しく受信していません。 ホスト名とポートが正しいことを確認してください。
+`lastSuccess` は `lastNotification` の日付と一致する必要があります。そうでない場
+合、**Cygnus** はサブスクリプションを正しく受信していません。 ホスト名とポートが
+正しいことを確認してください。
 
-最後に、サブスクリプションの `status` が `active` であることを確認します。期限切れのサブスクリプションは起動しません。
+最後に、サブスクリプションの `status` が `active` であることを確認します。期限切
+れのサブスクリプションは起動しません。
 
 <a name="mongodb----reading-data-from-a-database"></a>
+
 ## MongoDB - データベースからデータを読み込む
 
-コマンドラインから `mongo-db` データを読み込むには、コマンドライン・プロンプトを表示するために、`mongo` ツールにアクセスして `mongo` イメージのインタラクティブなインスタンスを実行する必要があります :
+コマンドラインから `mongo-db` データを読み込むには、コマンドライン・プロンプトを
+表示するために、`mongo` ツールにアクセスして `mongo` イメージのインタラクティブ
+なインスタンスを実行する必要があります :
 
 ```console
 docker run -it --network fiware_default  --entrypoint /bin/bash mongo
 ```
 
-次のようにコマンドラインを使用して、実行中の `mongo-db` データベースにログインできます :
+次のようにコマンドラインを使用して、実行中の `mongo-db` データベースにログインで
+きます :
 
 ```bash
 mongo --host mongo-db
 ```
 
 <a name="show-available-databases-on-the-mongodb-server"></a>
+
 ### MongoDB サーバ上で利用可能なデータベースを表示
 
 使用可能なデータベースのリストを表示するには、次のように文を実行します :
@@ -446,14 +581,24 @@ orion-openiot  0.000GB
 sth_openiot    0.000GB
 ```
 
-結果には、デフォルトで MongoDB によって設定されている、2つのデータベース `admin` と `local` があり、FIWARE プラットフォームによって作成された 4つのデータベースも含まれています。Orion Context Broker は、それぞれの `fiware-service` に 2つのデータベース・インスタンスを作成しました。
+結果には、デフォルトで MongoDB によって設定されている、2 つのデータベース
+`admin` と `local` があり、FIWARE プラットフォームによって作成された 4 つのデー
+タベースも含まれています。Orion Context Broker は、それぞれの `fiware-service`
+に 2 つのデータベース・インスタンスを作成しました。
 
-- IoT デバイスのエンティティは、`openiot` `fiware-service` ヘッダを使用して作成され、別々に保持されるのに対し、ストア・エンティティは、`fiware-service` を定義することなく作成され、したがって `orion` データベース内に保持されます。 IoT Agent は、IoT センサ・データ`iotagentul` という別の **MongoDB** データベースに保持するように初期化されました。
+-   IoT デバイスのエンティティは、`openiot` `fiware-service` ヘッダを使用して作
+    成され、別々に保持されるのに対し、ストア・エンティティは、`fiware-service`
+    を定義することなく作成され、したがって `orion` データベース内に保持されます
+    。 IoT Agent は、IoT センサ・データ`iotagentul` という別の **MongoDB** デー
+    タベースに保持するように初期化されました。
 
-Orgn Context Broker に Cygnus をサブスクリプションした結果、`sth_openiot` という新しいデータベースが作成されました。履歴コンテキストを保持する **MongoDB** データベースのデフォルト値は、`sth_` プレフィックスの後ろに `fiware-service` ヘッダが続くため、`sth_openiot` は IoT デバイスの履歴コンテキストを保持します。
-
+Orgn Context Broker に Cygnus をサブスクリプションした結果、`sth_openiot` という
+新しいデータベースが作成されました。履歴コンテキストを保持する **MongoDB** デー
+タベースのデフォルト値は、`sth_` プレフィックスの後ろに `fiware-service` ヘッダ
+が続くため、`sth_openiot` は IoT デバイスの履歴コンテキストを保持します。
 
 <a name="read-historical-context-from-the-server"></a>
+
 ### サーバから履歴コンテキストを読み込む
 
 #### クエリ :
@@ -476,9 +621,15 @@ sth_/_Motion:001_Motion
 sth_/_Motion:001_Motion.aggr
 ```
 
-`sth_openiot` 内を見ると、一連のテーブルが作成されていることがわかります。各テーブルの名前は、`sth_` プレフィックスの後に `fiware-servicepath` ヘッダとそれに続くエンティティ id が続きます。各エンティティごとに2つのテーブルが作成されます。`.aggr` テーブルには、後でチュートリアルでアクセスするいくつかの集計データが格納されています。生データは、`.aggr` サフィックスなしのテーブルで見ることができます。
+`sth_openiot` 内を見ると、一連のテーブルが作成されていることがわかります。各テー
+ブルの名前は、`sth_` プレフィックスの後に `fiware-servicepath` ヘッダとそれに続
+くエンティティ id が続きます。各エンティティごとに 2 つのテーブルが作成されます
+。`.aggr` テーブルには、後でチュートリアルでアクセスするいくつかの集計データが格
+納されています。生データは、`.aggr` サフィックスなしのテーブルで見ることができま
+す。
 
-履歴データは各テーブル内のデータを確認するで見ることができます。デフォルトでは、各行には単一の属性のサンプリング値が含まれます。
+履歴データは各テーブル内のデータを確認するで見ることができます。デフォルトでは、
+各行には単一の属性のサンプリング値が含まれます。
 
 #### クエリ :
 
@@ -501,7 +652,9 @@ db["sth_/_Door:001_Door"].find().limit(10)
 { "_id" : ObjectId("5b1fa4c030c49e0012f76386"), "recvTime" : ISODate("2018-06-12T10:47:28.081Z"), "attrName" : "close_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
 ```
 
-通常の **MongoDB** クエリ構文は、適切なフィールドと値をフィルタリングするために使用できます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積しているレートを読み取るには、次のようにクエリを作成します :
+通常の **MongoDB** クエリ構文は、適切なフィールドと値をフィルタリングするために
+使用できます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積し
+ているレートを読み取るには、次のようにクエリを作成します :
 
 #### クエリ :
 
@@ -524,7 +677,8 @@ db["sth_/_Motion:001_Motion"].find({attrName: "count"},{_id: 0, attrType: 0, att
 { "recvTime" : ISODate("2018-06-12T10:48:28.218Z"), "attrValue" : "29" }
 ```
 
-MongoDB クライアントを離れて、インタラクティブ・モードを終了するには、次のコマンドを実行します :
+MongoDB クライアントを離れて、インタラクティブ・モードを終了するには、次のコマン
+ドを実行します :
 
 ```console
 exit
@@ -533,59 +687,68 @@ exit
 ```console
 exit
 ```
-
-
 
 <a name="postgresql---persisting-context-data-into-a-database"></a>
+
 # PostgreSQL - コンテキスト・データをデータベースに永続化
 
-履歴データ**PostgreSQL** などの代替データベースに保存するには、PostgreSQL サーバをホストする追加のコンテナが必要です。このデータのデフォルトの Docker イメージを使用できます。PostgreSQL インスタンスは標準 `5432` ポートをリッスンしており、全体のアーキテクチャは以下のようになります :
+履歴データ**PostgreSQL** などの代替データベースに保存するには、PostgreSQL サーバ
+をホストする追加のコンテナが必要です。このデータのデフォルトの Docker イメージを
+使用できます。PostgreSQL インスタンスは標準 `5432` ポートをリッスンしており、全
+体のアーキテクチャは以下のようになります :
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-postgres.png)
 
-MongoDB コンテナには、Orion Context Broker と IoT Agent に関連するデータを保持する必要があるため、2つのデータベースを持つシステムが用意されています。
-
+MongoDB コンテナには、Orion Context Broker と IoT Agent に関連するデータを保持す
+る必要があるため、2 つのデータベースを持つシステムが用意されています。
 
 <a name="postgresql---database-server-configuration"></a>
+
 ## PostgreSQL - データベース・サーバの設定
 
 ```yaml
-  postgres-db:
-      image: postgres:latest
-      hostname: postgres-db
-      container_name: db-postgres
-      expose:
+postgres-db:
+    image: postgres:latest
+    hostname: postgres-db
+    container_name: db-postgres
+    expose:
         - "5432"
-      ports:
+    ports:
         - "5432:5432"
-      networks:
+    networks:
         - default
-      environment:
+    environment:
         - "POSTGRES_PASSWORD=password"
         - "POSTGRES_USER=postgres"
         - "POSTGRES_DB=postgres"
-
 ```
 
 `postgres-db` は、コンテナは単一のポートでリッスンします :
 
-* ポート `5432` は PostgreSQL サーバのデフォルト・ポートです。必要に応じてデータベースのデータを表示する `pgAdmin4` ツールを実行できるように公開されています
+-   ポート `5432` は PostgreSQL サーバのデフォルト・ポートです。必要に応じてデー
+    タベースのデータを表示する `pgAdmin4` ツールを実行できるように公開されていま
+    す
 
 `postgres-db` は、次に示されているように環境変数によって制御されます :
 
-| キー            | 値       | 説明                          |
-|-----------------|----------|-------------------------------|
-|POSTGRES_PASSWORD|`password`| PostgreSQL データベース・ユーザのパスワード |
-|POSTGRES_USER    |`postgres`| PostgreSQL データベース・ユーザのユーザ名 |
-|POSTGRES_DB      |`postgres`| PostgreSQL データベースの名前 |
+| キー              | 値         | 説明                                        |
+| ----------------- | ---------- | ------------------------------------------- |
+| POSTGRES_PASSWORD | `password` | PostgreSQL データベース・ユーザのパスワード |
+| POSTGRES_USER     | `postgres` | PostgreSQL データベース・ユーザのユーザ名   |
+| POSTGRES_DB       | `postgres` | PostgreSQL データベースの名前               |
 
-> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは許容される方法ですが、プロダクション環境では、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を適用することでこのリスクを回避できます。
+> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名
+> とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは
+> 許容される方法ですが、プロダクション環境では
+> 、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+> を適用することでこのリスクを回避できます。
 
 <a name="postgresql---cygnus-configuration"></a>
+
 ## PostgreSQL - Cygnus の設定
 
 ```yaml
-  cygnus:
+cygnus:
     image: fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
@@ -609,39 +772,52 @@ MongoDB コンテナには、Orion Context Broker と IoT Agent に関連する�
         - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
 ```
 
-`cygnus` コンテナは、2つのポートでリッスンしています :
+`cygnus` コンテナは、2 つのポートでリッスンしています :
 
-* Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion Context Broker からの通知をリッスンするポートです
-* Cygnus の管理ポート : `5080` は純粋にチュートリアルのアクセスのために公開されているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョニング・コマンドを作成できます
+-   Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion Context
+    Broker からの通知をリッスンするポートです
+-   Cygnus の管理ポート : `5080` は純粋にチュートリアルのアクセスのために公開さ
+    れているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョ
+    ニング・コマンドを作成できます
 
 `cygnus` コンテナは、次のように環境変数によって制御されます :
 
-| キー                          | 値           | 説明      |
-|-------------------------------|--------------|-----------|
-|CYGNUS_POSTGRESQL_HOST         |`postgres-db` | 履歴コンテキスト・データの永続化に使用される PostgreSQL サーバのホスト名 |
-|CYGNUS_POSTGRESQL_PORT         |`5432`        | PostgreSQL サーバがコマンドをリッスンするために使うポート|
-|CYGNUS_POSTGRESQL_USER         |`postgres`    | PostgreSQL データベース・ユーザのユーザ名 |
-|CYGNUS_POSTGRESQL_PASS         |`password`    | PostgreSQL データベース・ユーザのパスワード |
-|CYGNUS_LOG_LEVEL               |`DEBUG`       | Cygnus のログレベル|
-|CYGNUS_SERVICE_PORT            |`5050`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート |
-|CYGNUS_API_PORT                |`5080`        | Cygnus が操作上の理由でリッスンするポート |
-|CYGNUS_POSTGRESQL_ENABLE_CACHE |`true`        | PostgreSQL 設定内でキャッシングを有効にするためのスイッチ |
+| キー                           | 値            | 説明                                                                                 |
+| ------------------------------ | ------------- | ------------------------------------------------------------------------------------ |
+| CYGNUS_POSTGRESQL_HOST         | `postgres-db` | 履歴コンテキスト・データの永続化に使用される PostgreSQL サーバのホスト名             |
+| CYGNUS_POSTGRESQL_PORT         | `5432`        | PostgreSQL サーバがコマンドをリッスンするために使うポート                            |
+| CYGNUS_POSTGRESQL_USER         | `postgres`    | PostgreSQL データベース・ユーザのユーザ名                                            |
+| CYGNUS_POSTGRESQL_PASS         | `password`    | PostgreSQL データベース・ユーザのパスワード                                          |
+| CYGNUS_LOG_LEVEL               | `DEBUG`       | Cygnus のログレベル                                                                  |
+| CYGNUS_SERVICE_PORT            | `5050`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート |
+| CYGNUS_API_PORT                | `5080`        | Cygnus が操作上の理由でリッスンするポート                                            |
+| CYGNUS_POSTGRESQL_ENABLE_CACHE | `true`        | PostgreSQL 設定内でキャッシングを有効にするためのスイッチ                            |
 
-> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは許容される方法ですが、プロダクション環境では、`CYGNUS_POSTGRESQL_USER` と `CYGNUS_POSTGRESQL_PASS` は、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を使用して渡す必要があります。
+> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名
+> とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは
+> 許容される方法ですが、プロダクション環境では、`CYGNUS_POSTGRESQL_USER` と
+> `CYGNUS_POSTGRESQL_PASS` は
+> 、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+> を使用して渡す必要があります。
 
 <a name="postgresql---start-up"></a>
+
 ## PostgreSQL - 起動
 
-**PostgreSQL** データベースを使用してシステムを起動するには、次のコマンドを実行します :
+**PostgreSQL** データベースを使用してシステムを起動するには、次のコマンドを実行
+します :
 
 ```console
 ./services postgres
 ```
 
 <a name="checking-the-cygnus-service-health-1"></a>
+
 ### Cygnus サービスの健全性をチェック
 
-Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
+Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエスト
+を行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常
+、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :four: リクエスト :
 
@@ -661,38 +837,51 @@ curl -X GET \
 }
 ```
 
->**トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
+> **トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
 >
-> * Dokcer コンテナが動作していることを確認するには
+> -   Dokcer コンテナが動作していることを確認するには
 >
->```bash
->docker ps
->```
+> ```bash
+> docker ps
+> ```
 >
->いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていない場合は、必要に応じてコンテナを再起動できます。
-
+> いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていな
+> い場合は、必要に応じてコンテナを再起動できます。
 
 <a name="generating-context-data-1"></a>
+
 ### コンテキスト・データの生成
 
-このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要があります。ダミー IoT センサを使用してこれを行うことができます。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**スマート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって行うことができます。デバイスからの測定値のストリームは、同じページに表示されます :
+このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要が
+あります。ダミー IoT センサを使用してこれを行うことができます
+。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**ス
+マート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロ
+ップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって
+行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
+:
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
 
-
-
 <a name="subscribing-to-context-changes-1"></a>
+
 ### コンテキスト変更のサブスクライブ
 
-動的コンテキスト・システムが起動したら、**Cygnus** にコンテキストの変更を通知する必要があります。
+動的コンテキスト・システムが起動したら、**Cygnus** にコンテキストの変更を通知す
+る必要があります。
 
-これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエストを行うことによって行われます。
+これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエ
+ストを行うことによって行われます。
 
-* `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィルタリングして、接続されている IoT センサからの測定値だけをリッスンするために使用します。センサがこれらの設定を使用してプロビジョニングされているためです
-* リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が Cygnus に通知されるようにします
-* 通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
-* Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
-* `throttling` 値は、変更がサンプリングされる割合を定義します
+-   `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィ
+    ルタリングして、接続されている IoT センサからの測定値だけをリッスンするため
+    に使用します。センサがこれらの設定を使用してプロビジョニングされているためで
+    す
+-   リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が
+    Cygnus に通知されるようにします
+-   通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
+-   Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため
+    、`attrsFormat=legacy` が必要です
+-   `throttling` 値は、変更がサンプリングされる割合を定義します
 
 #### :five: リクエスト :
 
@@ -721,13 +910,18 @@ curl -iX POST \
 }'
 ```
 
-ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブスクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは **201 - Created** です。
-
+ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブ
+スクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは
+**201 - Created** です。
 
 <a name="postgresql---reading-data-from-a-database"></a>
+
 ## PostgreSQL - データベースからデータを読み込む
 
-コマンドラインから PostgreSQL データを読み取るには、`postgres` クライアントにアクセスする必要があります。これを行うには、コマンドライン・プロンプトを表示するために接続文字列を指定した `postgresql-client` イメージのインタラクティブなインスタンスを実行します :
+コマンドラインから PostgreSQL データを読み取るには、`postgres` クライアントにア
+クセスする必要があります。これを行うには、コマンドライン・プロンプトを表示するた
+めに接続文字列を指定した `postgresql-client` イメージのインタラクティブなインス
+タンスを実行します :
 
 ```console
 docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
@@ -735,6 +929,7 @@ docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
 ```
 
 <a name="show-available-databases-on-the-postgresql-server"></a>
+
 ### PostgreSQL サーバ上で利用可能なデータベースを表示
 
 使用可能なデータベースのリストを表示するには、次のように文を実行します :
@@ -758,8 +953,8 @@ docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
 (3 rows)
 ```
 
-結果には、2つのテンプレート・データベース `template0` と `template1` と、Dokcer コンテナが起動したときの `postgres` データベースの設定が含まれています。
-
+結果には、2 つのテンプレート・データベース `template0` と `template1` と、Dokcer
+コンテナが起動したときの `postgres` データベースの設定が含まれています。
 
 使用可能なスキーマのリストを表示するには、次のように文を実行します :
 
@@ -780,15 +975,16 @@ docker run -it --rm  --network fiware_default jbergknoff/postgresql-client \
 (2 rows)
 ```
 
-
-Orion Context Broker に Cygnus をサブスクリプションした結果、`openiot` という新しいスキーマが作成されました。スキーマの名前は `fiware-service` ヘッダに一致します。したがって、`openiot` は、IoT デバイスの履歴コンテキストを保持します。
-
+Orion Context Broker に Cygnus をサブスクリプションした結果、`openiot` という新
+しいスキーマが作成されました。スキーマの名前は `fiware-service` ヘッダに一致しま
+す。したがって、`openiot` は、IoT デバイスの履歴コンテキストを保持します。
 
 <a name="read-historical-context-from-the-postgresql-server"></a>
+
 ### PostgreSQL サーバから履歴コンテキストを読み込む
 
-Docker コンテナをネットワーク内で実行すると、実行中のデータベースに関する情報を取得することができます。
-
+Docker コンテナをネットワーク内で実行すると、実行中のデータベースに関する情報を
+取得することができます。
 
 #### クエリ :
 
@@ -810,7 +1006,8 @@ ORDER BY table_schema,table_name;
 (3 rows)
 ```
 
-`table_schema` は、コンテキスト・データとともに提供される `fiware-service` ヘッダと一致します。
+`table_schema` は、コンテキスト・データとともに提供される `fiware-service` ヘッ
+ダと一致します。
 
 テーブル内のデータを読み込むには、次のように select 文を実行します :
 
@@ -837,7 +1034,9 @@ SELECT * FROM openiot.motion_001_motion limit 10;
  1528803047545 | 2018-06-12T11:30:47.545Z | /
 ```
 
-通常の **PostgreSQL** クエリ構文を使用して、適切なフィールドと値をフィルタリングすることができます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積しているレートを読み取るには、次のようにクエリを作成します :
+通常の **PostgreSQL** クエリ構文を使用して、適切なフィールドと値をフィルタリング
+することができます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が
+蓄積しているレートを読み取るには、次のようにクエリを作成します :
 
 #### クエリ :
 
@@ -863,65 +1062,75 @@ SELECT recvtime, attrvalue FROM openiot.motion_001_motion WHERE attrname ='count
 (10 rows)
 ```
 
-Postgres クライアントを終了してインタラクティブ・モードを終了するには、次のコマンドを実行します :
+Postgres クライアントを終了してインタラクティブ・モードを終了するには、次のコマ
+ンドを実行します :
 
 ```console
 \q
 ```
- You will then return to the commmand line.
 
-
-
+You will then return to the commmand line.
 
 <a name="mysql---persisting-context-data-into-a-database"></a>
+
 # MySQL - コンテキスト・データをデータベースに永続化
 
-同様に、履歴コンテキスト・データ**MySQL** に永続化するには、MySQL サーバをホストする追加のコンテナが必要になります。このデータのデフォルトの Docker イメージも使用できます。MySQL インスタンスは標準 `3306` ポートでリッスンしており、全体のアーキテクチャは以下のようになります :
+同様に、履歴コンテキスト・データ**MySQL** に永続化するには、MySQL サーバをホスト
+する追加のコンテナが必要になります。このデータのデフォルトの Docker イメージも使
+用できます。MySQL インスタンスは標準 `3306` ポートでリッスンしており、全体のアー
+キテクチャは以下のようになります :
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mysql.png)
 
-MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデータを保持する必要があるため、2つのデータベースを持つシステムがあります。
-
+MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデータを保持する
+必要があるため、2 つのデータベースを持つシステムがあります。
 
 <a name="mysql---database-server-configuration"></a>
+
 ## MySQL - データベース・サーバの設定
 
 ```yaml
-  mysql-db:
-      restart: always
-      image: mysql:5.7
-      hostname: mysql-db
-      container_name: db-mysql
-      expose:
+mysql-db:
+    restart: always
+    image: mysql:5.7
+    hostname: mysql-db
+    container_name: db-mysql
+    expose:
         - "3306"
-      ports:
+    ports:
         - "3306:3306"
-      networks:
+    networks:
         - default
-      environment:
+    environment:
         - "MYSQL_ROOT_PASSWORD=123"
         - "MYSQL_ROOT_HOST=%"
 ```
 
-> :information_source: **注:** デフォルトの `root` ユーザを使用し、このような環境変数にパスワードを表示することはセキュリティ上のリスクです。これはチュートリアルでは受け入れられるものですが、本番環境では別のユーザを設定して [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を適用することでこのリスクを回避できます。
+> :information_source: **注:** デフォルトの `root` ユーザを使用し、このような環
+> 境変数にパスワードを表示することはセキュリティ上のリスクです。これはチュートリ
+> アルでは受け入れられるものですが、本番環境では別のユーザを設定して
+> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+> を適用することでこのリスクを回避できます。
 
 `mysql-db` コンテナは、単一ポートで待機しています :
 
-* ポート `3306` は MySQL サーバのデフォルト・ポートです。これは公開されているので、必要に応じて他のデータベース・ツールを実行してデータを表示することもできます
+-   ポート `3306` は MySQL サーバのデフォルト・ポートです。これは公開されている
+    ので、必要に応じて他のデータベース・ツールを実行してデータを表示することもで
+    きます
 
 `mysql-db` コンテナは、次のように環境変数によって制御されます :
 
-| キー              | 値       | 説明                                     |
-|-------------------|----------|------------------------------------------|
-|MYSQL_ROOT_PASSWORD|`123`     | MySQL `root` アカウントに設定されているパスワードを指定します |
-|MYSQL_ROOT_HOST    |`postgres`| デフォルトでは、MySQL によって `root'@'localhost` アカウントが作成されます。このアカウントはコンテナ内からのみ接続できます。この環境変数を設定すると、他のホストからのルート接続が可能になります |
-
+| キー                | 値         | 説明                                                                                                                                                                                             |
+| ------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| MYSQL_ROOT_PASSWORD | `123`      | MySQL `root` アカウントに設定されているパスワードを指定します                                                                                                                                    |
+| MYSQL_ROOT_HOST     | `postgres` | デフォルトでは、MySQL によって `root'@'localhost` アカウントが作成されます。このアカウントはコンテナ内からのみ接続できます。この環境変数を設定すると、他のホストからのルート接続が可能になります |
 
 <a name="mysql---cygnus-configuration"></a>
-## MySQL - Cygnusの設定
+
+## MySQL - Cygnus の設定
 
 ```yaml
-  cygnus:
+cygnus:
     image: fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
@@ -944,40 +1153,51 @@ MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデ�
         - "CYGNUS_API_PORT=5080"
 ```
 
-> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは許容される方法ですが、プロダクション環境では、`CYGNUS_MYSQL_USER` と `CYGNUS_MYSQL_PASS` は、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/) を使用して渡す必要があります。
+> :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名
+> とパスワードを渡すことはセキュリティ上のリスクです。 これはチュートリアルでは
+> 許容される方法ですが、プロダクション環境では、`CYGNUS_MYSQL_USER` と
+> `CYGNUS_MYSQL_PASS` は
+> 、[Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+> を使用して渡す必要があります。
 
-`cygnus` コンテナは、2つのポートでリッスンしています :
+`cygnus` コンテナは、2 つのポートでリッスンしています :
 
-* Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion context broker からの通知をリッスンするポートです
-* Cygnus の管理ポート : `5080`は、純粋にチュートリアル・アクセスのために公開されているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョニング・コマンドを作成できます
-
+-   Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion context
+    broker からの通知をリッスンするポートです
+-   Cygnus の管理ポート : `5080`は、純粋にチュートリアル・アクセスのために公開さ
+    れているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョ
+    ニング・コマンドを作成できます
 
 `cygnus` コンテナは、図のように環境変数によって制御されます :
 
-| キー                          | 値           | 説明      |
-|-------------------------------|--------------|-----------|
-|CYGNUS_MYSQL_HOST              |`mysql-db`    | Hostname of the MySQL server used to persist historical context data |
-|CYGNUS_MYSQL_PORT              |`3306`        | Port that the MySQL server uses to listen to commands |
-|CYGNUS_MYSQL_USER              |`root`        | Username for the MySQL database user |
-|CYGNUS_MYSQL_PASS              |`123`         | Password for the MySQL database user |
-|CYGNUS_LOG_LEVEL               |`DEBUG`       | The logging level for Cygnus |
-|CYGNUS_SERVICE_PORT            |`5050`        | Notification Port that Cygnus listens when subcribing to context data changes|
-|CYGNUS_API_PORT                |`5080`        | Port that Cygnus listens on for operational reasons |
-
+| キー                | 値         | 説明                                                                          |
+| ------------------- | ---------- | ----------------------------------------------------------------------------- |
+| CYGNUS_MYSQL_HOST   | `mysql-db` | Hostname of the MySQL server used to persist historical context data          |
+| CYGNUS_MYSQL_PORT   | `3306`     | Port that the MySQL server uses to listen to commands                         |
+| CYGNUS_MYSQL_USER   | `root`     | Username for the MySQL database user                                          |
+| CYGNUS_MYSQL_PASS   | `123`      | Password for the MySQL database user                                          |
+| CYGNUS_LOG_LEVEL    | `DEBUG`    | The logging level for Cygnus                                                  |
+| CYGNUS_SERVICE_PORT | `5050`     | Notification Port that Cygnus listens when subcribing to context data changes |
+| CYGNUS_API_PORT     | `5080`     | Port that Cygnus listens on for operational reasons                           |
 
 <a name="mysql---start-up"></a>
+
 ## MySQL - 起動
 
-**MySQL** データベースを使用してシステムを起動するには、次のコマンドを実行します :
+**MySQL** データベースを使用してシステムを起動するには、次のコマンドを実行します
+:
 
 ```console
 ./services mysql
 ```
 
 <a name="checking-the-cygnus-service-health-2"></a>
+
 ### Cygnus サービスの健全性をチェック
 
-Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
+Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエスト
+を行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常
+、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :six: リクエスト :
 
@@ -997,37 +1217,51 @@ curl -X GET \
 }
 ```
 
->**トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
+> **トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
 >
-> * Dokcer コンテナが動作していることを確認するには :
+> -   Dokcer コンテナが動作していることを確認するには :
 >
->```bash
->docker ps
->```
+> ```bash
+> docker ps
+> ```
 >
->いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていない場合は、必要に応じてコンテナを再起動できます。
-
+> いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていな
+> い場合は、必要に応じてコンテナを再起動できます。
 
 <a name="generating-context-data-2"></a>
+
 ### コンテキスト・データの生成
 
-このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要があります。ダミー IoT センサを使用してこれを行うことができます。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**スマート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって行うことができます。デバイスからの測定値のストリームは、同じページに表示されます :
+このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要が
+あります。ダミー IoT センサを使用してこれを行うことができます
+。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**ス
+マート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロ
+ップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって
+行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
+:
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
 
-
 <a name="subscribing-to-context-changes-2"></a>
+
 ### コンテキスト変更のサブスクライブ
 
-動的コンテキスト・システムが起動したら、Cygnus にコンテキストの変更を通知する必要があります。
+動的コンテキスト・システムが起動したら、Cygnus にコンテキストの変更を通知する必
+要があります。
 
-これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエストを行うことによって行われます。
+これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエ
+ストを行うことによって行われます。
 
-* `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィルタリングして、接続されている IoT センサからの測定値だけをリッスンするために使用します。センサがこれらの設定を使用してプロビジョニングされているためです
-* リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が Cygnus に通知されるようにします
-* 通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
-* Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
-* `throttling` 値は、変更がサンプリングされる割合を定義します
+-   `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィ
+    ルタリングして、接続されている IoT センサからの測定値だけをリッスンするため
+    に使用します。センサがこれらの設定を使用してプロビジョニングされているためで
+    す
+-   リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が
+    Cygnus に通知されるようにします
+-   通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
+-   Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため
+    、`attrsFormat=legacy` が必要です
+-   `throttling` 値は、変更がサンプリングされる割合を定義します
 
 #### :seven: リクエスト :
 
@@ -1056,19 +1290,24 @@ curl -iX POST \
 }'
 ```
 
-ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブスクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは **201 - Created** です。
-
+ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブ
+スクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは
+**201 - Created** です。
 
 <a name="mysql---reading-data-from-a-database"></a>
+
 ## MySQL - データベースからデータを読み込む
 
-コマンドラインから MySQL データを読み込むには、`mysql` クライアントにアクセスする必要があります。これを行うには、コマンドライン・プロンプトを表示するために接続文字列を指定した `mysql` イメージのインタラクティブなインスタンスを実行します :
+コマンドラインから MySQL データを読み込むには、`mysql` クライアントにアクセスす
+る必要があります。これを行うには、コマンドライン・プロンプトを表示するために接続
+文字列を指定した `mysql` イメージのインタラクティブなインスタンスを実行します :
 
 ```console
 docker run -it --rm  --network fiware_default mysql mysql -h mysql-db -P 3306  -u root -p123
 ```
 
 <a name="show-available-databases-on-the-mysql-server"></a>
+
 ### MySQL サーバ上で利用可能なデータベースを表示
 
 使用可能なデータベースのリストを表示するには、次のように文を実行します :
@@ -1094,7 +1333,6 @@ SHOW DATABASES;
 5 rows in set (0.00 sec)
 ```
 
-
 使用可能なスキーマのリストを表示するには、次のように文を実行します :
 
 #### クエリ :
@@ -1118,15 +1356,16 @@ SHOW SCHEMAS;
 5 rows in set (0.00 sec)
 ```
 
-
-Orgn Context Broker に Cygnus をサブスクリプションした結果、`openiot` という新しいスキーマが作成されました。スキーマの名前は `fiware-service` ヘッダに一致します。したがって、`openiot` は、IoT デバイスの履歴コンテキストを保持します。
-
+Orgn Context Broker に Cygnus をサブスクリプションした結果、`openiot` という新し
+いスキーマが作成されました。スキーマの名前は `fiware-service` ヘッダに一致します
+。したがって、`openiot` は、IoT デバイスの履歴コンテキストを保持します。
 
 <a name="read-historical-context-from-the-mysql-server"></a>
+
 ### MySQL サーバから履歴コンテキストを読み込む
 
-Docker コンテナをネットワーク内で実行すると、実行中のデータベースに関する情報を取得することができます。
-
+Docker コンテナをネットワーク内で実行すると、実行中のデータベースに関する情報を
+取得することができます。
 
 #### クエリ :
 
@@ -1145,7 +1384,8 @@ SHOW tables FROM openiot;
 (3 rows)
 ```
 
-`table_schema` は、コンテキスト・データとともに提供される `fiware-service` ヘッダと一致します。
+`table_schema` は、コンテキスト・データとともに提供される `fiware-service` ヘッ
+ダと一致します。
 
 テーブル内のデータを読み込むには、次のように select 文を実行します :
 
@@ -1174,7 +1414,9 @@ SELECT * FROM openiot.Motion_001_Motion limit 10;
 +---------------+-------------------------+-------------------+------------+------------+-------------+--------------+--------------------------+------------------------------------------------------------------------------+
 ```
 
-通常の **MySQL** クエリ構文を使用して、適切なフィールドと値をフィルタリングすることができます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積しているレートを読み取るには、次のようにクエリを作成します :
+通常の **MySQL** クエリ構文を使用して、適切なフィールドと値をフィルタリングする
+ことができます。たとえば、`id=Motion:001_Motion` の**モーション・センサ**が蓄積
+しているレートを読み取るには、次のようにクエリを作成します :
 
 #### クエリ :
 
@@ -1202,116 +1444,126 @@ SELECT recvtime, attrvalue FROM openiot.Motion_001_Motion WHERE attrname ='count
 10 rows in set (0.00 sec)
 ```
 
-MySQL クライアントを終了し、インタラクティブ・モードを終了するには、次のコマンドを実行します :
+MySQL クライアントを終了し、インタラクティブ・モードを終了するには、次のコマンド
+を実行します :
 
 ```console
 \q
 ```
+
 その後、コマンドラインに戻ります。
 
-
 <a name="multi-agent---persisting-context-data-into-a-multiple-databases"></a>
+
 # マルチ・エージェント - 複数のデータベースへのコンテキスト・データの永続化
 
-また、複数のデータベースを同時に設定するように Cygnus を設定することもできます。以前の3つの例のアーキテクチャを組み合わせて、複数のポートでリッスンするように cygnus を構成することができます
-
+また、複数のデータベースを同時に設定するように Cygnus を設定することもできます。
+以前の 3 つの例のアーキテクチャを組み合わせて、複数のポートでリッスンするように
+cygnus を構成することができます
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-all-three.png)
 
-現在、データ永続化のための PostgreSQL と MySQLと、データ永続化と Orion Context Broker と IoT Agent に関連するデータ永続化の両方のための MongoDB という 3つのデータベースのシステムを持っています。
+現在、データ永続化のための PostgreSQL と MySQL と、データ永続化と Orion Context
+Broker と IoT Agent に関連するデータ永続化の両方のための MongoDB という 3 つのデ
+ータベースのシステムを持っています。
 
 <a name="multi-agent---cygnus-configuration-for-multiple-databases"></a>
+
 ## マルチ・エージェント - 複数のデータベースのための Cygnus 設定
 
 ```yaml
-  cygnus:
+cygnus:
     image: fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
-      - mongo-db
-      - mysql-db
-      - postgres-db
+        - mongo-db
+        - mysql-db
+        - postgres-db
     networks:
-      - default
+        - default
     expose:
-      - "5080"
-      - "5081"
-      - "5084"
+        - "5080"
+        - "5081"
+        - "5084"
     ports:
-      - "5050:5050"
-      - "5051:5051"
-      - "5054:5054"
-      - "5080:5080"
-      - "5081:5081"
-      - "5084:5084"
+        - "5050:5050"
+        - "5051:5051"
+        - "5054:5054"
+        - "5080:5080"
+        - "5081:5081"
+        - "5084:5084"
     environment:
-      - "CYGNUS_MULTIAGENT=true"
-      - "CYGNUS_POSTGRESQL_HOST=postgres-sb"
-      - "CYGNUS_POSTGRESQL_PORT=5432"
-      - "CYGNUS_POSTGRESQL_USER=postgres"
-      - "CYGNUS_POSTGRESQL_PASS=password"
-      - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
-      - "CYGNUS_MYSQL_HOST=mysql-db"
-      - "CYGNUS_MYSQL_PORT=3306"
-      - "CYGNUS_MYSQL_USER=root"
-      - "CYGNUS_MYSQL_PASS=123"
-      - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_MULTIAGENT=true"
+        - "CYGNUS_POSTGRESQL_HOST=postgres-sb"
+        - "CYGNUS_POSTGRESQL_PORT=5432"
+        - "CYGNUS_POSTGRESQL_USER=postgres"
+        - "CYGNUS_POSTGRESQL_PASS=password"
+        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
+        - "CYGNUS_MYSQL_HOST=mysql-db"
+        - "CYGNUS_MYSQL_PORT=3306"
+        - "CYGNUS_MYSQL_USER=root"
+        - "CYGNUS_MYSQL_PASS=123"
+        - "CYGNUS_LOG_LEVEL=DEBUG"
 ```
 
+マルチ・エージェントのモードでは、`cygnus` コンテナは複数のポートで待機していま
+す :
 
-
-マルチ・エージェントのモードでは、`cygnus` コンテナは複数のポートで待機しています :
-
-* このサービスは、Orion Context Broker からの通知用ポート `5050-5055` でリッスンします
-* 管理ポート `5080-5085` はチュートリアル・アクセスのためだけに公開されているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョニング・コマンドを作成できます
+-   このサービスは、Orion Context Broker からの通知用ポート `5050-5055` でリッス
+    ンします
+-   管理ポート `5080-5085` はチュートリアル・アクセスのためだけに公開されている
+    ため、cUrl または Postman は同じネットワークの一部ではなくプロビジョニング・
+    コマンドを作成できます
 
 以下に、デフォルトのポート・マッピングを示します :
 
-| sink       | port | admin_port |
-|-----------:|-----:|-----------:|
-| mysql      | 5050 | 5080       |
-| mongo      | 5051 | 5081       |
-| ckan       | 5052 | 5082       |
-| hdfs       | 5053 | 5083       |
-| postgresql | 5054 | 5084       |
-| cartodb    | 5055 | 5085       |
+|       sink | port | admin_port |
+| ---------: | ---: | ---------: |
+|      mysql | 5050 |       5080 |
+|      mongo | 5051 |       5081 |
+|       ckan | 5052 |       5082 |
+|       hdfs | 5053 |       5083 |
+| postgresql | 5054 |       5084 |
+|    cartodb | 5055 |       5085 |
 
-CKAN、HDFS、または CartoDB データを保持していないため、これらのポートを開く必要はありません。
-
-
-
+CKAN、HDFS、または CartoDB データを保持していないため、これらのポートを開く必要
+はありません。
 
 `cygnus` コンテナは、次のように環境変数によって制御されます :
 
-| キー                          | 値           | 説明      |
-|-------------------------------|--------------|-----------|
-|CYGNUS_MULTIAGENT              |`true`        | データを複数のデータベースに保持するかどうか |
-|CYGNUS_MONGO_HOSTS             |`mongo-db:27017` | Cygnus が履歴コンテキスト・データを保持するために接続する MongoDB サーバのカンマ区切りリスト|
-|CYGNUS_POSTGRESQL_HOST         |`postgres-db` | 履歴コンテキスト・データの永続化に使用される PostgreSQL サーバのホスト名 |
-|CYGNUS_POSTGRESQL_PORT         |`5432`        | PostgreSQL サーバがコマンドをリッスンするために使うポート |
-|CYGNUS_POSTGRESQL_USER         |`postgres`    | PostgreSQL データベース・ユーザのユーザ名|
-|CYGNUS_POSTGRESQL_PASS         |`password`    | PostgreSQL データベース・ユーザのパスワード |
-|CYGNUS_MYSQL_HOST              |`mysql-db`    | 履歴コンテキスト・データの永続化に使用される MySQL サーバのホスト名 |
-|CYGNUS_MYSQL_PORT              |`3306`        | MySQL サーバがコマンドをリッスンするために使用するポート |
-|CYGNUS_MYSQL_USER              |`root`        | MySQL データベース・ユーザのユーザ名 |
-|CYGNUS_MYSQL_PASS              |`123`         | MySQL データベース・ユーザのパスワード |
-|CYGNUS_LOG_LEVEL               |`DEBUG`       | Cygnus のログレベル |
-
+| キー                   | 値               | 説明                                                                                         |
+| ---------------------- | ---------------- | -------------------------------------------------------------------------------------------- |
+| CYGNUS_MULTIAGENT      | `true`           | データを複数のデータベースに保持するかどうか                                                 |
+| CYGNUS_MONGO_HOSTS     | `mongo-db:27017` | Cygnus が履歴コンテキスト・データを保持するために接続する MongoDB サーバのカンマ区切りリスト |
+| CYGNUS_POSTGRESQL_HOST | `postgres-db`    | 履歴コンテキスト・データの永続化に使用される PostgreSQL サーバのホスト名                     |
+| CYGNUS_POSTGRESQL_PORT | `5432`           | PostgreSQL サーバがコマンドをリッスンするために使うポート                                    |
+| CYGNUS_POSTGRESQL_USER | `postgres`       | PostgreSQL データベース・ユーザのユーザ名                                                    |
+| CYGNUS_POSTGRESQL_PASS | `password`       | PostgreSQL データベース・ユーザのパスワード                                                  |
+| CYGNUS_MYSQL_HOST      | `mysql-db`       | 履歴コンテキスト・データの永続化に使用される MySQL サーバのホスト名                          |
+| CYGNUS_MYSQL_PORT      | `3306`           | MySQL サーバがコマンドをリッスンするために使用するポート                                     |
+| CYGNUS_MYSQL_USER      | `root`           | MySQL データベース・ユーザのユーザ名                                                         |
+| CYGNUS_MYSQL_PASS      | `123`            | MySQL データベース・ユーザのパスワード                                                       |
+| CYGNUS_LOG_LEVEL       | `DEBUG`          | Cygnus のログレベル                                                                          |
 
 <a name="multi-agent---start-up"></a>
+
 ## マルチ・エージェント - 起動
 
-**複数**のデータベースを使用してシステムを起動するには、次のコマンドを実行します :
+**複数**のデータベースを使用してシステムを起動するには、次のコマンドを実行します
+:
 
 ```console
 ./services multiple
 ```
 
 <a name="checking-the-cygnus-service-health-3"></a>
+
 ### Cygnus サービスの健全性をチェック
 
-Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエストを行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしているためです。
+Cygnus が動作したら、公開されている `CYGNUS_API_PORT` ポートへの HTTP リクエスト
+を行うことでステータスを確認できます。レスポンスがブランクの場合、これは通常
+、Cygnus が実行されていないか、別のポートでリッスンしているためです。
 
 #### :eight: リクエスト :
 
@@ -1331,51 +1583,65 @@ curl -X GET \
 }
 ```
 
->**トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
+> **トラブルシューティング** : レスポンスが空白の場合はどうなりますか？
 >
-> * Dokcer コンテナが動作していることを確認するには :
+> -   Dokcer コンテナが動作していることを確認するには :
 >
->```bash
->docker ps
->```
+> ```bash
+> docker ps
+> ```
 >
->いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていない場合は、必要に応じてコンテナを再起動できます。
-
+> いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていな
+> い場合は、必要に応じてコンテナを再起動できます。
 
 <a name="generating-context-data-3"></a>
+
 ### コンテキスト・データの生成
 
-このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要があります。ダミー IoT センサを使用してこれを行うことができます。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**スマート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって行うことができます。デバイスからの測定値のストリームは、同じページに表示されます :
+このチュートリアルでは、コンテキストが定期的に更新されるシステムを監視する必要が
+あります。ダミー IoT センサを使用してこれを行うことができます
+。`http://localhost:3000/device/monitor` でデバイス・モニタのページを開き、**ス
+マート・ドア**のロックを解除し、**スマート・ランプ**をオンにします。これは、ドロ
+ップ・ダウン・リストから適切なコマンドを選択し、`send` ボタンを押すことによって
+行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
+:
 
 ![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
 
-
 <a name="subscribing-to-context-changes-3"></a>
+
 ### コンテキスト変更のサブスクライブ
 
-動的コンテキスト・システムが起動したら、**Cygnus** にコンテキストの変更を通知する必要があります。
+動的コンテキスト・システムが起動したら、**Cygnus** にコンテキストの変更を通知す
+る必要があります。
 
-これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエストを行うことによって行われます。
+これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエ
+ストを行うことによって行われます。
 
-* `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィルタリングして、接続されている IoT センサからの測定値だけをリッスンするために使用します
-* 通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
-* Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため、`attrsFormat=legacy` が必要です
-* `throttling` 値は、変更がサンプリングされる割合を定義します
+-   `fiware-service` と `fiware-servicepath` ヘッダは、サブスクリプションをフィ
+    ルタリングして、接続されている IoT センサからの測定値だけをリッスンするため
+    に使用します
+-   通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
+-   Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため
+    、`attrsFormat=legacy` が必要です
+-   `throttling` 値は、変更がサンプリングされる割合を定義します
 
-**マルチ・エージェント**・モードで実行している場合、各サブスクリプションの通知 `url` は、指定されたデータベースのデフォルトと一致する必要があります。
+**マルチ・エージェント**・モードで実行している場合、各サブスクリプションの通知
+`url` は、指定されたデータベースのデフォルトと一致する必要があります。
 
 デフォルトのポートマッピングを以下に示します :
 
-| sink       | port |
-|-----------:|-----:|
-| mysql      | 5050 |
-| mongo      | 5051 |
-| ckan       | 5052 |
-| hdfs       | 5053 |
+|       sink | port |
+| ---------: | ---: |
+|      mysql | 5050 |
+|      mongo | 5051 |
+|       ckan | 5052 |
+|       hdfs | 5053 |
 | postgresql | 5054 |
-| cartodb    | 5055 |
+|    cartodb | 5055 |
 
-このサブスクリプションはポート `5050` を使用しているため、コンテキスト・データは最終的に、*MySQL* データベースに永続化されます。
+このサブスクリプションはポート `5050` を使用しているため、コンテキスト・データは
+最終的に、_MySQL_ データベースに永続化されます。
 
 #### :nine: リクエスト :
 
@@ -1404,18 +1670,25 @@ curl -iX POST \
 }'
 ```
 
-ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブスクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは **201 - Created** です。
+ご覧のとおり、コンテキスト・データを保持するために使用されるデータベースは、サブ
+スクリプションの詳細に影響を与えません。各データベースで同じです。レスポンスは
+**201 - Created** です。
 
 <a name="multi-agent---reading-persisted-data"></a>
+
 ## マルチ・エージェント - 永続化データの読み込み
 
-添付されたデータベースから永続化されたデータを読み込むには、このチュートリアルの前のセクションを参照してください。
+添付されたデータベースから永続化されたデータを読み込むには、このチュートリアルの
+前のセクションを参照してください。
 
 <a name="next-steps"></a>
+
 # 次のステップ
 
-高度な機能を追加することで、アプリケーションに複雑さを加える方法を知りたいですか？このシリーズの[他のチュートリアル](https://www.letsfiware.jp/fiware-tutorials)を読むことで見つけることができます :
-
+高度な機能を追加することで、アプリケーションに複雑さを加える方法を知りたいですか
+？このシリーズ
+の[他のチュートリアル](https://www.letsfiware.jp/fiware-tutorials)を読むことで見
+つけることができます :
 
 ---
 
