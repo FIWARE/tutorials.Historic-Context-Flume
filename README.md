@@ -327,17 +327,16 @@ The `cygnus` container is listening on two ports:
 
 The `cygnus` container is driven by environment variables as shown:
 
-| Key                 | Value            | Description                                                                                           |
-| ------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
+| Key                 | Value            | Description                                                                                          |
+| ------------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
 | CYGNUS_MONGO_HOSTS  | `mongo-db:27017` | Comma separated list of MongoDB servers which Cygnus will contact to persist historical context data |
-| CYGNUS_LOG_LEVEL    | `DEBUG`          | The logging level for Cygnus                                                                          |
-| CYGNUS_SERVICE_PORT | `5050`           | Notification Port that Cygnus listens when subscribing to context data changes                        |
-| CYGNUS_API_PORT     | `5080`           | Port that Cygnus listens on for operational reasons                                                   |
+| CYGNUS_LOG_LEVEL    | `DEBUG`          | The logging level for Cygnus                                                                         |
+| CYGNUS_SERVICE_PORT | `5050`           | Notification Port that Cygnus listens when subscribing to context data changes                       |
+| CYGNUS_API_PORT     | `5080`           | Port that Cygnus listens on for operational reasons                                                  |
 
 ## MongoDB - Start up
 
-To start the system with a **MongoDB** database only, run the following
-command:
+To start the system with a **MongoDB** database only, run the following command:
 
 ```console
 ./services mongodb
@@ -1450,19 +1449,19 @@ those ports.
 
 The `cygnus` container is driven by environment variables as shown:
 
-| Key                    | Value            | Description                                                                                           |
-| ---------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
-| CYGNUS_MULTIAGENT      | `true`           | Whether to persist data into multiple databases.                                                      |
+| Key                    | Value            | Description                                                                                          |
+| ---------------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
+| CYGNUS_MULTIAGENT      | `true`           | Whether to persist data into multiple databases.                                                     |
 | CYGNUS_MONGO_HOSTS     | `mongo-db:27017` | Comma separated list of MongoDB servers which Cygnus will contact to persist historical context data |
-| CYGNUS_POSTGRESQL_HOST | `postgres-db`    | Hostname of the PostgreSQL server used to persist historical context data                             |
-| CYGNUS_POSTGRESQL_PORT | `5432`           | Port that the PostgreSQL server uses to listen to commands                                            |
-| CYGNUS_POSTGRESQL_USER | `postgres`       | Username for the PostgreSQL database user                                                             |
-| CYGNUS_POSTGRESQL_PASS | `password`       | Password for the PostgreSQL database user                                                             |
-| CYGNUS_MYSQL_HOST      | `mysql-db`       | Hostname of the MySQL server used to persist historical context data                                  |
-| CYGNUS_MYSQL_PORT      | `3306`           | Port that the MySQL server uses to listen to commands                                                 |
-| CYGNUS_MYSQL_USER      | `root`           | Username for the MySQL database user                                                                  |
-| CYGNUS_MYSQL_PASS      | `123`            | Password for the MySQL database user                                                                  |
-| CYGNUS_LOG_LEVEL       | `DEBUG`          | The logging level for Cygnus                                                                          |
+| CYGNUS_POSTGRESQL_HOST | `postgres-db`    | Hostname of the PostgreSQL server used to persist historical context data                            |
+| CYGNUS_POSTGRESQL_PORT | `5432`           | Port that the PostgreSQL server uses to listen to commands                                           |
+| CYGNUS_POSTGRESQL_USER | `postgres`       | Username for the PostgreSQL database user                                                            |
+| CYGNUS_POSTGRESQL_PASS | `password`       | Password for the PostgreSQL database user                                                            |
+| CYGNUS_MYSQL_HOST      | `mysql-db`       | Hostname of the MySQL server used to persist historical context data                                 |
+| CYGNUS_MYSQL_PORT      | `3306`           | Port that the MySQL server uses to listen to commands                                                |
+| CYGNUS_MYSQL_USER      | `root`           | Username for the MySQL database user                                                                 |
+| CYGNUS_MYSQL_PASS      | `123`            | Password for the MySQL database user                                                                 |
+| CYGNUS_LOG_LEVEL       | `DEBUG`          | The logging level for Cygnus                                                                         |
 
 ## Multi-Agent - Start up
 
