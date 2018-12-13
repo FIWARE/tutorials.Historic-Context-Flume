@@ -1303,7 +1303,7 @@ curl -iX POST \
 文字列を指定した `mysql` イメージのインタラクティブなインスタンスを実行します :
 
 ```console
-docker run -it --rm  --network fiware_default mysql mysql -h mysql-db -P 3306  -u root -p123
+docker exec -it  db-mysql mysql -h mysql-db -P 3306  -u root -p123
 ```
 
 <a name="show-available-databases-on-the-mysql-server"></a>

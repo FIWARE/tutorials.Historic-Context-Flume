@@ -1226,7 +1226,7 @@ client, to do this, run an interactive instance of the `mysql` image supplying
 the connection string as shown to obtain a command-line prompt:
 
 ```console
-docker run -it --rm  --network fiware_default mysql mysql -h mysql-db -P 3306  -u root -p123
+docker exec -it  db-mysql mysql -h mysql-db -P 3306  -u root -p123
 ```
 
 ### Show Available Databases on the MySQL server
