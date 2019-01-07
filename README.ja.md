@@ -22,7 +22,10 @@ IoT センサをアクティブにし、これらのセンサからの測定値�
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
 
-# 内容
+## 内容
+
+<details>
+<summary>詳細 <b>(クリックして拡大)</b></summary>
 
 -   [データの永続性](#data-persistence)
 -   [アーキテクチャ](#architecture)
@@ -68,6 +71,8 @@ IoT センサをアクティブにし、これらのセンサからの測定値�
         -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-3)
     -   [マルチ・エージェント - 永続化データの読み込み](#multi-agent---reading-persisted-data)
 -   [次のステップ](#next-steps)
+
+</details>
 
 <a name="data-persistence"></a>
 

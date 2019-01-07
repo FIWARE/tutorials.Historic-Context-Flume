@@ -23,7 +23,10 @@ available as
 
 -   このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
-# Contents
+## Contents
+
+<details>
+<summary><strong>Details</strong></summary>
 
 -   [Data Persistence](#data-persistence)
 -   [Architecture](#architecture)
@@ -69,6 +72,8 @@ available as
         -   [Subscribing to Context Changes](#subscribing-to-context-changes-3)
     -   [Multi-Agent - Reading Persisted Data](#multi-agent---reading-persisted-data)
 -   [Next Steps](#next-steps)
+
+</details>
 
 # Data Persistence
 
