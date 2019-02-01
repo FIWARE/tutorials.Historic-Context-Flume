@@ -137,5 +137,5 @@ networks:
         - subnet: 172.18.1.0/24
 
 volumes:
-  mongo-db:
-  mysql-db:
+  mongo-db: ~
+  mysql-db: ~

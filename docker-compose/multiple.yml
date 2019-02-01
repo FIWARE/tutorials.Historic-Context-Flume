@@ -169,6 +169,6 @@ networks:
         - subnet: 172.18.1.0/24
 
 volumes:
-  mongo-db:
-  postgres-db:
-  mysql-db:
+  mongo-db: ~
+  postgres-db: ~
+  mysql-db: ~
