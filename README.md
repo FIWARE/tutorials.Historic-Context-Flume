@@ -9,7 +9,7 @@
 <!-- prettier-ignore -->
 This tutorial is an introduction to
 [FIWARE Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) - a generic
-enabler which is used to persist context data into third-party databases
+enabler which is used to persist context data into third-party databases using [Apache Flume](https://flume.apache.org)
 creating a historical view of the context. The tutorial activates the IoT
 sensors connected in the
 [previous tutorial](https://github.com/Fiware/tutorials.IoT-Agent) and persists
