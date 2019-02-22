@@ -1,4 +1,4 @@
-[![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context/img/fiware.png)](https://www.fiware.org/developers)
+[![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context-Flume/img/fiware.png)](https://www.fiware.org/developers)
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://www.fiware.org/developers/catalogue/)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context.svg)](https://opensource.org/licenses/MIT)
@@ -17,7 +17,7 @@ IoT センサをアクティブにし、これらのセンサからの測定値�
 
 このチュートリアルでは、全体で [cUrl](https://ec.haxx.se/) コマンドを使用してい
 ますが
-、[Postman documentation](https://fiware.github.io/tutorials.Historic-Context/)
+、[Postman documentation](https://fiware.github.io/tutorials.Historic-Context-Flume/)
 も利用できます。
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
@@ -125,7 +125,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
 あります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確
 認できます : `http://localhost:3000/device/monitor`
 
-![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context/img/device-monitor.png)
+![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-Flume/img/device-monitor.png)
 
 <a name="architecture"></a>
 
@@ -295,7 +295,7 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
 標準 `27017` ポートをリッスンしており、全体のアーキテクチャは以下のようになりま
 す :
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mongo.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-mongo.png)
 
 <a name="mongodb---database-server-configuration"></a>
 
@@ -414,7 +414,7 @@ curl -X GET \
 行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
 :
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 <a name="subscribing-to-context-changes"></a>
 
@@ -702,7 +702,7 @@ exit
 使用できます。PostgreSQL インスタンスは標準 `5432` ポートをリッスンしており、全
 体のアーキテクチャは以下のようになります :
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-postgres.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-postgres.png)
 
 MongoDB コンテナには、Orion Context Broker と IoT Agent に関連するデータを保持す
 る必要があるため、2 つのデータベースを持つシステムが用意されています。
@@ -865,7 +865,7 @@ curl -X GET \
 行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
 :
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 <a name="subscribing-to-context-changes-1"></a>
 
@@ -1085,7 +1085,7 @@ You will then return to the commmand line.
 用できます。MySQL インスタンスは標準 `3306` ポートでリッスンしており、全体のアー
 キテクチャは以下のようになります :
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mysql.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-mysql.png)
 
 MongoDB コンテナは、Orion Context Broker と IoT Agent に関連するデータを保持する
 必要があるため、2 つのデータベースを持つシステムがあります。
@@ -1245,7 +1245,7 @@ curl -X GET \
 行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
 :
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 <a name="subscribing-to-context-changes-2"></a>
 
@@ -1466,7 +1466,7 @@ MySQL クライアントを終了し、インタラクティブ・モードを�
 以前の 3 つの例のアーキテクチャを組み合わせて、複数のポートでリッスンするように
 cygnus を構成することができます
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-all-three.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-all-three.png)
 
 現在、データ永続化のための PostgreSQL と MySQL と、データ永続化と Orion Context
 Broker と IoT Agent に関連するデータ永続化の両方のための MongoDB という 3 つのデ
@@ -1611,7 +1611,7 @@ curl -X GET \
 行うことができます。デバイスからの測定値のストリームは、同じページに表示されます
 :
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 <a name="subscribing-to-context-changes-3"></a>
 

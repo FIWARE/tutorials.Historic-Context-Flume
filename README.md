@@ -1,4 +1,4 @@
-[![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context/img/fiware.png)](https://www.fiware.org/developers)
+[![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context-Flume/img/fiware.png)](https://www.fiware.org/developers)
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://www.fiware.org/developers/catalogue/)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context.svg)](https://opensource.org/licenses/MIT)
@@ -16,7 +16,7 @@ sensors connected in the
 measurements from those sensors into a database for further analysis.
 
 The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also available as
-[Postman documentation](https://fiware.github.io/tutorials.Historic-Context/)
+[Postman documentation](https://fiware.github.io/tutorials.Historic-Context-Flume/)
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
 
@@ -116,7 +116,7 @@ broker. Details of the architecture and protocol used can be found in the
 [IoT Sensors tutorial](https://github.com/Fiware/tutorials.IoT-Sensors). The state of each device can be seen on the
 UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
 
-![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context/img/device-monitor.png)
+![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-Flume/img/device-monitor.png)
 
 # Architecture
 
@@ -237,7 +237,7 @@ Persisting historic context data using MongoDB technology is relatively simple t
 MongoDB instance to hold data related to the Orion Context Broker and the IoT Agent. The MongoDB instance is listening
 on the standard `27017` port and the overall architecture can be seen below:
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mongo.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-mongo.png)
 
 ## MongoDB - Database Server Configuration
 
@@ -341,7 +341,7 @@ unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by sele
 the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then be seen
 on the same page:
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 ### Subscribing to Context Changes
 
@@ -596,7 +596,7 @@ To persist historic context data into an alternative database such as **PostgreS
 container which hosts the PostgreSQL server - the default Docker image for this data can be used. The PostgreSQL
 instance is listening on the standard `5432` port and the overall architecture can be seen below:
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-postgres.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-postgres.png)
 
 We now have a system with two databases, since the MongoDB container is still required to hold data related to the Orion
 Context Broker and the IoT Agent.
@@ -738,7 +738,7 @@ unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by sele
 the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then be seen
 on the same page:
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 ### Subscribing to Context Changes
 
@@ -935,7 +935,7 @@ Similarly, to persisting historic context data into **MySQL**, we will again nee
 the MySQL server, once again the default Docker image for this data can be used. The MySQL instance is listening on the
 standard `3306` port and the overall architecture can be seen below:
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-mysql.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-mysql.png)
 
 Once again we have a system with two databases, since the MongoDB container is still required to hold data related to
 the Orion Context Broker and the IoT Agent.
@@ -1075,7 +1075,7 @@ unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by sele
 the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then be seen
 on the same page:
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 ### Subscribing to Context Changes
 
@@ -1273,7 +1273,7 @@ You will then return to the command-line.
 It is also possible to configure Cygnus to populate multiple databases simultaneously. We can combine the architecture
 from the three previous examples and configure cygnus to listen on multiple ports
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/cygnus-all-three.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-all-three.png)
 
 We now have a system with three databases, PostgreSQL and MySQL for data persistence and MongoDB for both data
 persistence and holding data related to the Orion Context Broker and the IoT Agent.
@@ -1400,7 +1400,7 @@ unlock a **Smart Door** and switch on a **Smart Lamp**. This can be done by sele
 the drop down list and pressing the `send` button. The stream of measurements coming from the devices can then be seen
 on the same page:
 
-![](https://fiware.github.io/tutorials.Historic-Context/img/door-open.gif)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
 ### Subscribing to Context Changes
 
