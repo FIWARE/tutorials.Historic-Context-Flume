@@ -11,7 +11,7 @@
 てコンテキストの履歴ビューを作成するために使用する汎用イネーブラである
 、[FIWARE Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) の概要です。
 このチュートリアルでは
-、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent)で接続した
+、[前のチュートリアル](https://github.com/FIWARE/tutorials.IoT-Agent)で接続した
 IoT センサをアクティブにし、これらのセンサからの測定値をデータベースに保存してさ
 らに分析します。
 
@@ -121,7 +121,7 @@ Context Broker** と **IoT Agent** の 2 つの FIWARE コンポーネントを�
 
 このチュートリアルの目的のために、一連のダミー IoT デバイスが作成され、Context
 Broker に接続されます。使用しているアーキテクチャとプロトコルの詳細は
-、[IoT Sensors チュートリアル](https://github.com/Fiware/tutorials.IoT-Sensors)に
+、[IoT Sensors チュートリアル](https://github.com/FIWARE/tutorials.IoT-Sensors)に
 あります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確
 認できます : `http://localhost:3000/device/monitor`
 
@@ -132,7 +132,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
 # アーキテクチャ
 
 このアプリケーションは
-、[前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Agent/)で作成した
+、[前のチュートリアル](https://github.com/FIWARE/tutorials.IoT-Agent/)で作成した
 コンポーネントと ダミー IoT デバイスをベースにしています。3 つの FIWARE コンポー
 ネントを使用します
 。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
@@ -184,7 +184,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
     -   HTTP 上で動作する
         [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         プロトコルを使用して
-        、[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)の
+        、[ダミー IoT デバイス](https://github.com/FIWARE/tutorials.IoT-Sensors)の
         セットとして機能する Web サーバ
     -   このチュートリアルでは、**コンテキスト・プロバイダの NGSI proxy** は使用
         しません。これは以下を行います :
@@ -266,7 +266,7 @@ cd tutorials.Historic-Context
 ```
 
 その後、リポジトリ内で提供される
-[services](https://github.com/Fiware/tutorials.Historic-Context/blob/master/services)
+[services](https://github.com/FIWARE/tutorials.Historic-Context/blob/master/services)
 の Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初
 期化できます :
 
