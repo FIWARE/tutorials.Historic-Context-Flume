@@ -208,7 +208,7 @@ Before you start you should ensure that you have obtained or built the necessary
 repository and create the necessary images by running the commands as shown:
 
 ```console
-git clone git@github.com:Fiware/tutorials.Historic-Context.git
+git clone git@github.com:FIWARE/tutorials.Historic-Context.git
 cd tutorials.Historic-Context
 
 ./services create
