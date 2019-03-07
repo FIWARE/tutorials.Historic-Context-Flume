@@ -1,12 +1,12 @@
 [![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context-Flume/img/fiware.png)](https://www.fiware.org/developers)
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://www.fiware.org/developers/catalogue/)
-[![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-Flume.svg)](https://opensource.org/licenses/MIT)
 [![NGSI v1](https://img.shields.io/badge/NGSI-v1-ff69b4.svg)](http://forge.fi-ware.org/docman/view.php/7/3213/FI-WARE_NGSI_RESTful_binding_v1.0.zip)
 [![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
-<br/>
-[![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
+<br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
+<!-- prettier-ignore -->
 このチュートリアルは、コンテキスト・データをサードパーティのデータベースに保存し
 てコンテキストの履歴ビューを作成するために使用する汎用イネーブラである
 、[FIWARE Cygnus](https://fiware-cygnus.readthedocs.io/en/latest/) の概要です。
@@ -223,7 +223,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
 
 **Docker Compose** は、マルチコンテナ Docker アプリケーションを定義して実行する
 ためのツールです
-。[YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Historic-Context/master/docker-compose.yml)
+。[YAML file](https://github.com/FIWARE/tutorials.Historic-Context-Flume/tree/master/docker-compose)
 ファイルは、アプリケーションのために必要なサービスを構成するために使用します。つ
 まり、すべてのコンテナ・サービスは 1 つのコマンドで呼び出すことができます
 。Docker Compose は、デフォルトで Docker for Windows と Docker for Mac の一部と
@@ -259,14 +259,14 @@ Docker バージョン 18.03 以降と Docker Compose 1.21 以上を使用して
 い :
 
 ```console
-git clone git@github.com:FIWARE/tutorials.Historic-Context.git
-cd tutorials.Historic-Context
+git clone git@github.com:FIWARE/tutorials.Historic-Context-Flume.git
+cd tutorials.Historic-Context-Flume
 
 ./services create
 ```
 
 その後、リポジトリ内で提供される
-[services](https://github.com/FIWARE/tutorials.Historic-Context/blob/master/services)
+[services](https://github.com/FIWARE/tutorials.Historic-Context-Flume/blob/master/services)
 の Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初
 期化できます :
 
