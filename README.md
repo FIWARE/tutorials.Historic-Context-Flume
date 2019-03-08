@@ -1,7 +1,7 @@
 [![FIWARE Banner](https://fiware.github.io/tutorials.Historic-Context-Flume/img/fiware.png)](https://www.fiware.org/developers)
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://www.fiware.org/developers/catalogue/)
-[![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-Flume.svg)](https://opensource.org/licenses/MIT)
 [![NGSI v1](https://img.shields.io/badge/NGSI-v1-ff69b4.svg)](http://forge.fi-ware.org/docman/view.php/7/3213/FI-WARE_NGSI_RESTful_binding_v1.0.zip)
 [![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
 <br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
@@ -182,7 +182,7 @@ technology which allows to different components isolated into their respective e
 -   To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
 
 **Docker Compose** is a tool for defining and running multi-container Docker applications. A series of
-[YAML files](https://github.com/FIWARE/tutorials.Historic-Context/tree/master/docker-compose) are used configure the
+[YAML files](https://github.com/FIWARE/tutorials.Historic-Context-Flume/tree/master/docker-compose) are used configure the
 required services for the application. This means all container services can be brought up in a single command. Docker
 Compose is installed by default as part of Docker for Windows and Docker for Mac, however Linux users will need to
 follow the instructions found [here](https://docs.docker.com/compose/install/)
@@ -208,14 +208,14 @@ Before you start you should ensure that you have obtained or built the necessary
 repository and create the necessary images by running the commands as shown:
 
 ```console
-git clone git@github.com:FIWARE/tutorials.Historic-Context.git
-cd tutorials.Historic-Context
+git clone git@github.com:FIWARE/tutorials.Historic-Context-Flume.git
+cd tutorials.Historic-Context-Flume
 
 ./services create
 ```
 
 Thereafter, all services can be initialized from the command-line by running the
-[services](https://github.com/FIWARE/tutorials.Historic-Context/blob/master/services) Bash script provided within the
+[services](https://github.com/FIWARE/tutorials.Historic-Context-Flume/blob/master/services) Bash script provided within the
 repository:
 
 ```console
