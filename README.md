@@ -27,7 +27,7 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 <details>
 <summary><strong>Details</strong></summary>
 
--   [Data Persistence](#data-persistence)
+-   [Data Persistence](#data-persistence-using-apache-flume)
 -   [Architecture](#architecture)
 -   [Prerequisites](#prerequisites)
     -   [Docker and Docker Compose](#docker-and-docker-compose)
@@ -74,7 +74,7 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 
 </details>
 
-# Data Persistence
+# Data Persistence using Apache Flume
 
 > "History will be kind to me for I intend to write it."
 >
