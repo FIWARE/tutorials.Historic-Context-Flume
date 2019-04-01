@@ -19,6 +19,12 @@ stoppingContainers () {
 	docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
 }
 
+displayServices () {
+	echo ""
+	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
+	echo ""
+}
+
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
     echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
@@ -40,7 +46,7 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	 "mongodb")
@@ -53,7 +59,7 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
     "postgres")
@@ -66,7 +72,7 @@ case "${command}" in
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	"mysql")
@@ -79,7 +85,7 @@ case "${command}" in
 		echo ""
 		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
 		loadData
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	"stop")
