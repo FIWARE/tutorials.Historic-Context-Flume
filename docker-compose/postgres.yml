@@ -1,33 +1,23 @@
+# WARNING: Do not deploy this tutorial configuration directly to a production environment
+#
+# The tutorial docker-compose files have not been written for production deployment and will not 
+# scale. A proper architecture has been sacrificed to keep the narrative focused on the learning 
+# goals, they are just used to deploy everything onto a single Docker machine. All FIWARE components 
+# are running at full debug and extra ports have been exposed to allow for direct calls to services. 
+# They also contain various obvious security flaws - passwords in plain text, no load balancing,
+# no use of HTTPS and so on. 
+# 
+# This is all to avoid the need of multiple machines, generating certificates, encrypting secrets
+# and so on, purely so that a single docker-compose file can be read as an example to build on, 
+# not use directly. 
+# 
+# When deploying to a production environment, please looking at the SmartSDK Recipes
+# in order to scale up to a proper architecture:
+# 
+# see: https://smartsdk.github.io/smartsdk-recipes/
+#
 version: "3.5"
 services:
-  mongo-db:
-    image: mongo:3.6
-    hostname: mongo-db
-    container_name: db-mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - default
-    command: --bind_ip_all --smallfiles
-    volumes:
-      - mongo-db:/data
-
-  postgres-db:
-    image: postgres
-    hostname: postgres-db
-    container_name: db-postgres
-    expose:
-      - "5432"
-    ports:
-      - "5432:5432"
-    networks:
-      - default
-    environment:
-      - "POSTGRES_PASSWORD=password"
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_DB=postgres"
-    volumes:
-      - postgres-db:/var/lib/postgresql/data
 
   orion:
     image: fiware/orion:2.2.0
@@ -45,6 +35,7 @@ services:
     healthcheck:
       test: curl --fail -s http://orion:1026/version || exit 1
 
+  # Cygnus is configured to write context data to PostgeSQL
   cygnus:
     image: fiware/cygnus-ngsi:1.10.0
     hostname: cygnus
@@ -70,6 +61,7 @@ services:
     healthcheck:
       test: curl --fail -s http://localhost:5080/v1/version || exit 1
 
+  # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
     image: fiware/iotagent-ul:1.8.0
     hostname: iot-agent
@@ -97,7 +89,8 @@ services:
       - IOTA_PROVIDER_URL=http://iot-agent:4041
     healthcheck:
       test: curl --fail -s http://iot-agent:4041/iot/about || exit 1
-
+  
+  # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
     image: fiware/tutorials.context-provider
     hostname: tutorial
@@ -131,6 +124,38 @@ services:
       - "TWITTER_CONSUMER_SECRET=<ADD_YOUR_CONSUMER_SECRET>"
     healthcheck:
       test: curl --fail -s http://tutorial:3000/version || exit 1
+
+  # Databases
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - default
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
+
+  postgres-db:
+    image: postgres
+    hostname: postgres-db
+    container_name: db-postgres
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+    environment:
+      - "POSTGRES_PASSWORD=password"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_DB=postgres"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
 
 networks:
   default:
