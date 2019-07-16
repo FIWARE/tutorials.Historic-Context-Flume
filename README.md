@@ -182,10 +182,10 @@ technology which allows to different components isolated into their respective e
 -   To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
 
 **Docker Compose** is a tool for defining and running multi-container Docker applications. A series of
-[YAML files](https://github.com/FIWARE/tutorials.Historic-Context-Flume/tree/master/docker-compose) are used configure the
-required services for the application. This means all container services can be brought up in a single command. Docker
-Compose is installed by default as part of Docker for Windows and Docker for Mac, however Linux users will need to
-follow the instructions found [here](https://docs.docker.com/compose/install/)
+[YAML files](https://github.com/FIWARE/tutorials.Historic-Context-Flume/tree/master/docker-compose) are used configure
+the required services for the application. This means all container services can be brought up in a single command.
+Docker Compose is installed by default as part of Docker for Windows and Docker for Mac, however Linux users will need
+to follow the instructions found [here](https://docs.docker.com/compose/install/)
 
 You can check your current **Docker** and **Docker Compose** versions using the following commands:
 
@@ -215,8 +215,8 @@ cd tutorials.Historic-Context-Flume
 ```
 
 Thereafter, all services can be initialized from the command-line by running the
-[services](https://github.com/FIWARE/tutorials.Historic-Context-Flume/blob/master/services) Bash script provided within the
-repository:
+[services](https://github.com/FIWARE/tutorials.Historic-Context-Flume/blob/master/services) Bash script provided within
+the repository:
 
 ```console
 ./services <command>
