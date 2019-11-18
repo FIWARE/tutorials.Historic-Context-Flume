@@ -259,7 +259,7 @@ Docker バージョン 18.03 以降と Docker Compose 1.21 以上を使用して
 い :
 
 ```console
-git clone git@github.com:FIWARE/tutorials.Historic-Context-Flume.git
+git clone https://github.com/FIWARE/tutorials.Historic-Context-Flume.git
 cd tutorials.Historic-Context-Flume
 
 ./services create
