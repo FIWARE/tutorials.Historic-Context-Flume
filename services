@@ -17,11 +17,23 @@ loadData () {
 stoppingContainers () {
 	echo "Stopping containers"
 	docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+
+	echo "Removing HDFS files"
+	for dir in ./docker-compose/data/*; do
+		[ "$dir" = "./docker-compose/data" ] && continue
+		rm -rf "$dir"
+	done
 }
 
 displayServices () {
 	echo ""
 	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
+	echo ""
+}
+
+displayHDFS () {
+	echo ""
+	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=hdfs-*
 	echo ""
 }
 
@@ -34,7 +46,7 @@ fi
 command="$1"
 case "${command}" in
 	"help")
-        echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
+        echo "usage: services [create|hdfs|mongodb|mysql|multiple|postgres|stop]"
         ;;
     "multiple")
 		stoppingContainers
@@ -47,6 +59,20 @@ case "${command}" in
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		loadData
 		displayServices
+		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		;;
+	"hdfs")
+		stoppingContainers
+		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;30mTutorial\033[0m and a \033[1;30mMongoDB\033[0m database and a \033[1;30mHDFS\033[0m filesystem."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;30mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo ""
+		docker-compose  -f docker-compose/hdfs.yml -p fiware up -d --remove-orphans
+		loadData
+		displayServices
+		displayHDFS
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	 "mongodb")
@@ -97,7 +123,7 @@ case "${command}" in
 		;;
 	*)
 		echo "Command not Found."
-		echo "usage: services [create|mongodb|mysql|multiple|postgres|stop]"
+		echo "usage: services [create|hdfs|mongodb|mysql|multiple|postgres|stop]"
 		exit 127;
 		;;
 esac

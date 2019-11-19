@@ -33,5 +33,6 @@ node_modules/
 jspm_packages/
 .npm
 .eslintcache
+docker-compose/data
 *.tgz
 .next
