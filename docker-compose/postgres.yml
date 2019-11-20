@@ -44,6 +44,7 @@ services:
     depends_on:
       - postgres-db
     expose:
+      - "${CYGNUS_SERVICE_PORT}"
       - "${CYGNUS_API_PORT}"
     ports:
       - "${CYGNUS_SERVICE_PORT}:${CYGNUS_SERVICE_PORT}" # localhost:5050

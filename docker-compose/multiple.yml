@@ -45,6 +45,7 @@ services:
     networks:
       - default
     expose:
+      - "${CYGNUS_SERVICE_PORT}" 
       - "${CYGNUS_API_PORT}" 
       - "5081"
       - "5084"

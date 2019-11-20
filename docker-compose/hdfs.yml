@@ -46,6 +46,7 @@ services:
     networks:
       - default
     expose:
+      - "${CYGNUS_SERVICE_PORT}"
       - "${CYGNUS_API_PORT}"
     ports:
       - "${CYGNUS_SERVICE_PORT}:${CYGNUS_SERVICE_PORT}" # localhost:5050
@@ -53,9 +54,9 @@ services:
     environment:
       - "CYGNUS_HDFS_HOST=namenode"
       - "CYGNUS_HDFS_PORT=50070"
-#       - "CYGNUS_HDFS_USER "" # Warning: For development use only - Storing sensitive information in clear text is insecure
+      - "CYGNUS_HDFS_USER=hdfs" # Warning: For development use only - Storing sensitive information in clear text is insecure
 #       - "CYGNUS_HDFS_TOKEN "" # Warning: For development use only - Storing sensitive information in clear text is insecure
-      - "CYGNUS_HDFS_SKIP_CONF_GENERATION=false"
+      - "CYGNUS_HDFS_SKIP_CONF_GENERATION=true"
 #      - "CYGNUS_HDFS_SERVICE_PORT "5053"
       - "CYGNUS_HDFS_ENABLE_ENCODING=false"
       - "CYGNUS_HDFS_ENABLE_GROUPING=false"
@@ -63,8 +64,8 @@ services:
       - "CYGNUS_HDFS_SKIP_NAME_MAPPINGS_GENERATION=false"
       - "CYGNUS_HDFS_ENABLE_LOWERCASE=false"
       - "CYGNUS_HDFS_DATA_MODEL=dm-by-entity"
-      - "CYGNUS_HDFS_FILE_FORMAT=json-row"
-   #   - "CYGNUS_HDFS_BACKEND_IMPL=rest"
+      - "CYGNUS_HDFS_FILE_FORMAT=json-column"
+      - "CYGNUS_HDFS_BACKEND_IMPL=rest"
    #   - "CYGNUS_HDFS_SERVICE_AS_NAMESPACE=true"
       - "CYGNUS_HDFS_HIVE=false"
       - "CYGNUS_HDFS_KRB5_AUTH=false"
@@ -155,6 +156,9 @@ services:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-namenode
       hostname: namenode
+      expose:
+          - "50070"
+          - "9000"
       ports: 
           - "50070:50070"
           - "9000:9000"
@@ -165,6 +169,8 @@ services:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-datanode
       hostname: datanode
+      expose:
+          - "50010"
       ports:
           - "50075" # local port dynamically assigned. allows node to be scaled up and down
           - "50010:50010"
@@ -177,6 +183,8 @@ services:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-secondarynamenode
       hostname: secondarynamenode
+      expose:
+          - "50090"
       ports:
           - "50090:50090"
       links:
