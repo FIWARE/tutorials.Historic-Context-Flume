@@ -55,9 +55,8 @@ services:
       - "CYGNUS_HDFS_HOST=namenode"
       - "CYGNUS_HDFS_PORT=50070"
       - "CYGNUS_HDFS_USER=hdfs" # Warning: For development use only - Storing sensitive information in clear text is insecure
-#       - "CYGNUS_HDFS_TOKEN "" # Warning: For development use only - Storing sensitive information in clear text is insecure
+#     - "CYGNUS_HDFS_TOKEN="    # Warning: For development use only - Storing sensitive information in clear text is insecure
       - "CYGNUS_HDFS_SKIP_CONF_GENERATION=true"
-#      - "CYGNUS_HDFS_SERVICE_PORT "5053"
       - "CYGNUS_HDFS_ENABLE_ENCODING=false"
       - "CYGNUS_HDFS_ENABLE_GROUPING=false"
       - "CYGNUS_HDFS_ENABLE_NAME_MAPPINGS=false"
@@ -66,7 +65,6 @@ services:
       - "CYGNUS_HDFS_DATA_MODEL=dm-by-entity"
       - "CYGNUS_HDFS_FILE_FORMAT=json-column"
       - "CYGNUS_HDFS_BACKEND_IMPL=rest"
-   #   - "CYGNUS_HDFS_SERVICE_AS_NAMESPACE=true"
       - "CYGNUS_HDFS_HIVE=false"
       - "CYGNUS_HDFS_KRB5_AUTH=false"
 
@@ -156,6 +154,8 @@ services:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-namenode
       hostname: namenode
+      networks:
+          - default
       expose:
           - "50070"
           - "9000"
@@ -169,6 +169,8 @@ services:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-datanode
       hostname: datanode
+      networks:
+          - default
       expose:
           - "50010"
       ports:
@@ -183,6 +185,8 @@ services:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-secondarynamenode
       hostname: secondarynamenode
+      networks:
+          - default
       expose:
           - "50090"
       ports:
@@ -194,6 +198,8 @@ services:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-yarn
       hostname: yarn
+      networks:
+          - default
       ports:
           - "8088:8088"
           - "8042:8042"
@@ -207,6 +213,8 @@ services:
   nodemanager:
       image: tailtarget/hadoop:2.7.2
       container_name: hdfs-nodemanager
+      networks:
+          - default
       ports:
           - "8042" # local port dynamically assigned. allows node to be scaled up and down
       links:
