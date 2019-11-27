@@ -45,17 +45,15 @@ services:
     networks:
       - default
     expose:
-      - "${CYGNUS_SERVICE_PORT}" 
-      - "${CYGNUS_API_PORT}" 
-      - "5081"
-      - "5084"
+      - "${CYGNUS_MYSQL_SERVICE_PORT}" 
+      - "${CYGNUS_MONGO_SERVICE_PORT}" 
+      - "${CYGNUS_POSTGRESQL_SERVICE_PORT}"
+      - "${CYGNUS_API_PORT}"
     ports:
-      - "${CYGNUS_SERVICE_PORT}:${CYGNUS_SERVICE_PORT}" # localhost:5050
-      - "5051:5051"
-      - "5054:5054"
+      - "${CYGNUS_MYSQL_SERVICE_PORT}:${CYGNUS_MYSQL_SERVICE_PORT}" # localhost:5050
+      - "${CYGNUS_MONGO_SERVICE_PORT}:${CYGNUS_MONGO_SERVICE_PORT}" # localhost:5051
+      - "${CYGNUS_POSTGRESQL_SERVICE_PORT}:${CYGNUS_POSTGRESQL_SERVICE_PORT}"
       - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5080
-      - "5081:5081"
-      - "5084:5084"
     environment:
       - "CYGNUS_MULTIAGENT=true" # Whether to persist data into multiple databases.
       - "CYGNUS_MONGO_HOSTS=mongo-db:${MONGO_DB_PORT}" # Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data
@@ -69,6 +67,10 @@ services:
       - "CYGNUS_MYSQL_USER=root" # Username for the MySQL database user
       - "CYGNUS_MYSQL_PASS=123" # Password for the MySQL database user
       - "CYGNUS_LOG_LEVEL=DEBUG" #The logging level for Cygnus
+      - "CYGNUS_SERVICE_PORT=${CYGNUS_MYSQL_SERVICE_PORT}"
+      - "CYGNUS_MYSQL_SERVICE_PORT=${CYGNUS_MYSQL_SERVICE_PORT}"
+      - "CYGNUS_MONGO_SERVICE_PORT=${CYGNUS_MONGO_SERVICE_PORT}"
+      - "CYGNUS_POSTGRESQL_SERVICE_PORT=${CYGNUS_POSTGRESQL_SERVICE_PORT}"
     healthcheck:
       test: curl --fail -s http://localhost:${CYGNUS_API_PORT}/v1/version || exit 1
   

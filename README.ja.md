@@ -329,18 +329,19 @@ cygnus:
     expose:
         - "5080"
     ports:
-        - "5050:5050"
+        - "5051:5051"
         - "5080:5080"
     environment:
         - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
+        - "CYGNUS_MONGO_SERVICE_PORT=5051"
         - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_SERVICE_PORT=5051"
 ```
 
 `cygnus` コンテナは、2 つのポートでリッスンしています :
 
--   Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion context
+-   Cygnus のサブスクリプション・ポート : `5051` は、サービスが Orion context
     broker からの通知をリッスンするポートです
 -   Cygnus の管理ポート : `5080`は、純粋にチュートリアル・アクセスのために公開さ
     れているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョ
@@ -387,7 +388,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+    "version": "1.17.0.SNAPSHOT...etc"
 }
 ```
 
@@ -432,7 +433,7 @@ curl -X GET \
     す
 -   リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が
     Cygnus に通知されるようにします
--   通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
+-   通知 `url` は設定された `CYGNUS_MONGO_SERVICE_PORT` と一致する必要があります
 -   Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため
     、`attrsFormat=legacy` が必要です
 -   `throttling` 値は、変更がサンプリングされる割合を定義します
@@ -446,7 +447,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus of all context changes",
+  "description": "Notify Cygnus (Mongo-DB) of all context changes",
   "subject": {
     "entities": [
       {
@@ -456,7 +457,7 @@ curl -iX POST \
   },
   "notification": {
     "http": {
-      "url": "http://cygnus:5050/notify"
+      "url": "http://cygnus:5051/notify"
     },
     "attrsFormat": "legacy"
   },
@@ -498,7 +499,7 @@ curl -X GET \
 [
     {
         "id": "5b39d7c866df40ed84284174",
-        "description": "Notify Cygnus of all context changes",
+        "description": "Notify Cygnus (Mongo-DB) of all context changes",
         "status": "active",
         "subject": {
             "entities": [
@@ -764,22 +765,23 @@ cygnus:
     expose:
         - "5080"
     ports:
-        - "5050:5050"
+        - "5055:5055"
         - "5080:5080"
     environment:
         - "CYGNUS_POSTGRESQL_HOST=postgres-db"
         - "CYGNUS_POSTGRESQL_PORT=5432"
         - "CYGNUS_POSTGRESQL_USER=postgres"
         - "CYGNUS_POSTGRESQL_PASS=password"
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_SERVICE_PORT=5050"
-        - "CYGNUS_API_PORT=5080"
         - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
+        - "CYGNUS_POSTGRESQL_SERVICE_PORT=5055"
+        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_SERVICE_PORT=5055"
 ```
 
 `cygnus` コンテナは、2 つのポートでリッスンしています :
 
--   Cygnus のサブスクリプション・ポート : `5050` は、サービスが Orion Context
+-   Cygnus のサブスクリプション・ポート : `5055` は、サービスが Orion Context
     Broker からの通知をリッスンするポートです
 -   Cygnus の管理ポート : `5080` は純粋にチュートリアルのアクセスのために公開さ
     れているため、cUrl または Postman は同じネットワークの一部ではなくプロビジョ
@@ -838,7 +840,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+    "version": "1.17.0.SNAPSHOT...etc"
 }
 ```
 
@@ -883,7 +885,7 @@ curl -X GET \
     す
 -   リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が
     Cygnus に通知されるようにします
--   通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
+-   通知 `url` は設定された `CYGNUS_POSTGRESQL_SERVICE_PORT` と一致する必要があります
 -   Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため
     、`attrsFormat=legacy` が必要です
 -   `throttling` 値は、変更がサンプリングされる割合を定義します
@@ -897,7 +899,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus of all context changes",
+  "description": "Notify Cygnus (Postgres) of all context changes",
   "subject": {
     "entities": [
       {
@@ -907,7 +909,7 @@ curl -iX POST \
   },
   "notification": {
     "http": {
-      "url": "http://cygnus:5050/notify"
+      "url": "http://cygnus:5055/notify"
     },
     "attrsFormat": "legacy"
   },
@@ -1153,9 +1155,10 @@ cygnus:
         - "CYGNUS_MYSQL_PORT=3306"
         - "CYGNUS_MYSQL_USER=root"
         - "CYGNUS_MYSQL_PASS=123"
+        - "CYGNUS_MYSQL_SERVICE_PORT=5050"
         - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_SERVICE_PORT=5050"
         - "CYGNUS_API_PORT=5080"
+        - "CYGNUS_SERVICE_PORT=5050"
 ```
 
 > :information_source: **注:** このようなプレーン・テキストの環境変数にユーザ名
@@ -1218,7 +1221,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+    "version": "1.17.0.SNAPSHOT...etc"
 }
 ```
 
@@ -1263,7 +1266,7 @@ curl -X GET \
     す
 -   リクエスト・ボディの `idPattern` は、すべてのコンテキスト・データの変更が
     Cygnus に通知されるようにします
--   通知 `url` は設定された `CYGNUS_API_PORT` と一致する必要があります
+-   通知 `url` は設定された `CYGNUS_MYSQL_SERVICE_PORT` と一致する必要があります
 -   Cygnus は現在、古い NGSI v1 形式の通知のみを受け付けているため
     、`attrsFormat=legacy` が必要です
 -   `throttling` 値は、変更がサンプリングされる割合を定義します
@@ -1277,7 +1280,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus of all context changes",
+  "description": "Notify Cygnus (MySQL) of all context changes",
   "subject": {
     "entities": [
       {
@@ -1584,7 +1587,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.8.0_SNAPSHOT.ed50706880829e97fd4cf926df434f1ef4fac147"
+    "version": "1.17.0.SNAPSHOT...etc"
 }
 ```
 
