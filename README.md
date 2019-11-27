@@ -290,7 +290,7 @@ The `cygnus` container is driven by environment variables as shown:
 | ------------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
 | CYGNUS_MONGO_HOSTS  | `mongo-db:27017` | Comma separated list of MongoDB servers which Cygnus will contact to persist historical context data |
 | CYGNUS_LOG_LEVEL    | `DEBUG`          | The logging level for Cygnus                                                                         |
-| CYGNUS_SERVICE_PORT | `5050`           | Notification Port that Cygnus listens when subscribing to context data changes                       |
+| CYGNUS_SERVICE_PORT | `5051`           | Notification Port that Cygnus listens when subscribing to context data changes                       |
 | CYGNUS_API_PORT     | `5080`           | Port that Cygnus listens on for operational reasons                                                  |
 
 ## MongoDB - Start up

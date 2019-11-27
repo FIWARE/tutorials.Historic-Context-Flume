@@ -353,7 +353,7 @@ cygnus:
 | ------------------- | ---------------- | -------------------------------------------------------------------------------------------- |
 | CYGNUS_MONGO_HOSTS  | `mongo-db:27017` | Cygnus が履歴コンテキスト・データを保持するために接続する MongoDB サーバのカンマ区切りリスト |
 | CYGNUS_LOG_LEVEL    | `DEBUG`          | Cygnus のログレベル                                                                          |
-| CYGNUS_SERVICE_PORT | `5050`           | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート         |
+| CYGNUS_SERVICE_PORT | `5051`           | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート         |
 | CYGNUS_API_PORT     | `5080`           | Cygnus が操作上の理由でリッスンするポート                                                    |
 
 <a name="mongodb---start-up"></a>
@@ -796,7 +796,7 @@ cygnus:
 | CYGNUS_POSTGRESQL_USER         | `postgres`    | PostgreSQL データベース・ユーザのユーザ名                                            |
 | CYGNUS_POSTGRESQL_PASS         | `password`    | PostgreSQL データベース・ユーザのパスワード                                          |
 | CYGNUS_LOG_LEVEL               | `DEBUG`       | Cygnus のログレベル                                                                  |
-| CYGNUS_SERVICE_PORT            | `5050`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート |
+| CYGNUS_SERVICE_PORT            | `5055`        | コンテキスト・データの変更をサブスクライブするときに Cygnus がリッスンする通知ポート |
 | CYGNUS_API_PORT                | `5080`        | Cygnus が操作上の理由でリッスンするポート                                            |
 | CYGNUS_POSTGRESQL_ENABLE_CACHE | `true`        | PostgreSQL 設定内でキャッシングを有効にするためのスイッチ                            |
 
