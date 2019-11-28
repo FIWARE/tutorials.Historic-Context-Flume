@@ -66,10 +66,10 @@ services:
       - "CYGNUS_HDFS_BACKEND_IMPL=rest"
       - "CYGNUS_HDFS_HIVE=false"
       - "CYGNUS_HDFS_KRB5_AUTH=false"
-
-      - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
       - "CYGNUS_HDFS_SERVICE_PORT=${CYGNUS_HDFS_SERVICE_PORT}" # Notification Port that Cygnus listens when subcribing to context data changes
       - "CYGNUS_SERVICE_PORT=${CYGNUS_HDFS_SERVICE_PORT}"
+      - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
+      - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
     healthcheck:
       test: curl --fail -s http://localhost:${CYGNUS_API_PORT}/v1/version || exit 1
   
