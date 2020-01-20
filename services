@@ -25,6 +25,35 @@ stoppingContainers () {
 	done
 }
 
+addDatabaseIndex () {
+	printf "Create \033[1;34mOrion\033[0m database indexes ..."
+	docker exec  db-mongo mongo --eval '
+	conn = new Mongo();db.createCollection("orion");
+	db = conn.getDB("orion");
+	db.entities.createIndex({"_id.servicePath": 1, "_id.id": 1, "_id.type": 1}, {unique: true});
+	db.entities.createIndex({"_id.type": 1}); 
+	db.entities.createIndex({"_id.id": 1});' > /dev/null
+
+	docker exec  db-mongo mongo --eval '
+	conn = new Mongo();db.createCollection("orion-openiot");
+	db = conn.getDB("orion-openiot");
+	db.entities.createIndex({"_id.servicePath": 1, "_id.id": 1, "_id.type": 1}, {unique: true});
+	db.entities.createIndex({"_id.type": 1}); 
+	db.entities.createIndex({"_id.id": 1});' > /dev/null
+	echo -e " \033[1;32mdone\033[0m"
+
+	printf "Create \033[1;36mIoT-Agent\033[0m database indexes ..."
+	docker exec  db-mongo mongo --eval '
+	conn = new Mongo();db.createCollection("iotagentul");
+	db = conn.getDB("iotagentul");
+	db.devices.createIndex({"_id.service": 1, "_id.id": 1, "_id.type": 1});
+	db.devices.createIndex({"_id.type": 1}); 
+	db.devices.createIndex({"_id.id": 1});
+	db.groups.createIndex({"_id.resource": 1, "_id.apikey": 1, "_id.service": 1});
+	db.groups.createIndex({"_id.type": 1});' > /dev/null
+	echo -e " \033[1;32mdone\033[0m"
+}
+
 displayServices () {
 	echo ""
 	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
@@ -63,6 +92,7 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		addDatabaseIndex
 		loadData
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -76,6 +106,7 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose  -f docker-compose/ckan.yml -p fiware up -d --remove-orphans
+		addDatabaseIndex
 		loadData
 		displayServices
 		displayCKAN
@@ -90,6 +121,7 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose  -f docker-compose/hdfs.yml -p fiware up -d --remove-orphans
+		addDatabaseIndex
 		loadData
 		displayServices
 		displayHDFS
@@ -104,6 +136,7 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		addDatabaseIndex
 		loadData
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -117,6 +150,7 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		addDatabaseIndex
 		loadData
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
@@ -130,6 +164,7 @@ case "${command}" in
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
+		addDatabaseIndex
 		loadData
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
