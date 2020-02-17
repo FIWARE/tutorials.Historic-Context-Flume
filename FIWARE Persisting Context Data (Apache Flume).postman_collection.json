@@ -49,7 +49,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5051/notify\"\n    },\n    \"attrsFormat\": \"legacy\"\n  },\n  \"throttling\": 5\n}"
+							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5051/notify\"\n    }\n  },\n  \"throttling\": 5\n}"
 						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
@@ -193,7 +193,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5055/notify\"\n    },\n    \"attrsFormat\": \"legacy\"\n  },\n  \"throttling\": 5\n}"
+							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5055/notify\"\n    }\n  },\n  \"throttling\": 5\n}"
 						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
@@ -337,7 +337,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5050/notify\"\n    },\n    \"attrsFormat\": \"legacy\"\n  },\n  \"throttling\": 5\n}"
+							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5050/notify\"\n    }\n  },\n  \"throttling\": 5\n}"
 						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
@@ -481,7 +481,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes for MySQL on port 5050\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5050/notify\"\n    },\n    \"attrsFormat\": \"legacy\"\n  },\n  \"throttling\": 5\n}"
+							"raw": "{\n  \"description\": \"Notify Cygnus of all context changes for MySQL on port 5050\",\n  \"subject\": {\n    \"entities\": [\n      {\n        \"idPattern\": \".*\"\n      }\n    ]\n  },\n  \"notification\": {\n    \"http\": {\n      \"url\": \"http://cygnus:5050/notify\"\n    }\n  },\n  \"throttling\": 5\n}"
 						},
 						"url": {
 							"raw": "http://{{orion}}/v2/subscriptions/",
@@ -579,13 +579,13 @@
 	],
 	"variable": [
 		{
-			"id": "cdb395af-5cf5-4e5d-8e06-d902cf62bdb9",
+			"id": "858a5b6d-6c42-44c7-adc5-ef8059ed8bdd",
 			"key": "orion",
 			"value": "localhost:1026",
 			"type": "string"
 		},
 		{
-			"id": "20694ca9-c639-424f-8211-765605de6c42",
+			"id": "d091681f-f28b-4e94-9f22-39b11f280953",
 			"key": "cygnus",
 			"value": "localhost:5080",
 			"type": "string"

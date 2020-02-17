@@ -2,8 +2,8 @@
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-Flume.svg)](https://opensource.org/licenses/MIT)
-[![NGSI v1](https://img.shields.io/badge/NGSI-v1-ff69b4.svg)](http://forge.fiware.org/docman/view.php/7/3213/FI-WARE_NGSI_RESTful_binding_v1.0.zip)
-[![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
+[![NGSI v2](https://img.shields.io/badge/NGSI-v2-blue.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
+[![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/cygnus.svg)](https://stackoverflow.com/questions/tagged/fiware-cygnus)
 <br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
 <!-- prettier-ignore -->
@@ -458,8 +458,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5051/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'
@@ -514,8 +513,7 @@ curl -X GET \
         "notification": {
             "timesSent": 158,
             "lastNotification": "2018-07-02T07:59:21.00Z",
-            "attrs": [],
-            "attrsFormat": "legacy",
+            "attrs": []
             "http": {
                 "url": "http://cygnus:5050/notify"
             },
@@ -840,7 +838,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.17.0.SNAPSHOT...etc"
+    "version": "1.18.0.SNAPSHOT...etc"
 }
 ```
 
@@ -910,8 +908,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5055/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'
@@ -1291,8 +1288,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5050/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'
@@ -1671,8 +1667,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5050/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'

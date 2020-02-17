@@ -2,8 +2,8 @@
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-Flume.svg)](https://opensource.org/licenses/MIT)
-[![NGSI v1](https://img.shields.io/badge/NGSI-v1-ff69b4.svg)](http://forge.fiware.org/docman/view.php/7/3213/FI-WARE_NGSI_RESTful_binding_v1.0.zip)
-[![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
+[![NGSI v2](https://img.shields.io/badge/NGSI-v2-blue.svg)](https://fiware-ges.github.io/orion/api/v2/stable/)
+[![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware-cygnus)
 <br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
 <!-- prettier-ignore -->
@@ -320,7 +320,7 @@ The response will look similar to the following:
 ```json
 {
     "success": "true",
-    "version": "1.17.0_SNAPSHOT.etc"
+    "version": "1.18.0_SNAPSHOT.etc"
 }
 ```
 
@@ -354,7 +354,6 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
     measurements from the attached IoT Sensors, since they had been provisioned using these settings
 -   The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
 -   The notification `url` must match the configured `CYGNUS_MONGO_SERVICE_PORT`
--   The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 -   The `throttling` value defines the rate that changes are sampled.
 
 #### :two: Request:
@@ -366,7 +365,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus (Mongo-DB) of all context changes",
+  "description": "Notify Cygnus Mongo-DB of all context changes",
   "subject": {
     "entities": [
       {
@@ -377,8 +376,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5051/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'
@@ -395,7 +393,9 @@ same for each database. The response will be **201 - Created**
 > value does not match the number of notified context responses
 > ```
 >
-> This is usually because the `"attrsFormat": "legacy"` flag has been omitted.
+> For versions of Cygnus prior to 1.18.0  an additional `attrsFormat=legacy`
+> attribute is required in the subscription since Cygnus currently only
+> accepted notifications in the older NGSI v1 format.
 
 If a subscription has been created, you can check to see if it is firing by making a GET request to the
 `/v2/subscriptions` endpoint.
@@ -415,7 +415,7 @@ curl -X GET \
 [
     {
         "id": "5b39d7c866df40ed84284174",
-        "description": "Notify Cygnus (Mongo-DB) of all context changes",
+        "description": "Notify Cygnus Mongo-DB of all context changes",
         "status": "active",
         "subject": {
             "entities": [
@@ -430,8 +430,7 @@ curl -X GET \
         "notification": {
             "timesSent": 158,
             "lastNotification": "2018-07-02T07:59:21.00Z",
-            "attrs": [],
-            "attrsFormat": "legacy",
+            "attrs": []
             "http": {
                 "url": "http://cygnus:5050/notify"
             },
@@ -764,7 +763,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus (Postgres) of all context changes",
+  "description": "Notify Cygnus Postgres of all context changes",
   "subject": {
     "entities": [
       {
@@ -775,8 +774,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5055/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'
@@ -1102,7 +1100,7 @@ curl -iX POST \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
-  "description": "Notify Cygnus (MySQL) of all context changes",
+  "description": "Notify Cygnus MySQL of all context changes",
   "subject": {
     "entities": [
       {
@@ -1113,8 +1111,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5050/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'
@@ -1453,8 +1450,7 @@ curl -iX POST \
   "notification": {
     "http": {
       "url": "http://cygnus:5050/notify"
-    },
-    "attrsFormat": "legacy"
+    }
   },
   "throttling": 5
 }'
