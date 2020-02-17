@@ -388,7 +388,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.17.0.SNAPSHOT...etc"
+    "version": "1.18.0.SNAPSHOT...etc"
 }
 ```
 
@@ -1218,7 +1218,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.17.0.SNAPSHOT...etc"
+    "version": "1.18.0.SNAPSHOT...etc"
 }
 ```
 
@@ -1583,7 +1583,7 @@ curl -X GET \
 ```json
 {
     "success": "true",
-    "version": "1.17.0.SNAPSHOT...etc"
+    "version": "1.18.0.SNAPSHOT...etc"
 }
 ```
 

@@ -717,7 +717,7 @@ The response will look similar to the following:
 ```json
 {
     "success": "true",
-    "version": "1.17.0_SNAPSHOT.etc"
+    "version": "1.18.0_SNAPSHOT.etc"
 }
 ```
 
@@ -751,7 +751,6 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
     measurements from the attached IoT Sensors, since they had been provisioned using these settings
 -   The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
 -   The notification `url` must match the configured `CYGNUS_POSTGRESQL_SERVICE_PORT`
--   The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 -   The `throttling` value defines the rate that changes are sampled.
 
 #### :five: Request:
@@ -1054,7 +1053,7 @@ The response will look similar to the following:
 ```json
 {
     "success": "true",
-    "version": "1.17.0_SNAPSHOT.etc"
+    "version": "1.18.0_SNAPSHOT.etc"
 }
 ```
 
@@ -1088,7 +1087,6 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
     measurements from the attached IoT Sensors, since they had been provisioned using these settings
 -   The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
 -   The notification `url` must match the configured `CYGNUS_MYSQL_SERVICE_PORT`
--   The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 -   The `throttling` value defines the rate that changes are sampled.
 
 #### :seven: Request:
@@ -1378,7 +1376,7 @@ The response will look similar to the following:
 ```json
 {
     "success": "true",
-    "version": "1.17.0_SNAPSHOT.etc"
+    "version": "1.18.0_SNAPSHOT.etc"
 }
 ```
 
@@ -1411,7 +1409,6 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The `fiware-service` and `fiware-servicepath` headers are used to filter the subscription to only listen to
     measurements from the attached IoT Sensors
 -   The `idPattern` in the request body ensures that Cygnus will be informed of all context data changes.
--   The `attrsFormat=legacy` is required since Cygnus currently only accepts notifications in the older NGSI v1 format.
 -   The `throttling` value defines the rate that changes are sampled.
 
 When running in **multi-agent** mode, the notification `url` for each subscription must match the defaults for the given
