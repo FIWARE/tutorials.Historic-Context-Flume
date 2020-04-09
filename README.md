@@ -393,9 +393,8 @@ same for each database. The response will be **201 - Created**
 > value does not match the number of notified context responses
 > ```
 >
-> For versions of Cygnus prior to 1.18.0  an additional `attrsFormat=legacy`
-> attribute is required in the subscription since Cygnus currently only
-> accepted notifications in the older NGSI v1 format.
+> For versions of Cygnus prior to 1.18.0 an additional `attrsFormat=legacy` attribute is required in the subscription
+> since Cygnus currently only accepted notifications in the older NGSI v1 format.
 
 If a subscription has been created, you can check to see if it is firing by making a GET request to the
 `/v2/subscriptions` endpoint.
