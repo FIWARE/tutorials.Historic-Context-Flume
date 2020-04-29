@@ -157,7 +157,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
         、[Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し
         、Context Broker がコンテキスト・エンティティの状態を変更するための
-        [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエス
+        [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエス
         トに変換します
 -   FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース
     (**MySQL** , **PostgreSQL** , **MongoDB**) に保持します。
@@ -188,11 +188,11 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
         セットとして機能する Web サーバ
     -   このチュートリアルでは、**コンテキスト・プロバイダの NGSI proxy** は使用
         しません。これは以下を行います :
-        -   [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使
+        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使
             用してリクエストを受信します
         -   独自の API を独自のフォーマットで使用して、公開されているデータ・ソ
             ースへのリクエストを行います
-        -   [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式
+        -   [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) 形式
             でコンテキスト・データ Orion Context Broker に返します
 
 要素間のすべての対話は HTTP リクエストによって開始されるため、エンティティはコン
