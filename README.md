@@ -210,6 +210,7 @@ repository and create the necessary images by running the commands as shown:
 ```console
 git clone https://github.com/FIWARE/tutorials.Historic-Context-Flume.git
 cd tutorials.Historic-Context-Flume
+git checkout NGSI-v2
 
 ./services create
 ```
