@@ -268,7 +268,7 @@ git checkout NGSI-v2
 ```
 
 その後、リポジトリ内で提供される
-[services](https://github.com/FIWARE/tutorials.Historic-Context-Flume/blob/master/services)
+[services](https://github.com/FIWARE/tutorials.Historic-Context-Flume/blob/NGSI-v2/services)
 の Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初
 期化できます :
 
