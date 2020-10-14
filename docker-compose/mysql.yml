@@ -35,7 +35,8 @@ services:
 
   # Cygnus is configured to write context data to MySQL
   cygnus:
-    image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    #image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    image: ging/fiware-cygnus
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
