@@ -5,7 +5,8 @@ services:
 
   # Cygnus is configured to write context data to Mongo-DB
   cygnus:
-    image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    #image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    image: ging/cygnus-ngsi-ld
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
@@ -27,7 +28,7 @@ services:
       - "CYGNUS_CKAN_ENABLE_LOWERCASE=false"
       - "CYGNUS_CKAN_DATA_MODEL=dm-by-entity"
       - "CYGNUS_CKAN_ATTR_PERSISTANCE=row"
-      - "CYGNUS_CKAN_ORION_URL=http://orion:${ORION_PORT}"
+      - "CYGNUS_CKAN_ORION_URL=http://orion:${ORION_LD_PORT}"
       - "CYGNUS_CKAN_API_KEY=29f1bec9-0fa2-4aaf-a1fc-6a7ecb233d61"
       - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
       - "CYGNUS_SERVICE_PORT=${CYGNUS_SERVICE_PORT}" # Notification Port that Cygnus listens when subcribing to context data changes
