@@ -253,7 +253,6 @@ mongo-db:
         - "27017:27017"
     networks:
         - default
-
 ```
 
 ## MongoDB - Cygnus Configuration
