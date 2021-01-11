@@ -32,6 +32,7 @@ services:
     command: -dbhost mongo-db -logLevel DEBUG -noCache
     healthcheck:
       test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
+      interval: 5s
 
   # Cygnus is configured to write context data to Mongo-DB
   cygnus:
@@ -151,7 +152,9 @@ services:
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`; 
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1    
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+    
 
   namenode:
       image: tailtarget/hadoop:2.7.2

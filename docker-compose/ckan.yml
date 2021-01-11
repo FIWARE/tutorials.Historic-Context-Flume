@@ -15,6 +15,7 @@ services:
     command: -dbhost mongo-db -logLevel DEBUG -noCache
     healthcheck:
       test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
+      interval: 5s
   
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
@@ -94,7 +95,9 @@ services:
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`; 
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1    
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+    
 
   ckan:
     image: italia/ckan-it:2.6.8-2
