@@ -305,7 +305,7 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
 
 ```yaml
 mongo-db:
-    image: mongo:3.6
+    image: mongo:4.2
     hostname: mongo-db
     container_name: db-mongo
     ports:
