@@ -4,7 +4,7 @@
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-Flume.svg)](https://opensource.org/licenses/MIT)
 
-[![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware-cygnus)
+[![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-cygnus)
 <br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
 <!-- prettier-ignore -->
@@ -114,8 +114,8 @@ notifications must be set up to only pass the minimal data required as necessary
 
 For the purpose of this tutorial, a series of dummy IoT devices have been created, which will be attached to the context
 broker. Details of the architecture and protocol used can be found in the
-[IoT Sensors tutorial](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2). The state of each device can be seen on the
-UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
+[IoT Sensors tutorial](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2). The state of each device can be
+seen on the UltraLight device monitor web page found at: `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-Flume/img/device-monitor.png)
 
@@ -157,7 +157,8 @@ Therefore the overall architecture will consist of the following elements:
         -   Display store information and allow users to interact with the dummy IoT devices
         -   Show which products can be bought at each store
         -   Allow users to "buy" products and reduce the stock count.
-    -   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using the
+    -   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)
+        using the
         [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         protocol running over HTTP.
     -   The **Context Provider NGSI** proxy is not used in this tutorial. It does the following:
@@ -245,14 +246,13 @@ on the standard `27017` port and the overall architecture can be seen below:
 
 ```yaml
 mongo-db:
-    image: mongo:3.6
+    image: mongo:4.2
     hostname: mongo-db
     container_name: db-mongo
     ports:
         - "27017:27017"
     networks:
         - default
-    command: --bind_ip_all --smallfiles
 ```
 
 ## MongoDB - Cygnus Configuration

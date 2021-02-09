@@ -305,14 +305,14 @@ MongoDB テクノロジーを使用して、履歴コンテキスト・データ
 
 ```yaml
 mongo-db:
-    image: mongo:3.6
+    image: mongo:4.2
     hostname: mongo-db
     container_name: db-mongo
     ports:
         - "27017:27017"
     networks:
         - default
-    command: --bind_ip_all --smallfiles
+
 ```
 
 <a name="mongodb---cygnus-configuration"></a>
