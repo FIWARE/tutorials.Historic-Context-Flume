@@ -20,7 +20,6 @@ version: "3.5"
 services:
   # Orion is the context broker
   orion:
-    env_file: ../.env
     image: fiware/orion:${ORION_VERSION}
     hostname: orion
     container_name: fiware-orion
@@ -37,7 +36,6 @@ services:
 
   # Cygnus is configured to write context data to Mongo-DB, PostgeSQL and MySQL
   cygnus:
-    env_file: ../.env
     image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
@@ -48,15 +46,15 @@ services:
     networks:
       - default
     expose:
-      - "${CYGNUS_MONGO_SERVICE_PORT}" 
-      - "${CYGNUS_MYSQL_SERVICE_PORT}" 
-      - "${CYGNUS_POSTGRESQL_SERVICE_PORT}"
-      - "${CYGNUS_API_PORT}"
+      - ${CYGNUS_MONGO_SERVICE_PORT} 
+      - ${CYGNUS_MYSQL_SERVICE_PORT} 
+      - ${CYGNUS_POSTGRESQL_SERVICE_PORT}
+      - ${CYGNUS_API_PORT}
     ports:
-      - "${CYGNUS_MONGO_SERVICE_PORT}:${CYGNUS_MONGO_SERVICE_PORT}" # localhost:5051
-      - "${CYGNUS_POSTGRESQL_SERVICE_PORT}:${CYGNUS_POSTGRESQL_SERVICE_PORT}"
-      - "${CYGNUS_MYSQL_SERVICE_PORT}:${CYGNUS_MYSQL_SERVICE_PORT}" # localhost:5050
-      - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5080
+      - ${CYGNUS_MONGO_SERVICE_PORT}:${CYGNUS_MONGO_SERVICE_PORT} # localhost:5051
+      - ${CYGNUS_POSTGRESQL_SERVICE_PORT}:${CYGNUS_POSTGRESQL_SERVICE_PORT}
+      - ${CYGNUS_MYSQL_SERVICE_PORT}:${CYGNUS_MYSQL_SERVICE_PORT} # localhost:5050
+      - ${CYGNUS_API_PORT}:${CYGNUS_API_PORT} # localhost:5080
     environment:
       - "CYGNUS_MULTIAGENT=true" # Whether to persist data into multiple databases.
       - "CYGNUS_MONGO_SERVICE_PORT=${CYGNUS_MONGO_SERVICE_PORT}"
@@ -80,7 +78,6 @@ services:
   
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
-    env_file: ../.env
     image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
@@ -89,8 +86,8 @@ services:
     networks:
       - default
     ports:
-      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # localhost:4041
-      - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}" # localhost:7896
+      - ${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT} # localhost:4041
+      - ${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT} # localhost:7896
     environment:
       - IOTA_CB_HOST=orion # name of the context broker to update context
       - IOTA_CB_PORT=${ORION_PORT} # port the context broker listens on to update context
@@ -111,7 +108,6 @@ services:
   
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
-    env_file: ../.env
     image: fiware/tutorials.context-provider
     hostname: tutorial
     container_name: fiware-tutorial
@@ -124,11 +120,11 @@ services:
           - iot-sensors
           - context-provider
     expose:
-      - "${TUTORIAL_APP_PORT}" # localhost:3000
-      - "${TUTORIAL_DUMMY_DEVICE_PORT}" # localhost:3001
+      - ${TUTORIAL_APP_PORT} # localhost:3000
+      - ${TUTORIAL_DUMMY_DEVICE_PORT} # localhost:3001
     ports:
-      - "${TUTORIAL_APP_PORT}:${TUTORIAL_APP_PORT}" # localhost:3000
-      - "${TUTORIAL_DUMMY_DEVICE_PORT}:${TUTORIAL_DUMMY_DEVICE_PORT}" # localhost:3001
+      - ${TUTORIAL_APP_PORT}:${TUTORIAL_APP_PORT} # localhost:3000
+      - ${TUTORIAL_DUMMY_DEVICE_PORT}:${TUTORIAL_DUMMY_DEVICE_PORT} # localhost:3001
     environment:
       - "MONGO_URL=mongodb://mongo-db:27017"
       - "DEBUG=tutorial:*"
@@ -148,14 +144,13 @@ services:
 
   # Databases
   mongo-db:
-    env_file: ../.env
     image: mongo:${MONGO_DB_VERSION}
     hostname: mongo-db
     container_name: db-mongo
     expose:
-      - "${MONGO_DB_PORT}"
+      - ${MONGO_DB_PORT}
     ports:
-      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # localhost:27017 # localhost:27017
+      - ${MONGO_DB_PORT}:${MONGO_DB_PORT} # localhost:27017 # localhost:27017
     networks:
       - default
     volumes:
@@ -168,15 +163,14 @@ services:
     
 
   mysql-db:
-    env_file: ../.env
     restart: always
     image: mysql:${MYSQL_DB_VERSION}
     hostname: mysql-db
     container_name: db-mysql
     expose:
-      - "${MYSQL_DB_PORT}"
+      - ${MYSQL_DB_PORT}
     ports:
-      - "${MYSQL_DB_PORT}:${MYSQL_DB_PORT}" # localhost:3306
+      - ${MYSQL_DB_PORT}:${MYSQL_DB_PORT} # localhost:3306
     networks:
       - default
     environment:
@@ -186,14 +180,13 @@ services:
       - mysql-db:/var/lib/mysql
 
   postgres-db:
-    env_file: ../.env
     image: postgres
     hostname: postgres-db
     container_name: db-postgres
     expose:
-      - "${POSTGRES_DB_PORT}"
+      - ${POSTGRES_DB_PORT}
     ports:
-      - "${POSTGRES_DB_PORT}:${POSTGRES_DB_PORT}"
+      - ${POSTGRES_DB_PORT}:${POSTGRES_DB_PORT}
     networks:
       - default
     environment:
