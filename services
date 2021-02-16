@@ -27,7 +27,7 @@ loadData () {
 
 stoppingContainers () {
 	echo "Stopping containers"
-	docker-compose --env-file=.env --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+	docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
 
 	echo "Removing HDFS files"
 	for dir in ./docker-compose/data/*; do
@@ -128,7 +128,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --env-file=.env --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -144,7 +144,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --env-file=.env -f docker-compose/ckan.yml -p fiware up -d --remove-orphans
+		docker-compose -f docker-compose/ckan.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -161,7 +161,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --env-file=.env -f docker-compose/hdfs.yml -p fiware up -d --remove-orphans
+		docker-compose -f docker-compose/hdfs.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -178,7 +178,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --env-file=.env --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -194,7 +194,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --env-file=.env --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -210,7 +210,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --env-file=.env  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
+		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -226,7 +226,7 @@ case "${command}" in
 		;;
 	"create")
 		echo "Pulling Docker images"
-		docker-compose --env-file=.env --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
+		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
 		;;
 	*)
 		echo "Command not Found."
