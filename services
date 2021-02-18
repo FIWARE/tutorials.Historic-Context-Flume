@@ -203,7 +203,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose  -f docker-compose/ckan.yml -p fiware up -d --remove-orphans
+		docker-compose -f docker-compose/ckan.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -220,7 +220,7 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose  -f docker-compose/hdfs.yml -p fiware up -d --remove-orphans
+		docker-compose -f docker-compose/hdfs.yml -p fiware up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -278,12 +278,15 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
 	"stop")
+		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		;;
 	"start")
+		export $(cat .env | grep "#" -v)
 		./services mongodb
 		;;
 	"create")
+		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
 		;;
