@@ -190,6 +190,23 @@ case "${command}" in
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
 		;;
+	 "elasticsearch")
+		export $(cat .env | grep "#" -v)
+		stoppingContainers
+		echo -e "Starting five containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, ElacticSearch and a \033[1mMongoDB\033[0m databases."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to ElasticSearch-DB only"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo ""
+		docker-compose --log-level ERROR -f docker-compose/elasticsearch.yml -p fiware up -d --remove-orphans
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
+		loadData
+		displayServices
+		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		;;
     "postgres")
 		export $(cat .env | grep "#" -v)
 		stoppingContainers
