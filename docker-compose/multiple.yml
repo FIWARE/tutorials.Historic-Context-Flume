@@ -203,8 +203,8 @@ services:
     expose:
       - "${MONGO_DB_PORT}"
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
+      # - "${ELASTICSEARCH_NODES_COMMUNICATION_PORT}:${ELASTICSEARCH_NODES_COMMUNICATION_PORT}"
     networks:
       - default
     volumes:
@@ -216,7 +216,7 @@ services:
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
     healthcheck:
-      test: curl https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      test: curl http://localhost:${ELASTICSEARCH_PORT} >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
       interval: 30s
       timeout: 10s
       retries: 5
