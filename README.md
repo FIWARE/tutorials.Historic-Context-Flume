@@ -946,7 +946,7 @@ container which hosts the ElasticSearch server - the default Docker image for th
 to mention that the ElasticSearch Sink has been tested with the versions 6.3 and 7.6 of Elasticsearch. The ElasticSearch
 instance is listening on the standard `9200` port, and the overall architecture can be seen below:
 
-![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-postgres.png)
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-elasticsearch.png)
 
 We now have a system with two databases, since the MongoDB container is still required to hold data related to the Orion
 Context Broker and the IoT Agent.
@@ -962,7 +962,6 @@ elasticsearch-db:
       - "${MONGO_DB_PORT}"
     ports:
       - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
-      - "${ELASTICSEARCH_NODES_COMMUNICATION_PORT}:${ELASTICSEARCH_NODES_COMMUNICATION_PORT}"
     networks:
       - default
     volumes:
@@ -980,12 +979,12 @@ elasticsearch-db:
       retries: 5
 ```
 
-The `elasticsearch-db` container is listening on two ports:
+The `elasticsearch-db` container is listening on only one port:
 
 -   Port `9200` (ELASTICSEARCH_PORT) is the default port for a ElasticSearch server.
--   Port `9300` (ELASTICSEARCH_NODES_COMMUNICATION_PORT) is the default port for a ElasticSearch for nodes 
-    communication. The current deployment do not need to use this port.
 
+> Note: If you want to deploy multiplie ElasticSearch nodes, it is needed to specify the corresponding port, by default
+> it should be `9300` (ELASTICSEARCH_NODES_COMMUNICATION_PORT) for a ElasticSearch for nodes communication.
 
 The `elasticsearch-db` container is driven by environment variables as shown:
 
@@ -1179,7 +1178,7 @@ In our case we access to the `motion003` entity, and we limit the results only t
 curl -XGET 'localhost:9200/_sql?format=json' -H 'Content-Type: application/json' -d'
 {
   "query": " select * from \"cygnus-openiot--motion-003-motion-2021.04.16\" limit 2 "
-}' | jq .
+}'
 ```
 
 ### Result:

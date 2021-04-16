@@ -130,7 +130,6 @@ services:
       - "${MONGO_DB_PORT}"
     ports:
       - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
-      # - "${ELASTICSEARCH_NODES_COMMUNICATION_PORT}:${ELASTICSEARCH_NODES_COMMUNICATION_PORT}"
     networks:
       - default
     volumes:
