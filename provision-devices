@@ -157,7 +157,7 @@ curl -s -o /dev/null -X POST \
       "entity_name": "Lamp:001",
       "entity_type": "Lamp",
       "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/lamp001"'",
-       "static_attributes": [
+      "static_attributes": [
           {"name": "refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:001"}
     	]
     }
