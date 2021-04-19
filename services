@@ -9,18 +9,26 @@ set -e
 
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
-    echo "usage: services [create|ckan|hdfs|mongodb|mysql|multiple|postgres|stop]"
+    echo "usage: services [create|ckan|hdfs|mongodb|elasticsearch|mysql|multiple|postgres|stop]"
     exit 1
 fi
 
 loadData () {
 	docker run --rm -v $(pwd)/import-data:/import-data \
 		--network fiware_default \
+		-e ORION_PORT="${ORION_PORT}" \
+		-e TUTORIAL_APP_PORT="${TUTORIAL_APP_PORT}" \
 		--entrypoint /bin/ash curlimages/curl import-data
+
 	waitForIoTAgent
+
 	docker run --rm -v $(pwd)/provision-devices:/provision-devices \
 		--network fiware_default \
+    -e IOTA_NORTH_PORT="${IOTA_NORTH_PORT}" \
+    -e ORION_PORT="${ORION_PORT}" \
+    -e TUTORIAL_DUMMY_DEVICE_PORT="${TUTORIAL_DUMMY_DEVICE_PORT}" \
 		--entrypoint /bin/ash curlimages/curl provision-devices
+
 	echo ""
 }
 
@@ -135,7 +143,7 @@ case "${command}" in
 		waitForOrion
 		loadData
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:$TUTORIAL_APP_PORT/device/monitor\033[0m"
 		;;
 	"ckan")
 		export $(cat .env | grep "#" -v)
@@ -153,7 +161,7 @@ case "${command}" in
 		loadData
 		displayServices
 		displayCKAN
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:$TUTORIAL_APP_PORT/device/monitor\033[0m"
 		;;
 	"hdfs")
 		export $(cat .env | grep "#" -v)
@@ -171,7 +179,7 @@ case "${command}" in
 		loadData
 		displayServices
 		displayHDFS
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:$TUTORIAL_APP_PORT/device/monitor\033[0m"
 		;;
 	 "mongodb")
 		export $(cat .env | grep "#" -v)
@@ -188,7 +196,24 @@ case "${command}" in
 		waitForOrion
 		loadData
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:$TUTORIAL_APP_PORT/device/monitor\033[0m"
+		;;
+	 "elasticsearch")
+		export $(cat .env | grep "#" -v)
+		stoppingContainers
+		echo -e "Starting five containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, \033[1mElacticSearch\033[0m and a \033[1mMongoDB\033[0m databases."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to ElasticSearch-DB only"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo ""
+		docker-compose --log-level ERROR -f docker-compose/elasticsearch.yml -p fiware up -d --remove-orphans
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
+		loadData
+		displayServices
+		echo -e "Now open \033[4mhttp://localhost:$TUTORIAL_APP_PORT/device/monitor\033[0m"
 		;;
     "postgres")
 		export $(cat .env | grep "#" -v)
@@ -205,7 +230,7 @@ case "${command}" in
 		waitForOrion
 		loadData
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:$TUTORIAL_APP_PORT/device/monitor\033[0m"
 		;;
 	"mysql")
 		export $(cat .env | grep "#" -v)
@@ -222,7 +247,7 @@ case "${command}" in
 		waitForOrion
 		loadData
 		displayServices
-		echo -e "Now open \033[4mhttp://localhost:3000/device/monitor\033[0m"
+		echo -e "Now open \033[4mhttp://localhost:$TUTORIAL_APP_PORT/device/monitor\033[0m"
 		;;
 	"stop")
 		export $(cat .env | grep "#" -v)
@@ -239,7 +264,7 @@ case "${command}" in
 		;;
 	*)
 		echo "Command not Found."
-		echo "usage: services [create|ckan|hdfs|mongodb|mysql|multiple|postgres|stop]"
+		echo "usage: services [create|ckan|hdfs|mongodb|elasticsearch|mysql|multiple|postgres|stop]"
 		exit 127;
 		;;
 esac

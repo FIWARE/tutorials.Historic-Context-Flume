@@ -1,19 +1,19 @@
 # WARNING: Do not deploy this tutorial configuration directly to a production environment
 #
-# The tutorial docker-compose files have not been written for production deployment and will not 
-# scale. A proper architecture has been sacrificed to keep the narrative focused on the learning 
-# goals, they are just used to deploy everything onto a single Docker machine. All FIWARE components 
-# are running at full debug and extra ports have been exposed to allow for direct calls to services. 
+# The tutorial docker-compose files have not been written for production deployment and will not
+# scale. A proper architecture has been sacrificed to keep the narrative focused on the learning
+# goals, they are just used to deploy everything onto a single Docker machine. All FIWARE components
+# are running at full debug and extra ports have been exposed to allow for direct calls to services.
 # They also contain various obvious security flaws - passwords in plain text, no load balancing,
-# no use of HTTPS and so on. 
-# 
+# no use of HTTPS and so on.
+#
 # This is all to avoid the need of multiple machines, generating certificates, encrypting secrets
-# and so on, purely so that a single docker-compose file can be read as an example to build on, 
-# not use directly. 
-# 
+# and so on, purely so that a single docker-compose file can be read as an example to build on,
+# not use directly.
+#
 # When deploying to a production environment, please refer to the Helm Repository
 # for FIWARE Components in order to scale up to a proper architecture:
-# 
+#
 # see: https://github.com/FIWARE/helm-charts/
 #
 version: "3.5"
@@ -34,48 +34,30 @@ services:
       test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
       interval: 5s
 
-  # Cygnus is configured to write context data to Mongo-DB, PostgeSQL and MySQL
+  # Cygnus is configured to write context data to Mongo-DB
   cygnus:
     image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
-      - mysql-db
-      - mongo-db
-      - postgres-db
+      - elasticsearch-db
     networks:
       - default
     expose:
-      - ${CYGNUS_MONGO_SERVICE_PORT} 
-      - ${CYGNUS_MYSQL_SERVICE_PORT} 
-      - ${CYGNUS_POSTGRESQL_SERVICE_PORT}
-      - ${CYGNUS_API_PORT}
+      - "${CYGNUS_API_PORT}"
+      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
     ports:
-      - ${CYGNUS_MONGO_SERVICE_PORT}:${CYGNUS_MONGO_SERVICE_PORT} # localhost:5051
-      - ${CYGNUS_POSTGRESQL_SERVICE_PORT}:${CYGNUS_POSTGRESQL_SERVICE_PORT}
-      - ${CYGNUS_MYSQL_SERVICE_PORT}:${CYGNUS_MYSQL_SERVICE_PORT} # localhost:5050
-      - ${CYGNUS_API_PORT}:${CYGNUS_API_PORT} # localhost:5080
+      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}" # localhost:5058
+      - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5088
     environment:
-      - "CYGNUS_MULTIAGENT=true" # Whether to persist data into multiple databases.
-      - "CYGNUS_MONGO_SERVICE_PORT=${CYGNUS_MONGO_SERVICE_PORT}"
-      - "CYGNUS_MONGO_HOSTS=mongo-db:${MONGO_DB_PORT}" # Comma separated list of Mongo-DB servers which Cygnus will contact to persist historical context data
-      - "CYGNUS_POSTGRESQL_SERVICE_PORT=${CYGNUS_POSTGRESQL_SERVICE_PORT}"
-      - "CYGNUS_POSTGRESQL_HOST=postgres-db" # Hostname of the PostgreSQL server used to persist historical context data
-      - "CYGNUS_POSTGRESQL_PORT=${POSTGRES_DB_PORT}" # Port that the PostgreSQL server uses to listen to commands
-      - "CYGNUS_POSTGRESQL_USER=postgres" # Username for the PostgreSQL database user
-      - "CYGNUS_POSTGRESQL_PASS=password" # Password for the PostgreSQL database user
-      - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true" # Switch to enable caching within the PostgreSQL configuration
-      - "CYGNUS_MYSQL_SERVICE_PORT=${CYGNUS_MYSQL_SERVICE_PORT}"
-      - "CYGNUS_MYSQL_HOST=mysql-db" # Hostname of the MySQL server used to persist historical context data
-      - "CYGNUS_MYSQL_PORT=${MYSQL_DB_PORT}" # Port that the MySQL server uses to listen to commands
-      - "CYGNUS_MYSQL_USER=root" # Username for the MySQL database user
-      - "CYGNUS_MYSQL_PASS=123" # Password for the MySQL database user
-      - "CYGNUS_SERVICE_PORT=${CYGNUS_MYSQL_SERVICE_PORT}"
+      - "CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}"
+      - "CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+      - "CYGNUS_ELASTICSEARCH_SSL=false"
       - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
-      - "CYGNUS_LOG_LEVEL=DEBUG" #The logging level for Cygnus
+      - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
     healthcheck:
-      test: curl --fail -s http://localhost:${CYGNUS_API_PORT}/v1/version || exit 1
-  
+      test: curl --fail -s http://localhost:${CYGNUS_API_ADMIN_PORT}/v1/version || exit 1
+
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
     image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
@@ -86,8 +68,8 @@ services:
     networks:
       - default
     ports:
-      - ${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT} # localhost:4041
-      - ${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT} # localhost:7896
+      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # localhost:4041
+      - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}" # localhost:7896
     environment:
       - IOTA_CB_HOST=orion # name of the context broker to update context
       - IOTA_CB_PORT=${ORION_PORT} # port the context broker listens on to update context
@@ -105,26 +87,23 @@ services:
     healthcheck:
       interval: 5s
 
-  
+
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
     image: fiware/tutorials.context-provider
     hostname: tutorial
     container_name: fiware-tutorial
-    depends_on:
-      - orion
-      - iot-agent
     networks:
       default:
         aliases:
           - iot-sensors
           - context-provider
     expose:
-      - ${TUTORIAL_APP_PORT} # localhost:3000
-      - ${TUTORIAL_DUMMY_DEVICE_PORT} # localhost:3001
+      - "${TUTORIAL_APP_PORT}" # localhost:3000
+      - "${TUTORIAL_DUMMY_DEVICE_PORT}" # localhost:3001
     ports:
-      - ${TUTORIAL_APP_PORT}:${TUTORIAL_APP_PORT} # localhost:3000
-      - ${TUTORIAL_DUMMY_DEVICE_PORT}:${TUTORIAL_DUMMY_DEVICE_PORT} # localhost:3001
+      - "${TUTORIAL_APP_PORT}:${TUTORIAL_APP_PORT}" # localhost:3000
+      - "${TUTORIAL_DUMMY_DEVICE_PORT}:${TUTORIAL_DUMMY_DEVICE_PORT}" # localhost:3001
     environment:
       - "MONGO_URL=mongodb://mongo-db:27017"
       - "DEBUG=tutorial:*"
@@ -143,59 +122,6 @@ services:
 
 
   # Databases
-  mongo-db:
-    image: mongo:${MONGO_DB_VERSION}
-    hostname: mongo-db
-    container_name: db-mongo
-    expose:
-      - ${MONGO_DB_PORT}
-    ports:
-      - ${MONGO_DB_PORT}:${MONGO_DB_PORT} # localhost:27017 # localhost:27017
-    networks:
-      - default
-    volumes:
-      - mongo-db:/data
-    healthcheck:
-      test: |
-        host=`hostname --ip-address || echo '127.0.0.1'`; 
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
-      interval: 5s
-    
-
-  mysql-db:
-    restart: always
-    image: mysql:${MYSQL_DB_VERSION}
-    hostname: mysql-db
-    container_name: db-mysql
-    expose:
-      - ${MYSQL_DB_PORT}
-    ports:
-      - ${MYSQL_DB_PORT}:${MYSQL_DB_PORT} # localhost:3306
-    networks:
-      - default
-    environment:
-      - "MYSQL_ROOT_PASSWORD=123"
-      - "MYSQL_ROOT_HOST=%"
-    volumes:
-      - mysql-db:/var/lib/mysql
-
-  postgres-db:
-    image: postgres
-    hostname: postgres-db
-    container_name: db-postgres
-    expose:
-      - ${POSTGRES_DB_PORT}
-    ports:
-      - ${POSTGRES_DB_PORT}:${POSTGRES_DB_PORT}
-    networks:
-      - default
-    environment:
-      - "POSTGRES_PASSWORD=password"
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_DB=postgres"
-    volumes:
-      - postgres-db:/var/lib/postgresql/data
-
   elasticsearch-db:
     image: elasticsearch:${ELASTICSEARCH_VERSION}
     hostname: elasticsearch
@@ -220,6 +146,28 @@ services:
       timeout: 10s
       retries: 5
 
+
+
+  mongo-db:
+    image: mongo:${MONGO_DB_VERSION}
+    hostname: mongo-db
+    container_name: db-mongo
+    expose:
+      - "${MONGO_DB_PORT}"
+    ports:
+      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # localhost:27017 # localhost:27017
+    networks:
+      - default
+    volumes:
+      - mongo-db:/data
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+
+
+
 networks:
   default:
     ipam:
@@ -228,6 +176,4 @@ networks:
 
 volumes:
   mongo-db: ~
-  postgres-db: ~
-  mysql-db: ~
   es-db: ~

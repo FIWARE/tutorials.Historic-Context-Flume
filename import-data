@@ -12,7 +12,7 @@ printf "⏳ Loading context data "
 # Create four Store Entities in various locations across Berlin
 #
 curl -s -o /dev/null -X POST \
-  'http://orion:1026/v2/op/update' \
+  "http://orion:$ORION_PORT/v2/op/update" \
   -H 'Content-Type: application/json' \
   -g -d '{
   "actionType": "append",
@@ -47,7 +47,7 @@ curl -s -o /dev/null -X POST \
 # Add Weather and Twitter Responses for Store 1 using random values
 #
 curl -s -o /dev/null -X POST \
-  http://orion:1026/v2/registrations \
+  "http://orion:$ORION_PORT/v2/registrations" \
   -H 'Content-Type: application/json' \
   -d '{
    "description": "Weather Conditions",   
@@ -64,7 +64,7 @@ curl -s -o /dev/null -X POST \
    },
    "provider": {
      "http": {
-       "url": "http://context-provider:3000/proxy/v1/random/weatherConditions"
+       "url": "'"http://context-provider:$TUTORIAL_APP_PORT/proxy/v1/random/weatherConditions"'"
      },
      "legacyForwarding": true
    },
@@ -72,7 +72,7 @@ curl -s -o /dev/null -X POST \
 }'
 
 curl -s -o /dev/null -X POST \
-  http://orion:1026/v2/registrations \
+  "http://orion:$ORION_PORT/v2/registrations" \
   -H 'Content-Type: application/json' \
   -d '{
    "description": "Tweeting Cat Facts",
@@ -89,7 +89,7 @@ curl -s -o /dev/null -X POST \
    },
    "provider": {
      "http": {
-       "url": "http://context-provider:3000/proxy/v1/catfacts/tweets"
+       "url": "'"http://context-provider:$TUTORIAL_APP_PORT/proxy/v1/catfacts/tweets"'"
      },
      "legacyForwarding": true
    },
@@ -100,7 +100,7 @@ curl -s -o /dev/null -X POST \
 # Add Weather and Twitter Responses for Store 2 using real sources
 #
 # curl -s -o /dev/null -X POST \
-#   'http://orion:1026/v2/registrations' \
+#   "http://orion:$ORION_PORT/v2/registrations" \
 #   -H 'Content-Type: application/json' \
 #   -d '{
 #   "description": "Store:002 - Real Temperature and Humidity",
@@ -118,14 +118,14 @@ curl -s -o /dev/null -X POST \
 #   },
 #   "provider": {
 #     "http": {
-#       "url": "http://context-provider:3000/proxy/weather/number/temperature:temp,relativeHumidity:humidity/berlin%2cde"
+#       "url": "'"http://context-provider:$TUTORIAL_APP_PORT/proxy/weather/number/temperature:temp,relativeHumidity:humidity/berlin%2cde"'"
 #     },
 #      "legacyForwarding": true
 #   }
 # }'
 
 # curl -s -o /dev/null -X POST \
-#   'http://orion:1026/v2/registrations' \
+#   "http://orion:$ORION_PORT/v2/registrations" \
 #   -H 'Content-Type: application/json' \
 #   -d '{
 #   "description": "Store:002 Real Tweets",
@@ -142,7 +142,7 @@ curl -s -o /dev/null -X POST \
 #   },
 #   "provider": {
 #     "http": {
-#       "url": "http://context-provider:3000/proxy/twitter/list/tweets:text/FIWARE"
+#       "url": "'"http://context-provider:$TUTORIAL_APP_PORT/proxy/twitter/list/tweets:text/FIWARE"'"
 #     },
 #      "legacyForwarding": true
 #   }
@@ -153,7 +153,7 @@ curl -s -o /dev/null -X POST \
 # Each shelf is designed to hold one product.
 #
 curl -s -o /dev/null -X POST \
-  'http://orion:1026/v2/op/update' \
+  "http://orion:$ORION_PORT/v2/op/update" \
   -H 'Content-Type: application/json' \
   -g -d '{
   "actionType": "append",
@@ -236,7 +236,7 @@ curl -s -o /dev/null -X POST \
 # These are a series of alcoholc and non-alcoholic drinks which are available to sell.
 #
 curl -s -o /dev/null -X POST \
-  'http://orion:1026/v2/op/update' \
+  "http://orion:$ORION_PORT/v2/op/update" \
   -H 'Content-Type: application/json' \
   -d '{
   "actionType":"APPEND",
@@ -304,7 +304,7 @@ curl -s -o /dev/null -X POST \
 # These the drinks on order in Store:001
 #
 curl -s -o /dev/null -X POST \
-  'http://orion:1026/v2/op/update' \
+  "http://orion:$ORION_PORT/v2/op/update" \
   -H 'Content-Type: application/json' \
   -d '{
   "actionType":"APPEND",
@@ -341,7 +341,7 @@ curl -s -o /dev/null -X POST \
 # These the drinks on order in Store:002
 #
 curl -s -o /dev/null -X POST \
-  'http://orion:1026/v2/op/update' \
+  "http://orion:$ORION_PORT/v2/op/update" \
   -H 'Content-Type: application/json' \
   -d '{
   "actionType":"APPEND",
@@ -370,7 +370,7 @@ curl -s -o /dev/null -X POST \
 # Note that Shelf Unit009 is currently unused
 #
 curl -s -o /dev/null -X POST \
-  'http://orion:1026/v2/op/update' \
+  "http://orion:$ORION_PORT/v2/op/update" \
   -H 'Content-Type: application/json' \
   -d '{
   "actionType":"APPEND",
@@ -407,7 +407,7 @@ curl -s -o /dev/null -X POST \
 # These the drinks on order in Store:004
 #
 curl -s -o /dev/null -X POST \
-  'http://orion:1026/v2/op/update' \
+  "http://orion:$ORION_PORT/v2/op/update" \
   -H 'Content-Type: application/json' \
   -d '{
   "actionType":"APPEND",
