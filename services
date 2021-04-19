@@ -24,9 +24,9 @@ loadData () {
 
 	docker run --rm -v $(pwd)/provision-devices:/provision-devices \
 		--network fiware_default \
-    -e IOTA_NORTH_PORT="${IOTA_NORTH_PORT}" \
-    -e ORION_PORT="${ORION_PORT}" \
-    -e TUTORIAL_DUMMY_DEVICE_PORT="${TUTORIAL_DUMMY_DEVICE_PORT}" \
+		-e IOTA_NORTH_PORT="${IOTA_NORTH_PORT}" \
+		-e ORION_PORT="${ORION_PORT}" \
+		-e TUTORIAL_DUMMY_DEVICE_PORT="${TUTORIAL_DUMMY_DEVICE_PORT}" \
 		--entrypoint /bin/ash curlimages/curl provision-devices
 
 	echo ""
@@ -67,11 +67,11 @@ addDatabaseIndex () {
 	docker exec  db-mongo mongo --eval '
 	conn = new Mongo();
 	db = conn.getDB("iotagentul");
-    db.createCollection("devices");
+	db.createCollection("devices");
 	db.devices.createIndex({"_id.service": 1, "_id.id": 1, "_id.type": 1});
 	db.devices.createIndex({"_id.type": 1}); 
 	db.devices.createIndex({"_id.id": 1});
-    db.createCollection("groups");
+	db.createCollection("groups");
 	db.groups.createIndex({"_id.resource": 1, "_id.apikey": 1, "_id.service": 1});
 	db.groups.createIndex({"_id.type": 1});' > /dev/null
 	echo -e " \033[1;32mdone\033[0m"
@@ -126,8 +126,8 @@ displayCKAN () {
 command="$1"
 case "${command}" in
 	"help")
-        echo "usage: services [create|ckan|hdfs|mongodb|mysql|multiple|postgres|stop]"
-        ;;
+		echo "usage: services [create|ckan|hdfs|mongodb|mysql|multiple|postgres|stop]"
+		;;
     "multiple")
 		export $(cat .env | grep "#" -v)
 		stoppingContainers
