@@ -54,22 +54,32 @@ IoT センサをアクティブにし、これらのセンサからの測定値�
     -   [PostgreSQL - データベースからデータを読み込む](#postgresql---reading-data-from-a-database)
         -   [PostgreSQL サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-postgresql-server)
         -   [PostgreSQL サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-postgresql-server)
+-   [ElasticSearch - コンテキスト・データをデータベースに永続化](#elasticsearch---persisting-context-data-into-a-database)
+    -   [ElasticSearch - データベース・サーバの設定](#elasticsearch---database-server-configuration)
+    -   [ElasticSearch - Cygnus の設定](#elasticsearch---cygnus-configuration)
+    -   [ElasticSearch - 起動](#elasticsearch---start-up)
+        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-2)
+        -   [コンテキスト・データの生成](#generating-context-data-2)
+        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-2)
+    -   [ElasticSearch - データベースからデータを読み込む](#elasticsearch---reading-data-from-a-database)
+        -   [ElasticSearch サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-elasticsearch-server)
+        -   [ElasticSearch サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-elasticsearch-server)
 -   [MySQL - コンテキスト・データをデータベースに永続化](#mysql---persisting-context-data-into-a-database)
     -   [MySQL - データベース・サーバの設定](#mysql---database-server-configuration)
     -   [MySQL - Cygnus の設定](#mysql---cygnus-configuration)
     -   [MySQL - 起動](#mysql---start-up)
-        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-2)
-        -   [コンテキスト・データの生成](#generating-context-data-2)
-        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-2)
+        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-3)
+        -   [コンテキスト・データの生成](#generating-context-data-3)
+        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-3)
     -   [MySQL - データベースからデータを読み込む](#mysql---reading-data-from-a-database)
         -   [MySQL サーバ上で利用可能なデータベースを表示](#show-available-databases-on-the-mysql-server)
         -   [MySQL サーバから履歴コンテキストを読み込む](#read-historical-context-from-the-mysql-server)
 -   [マルチ・エージェント - 複数のデータベースへのコンテキスト・データの永続化](#multi-agent---persisting-context-data-into-a-multiple-databases)
     -   [マルチ・エージェント - 複数のデータベースのための Cygnus 設定](#multi-agent---cygnus-configuration-for-multiple-databases)
     -   [マルチ・エージェント - 起動](#multi-agent---start-up)
-        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-3)
-        -   [コンテキスト・データの生成](#generating-context-data-3)
-        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-3)
+        -   [Cygnus サービスの健全性をチェック](#checking-the-cygnus-service-health-4)
+        -   [コンテキスト・データの生成](#generating-context-data-4)
+        -   [コンテキスト変更のサブスクライブ](#subscribing-to-context-changes-4)
     -   [マルチ・エージェント - 永続化データの読み込み](#multi-agent---reading-persisted-data)
 -   [次のステップ](#next-steps)
 
@@ -142,7 +152,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
 [Cygnus Generic Enabler](https://fiware-cygnus.readthedocs.io/en/latest/) を導入
 しました。Orion Context Broker と IoT Agent の両方が
 [MongoDB](https://www.mongodb.com/) テクノロジを利用して保持している情報の永続性
-を維持しています。**MySQL**, **PostgreSQL**, **MongoDB** データベースのいずれか
+を維持しています。**MySQL**, **PostgreSQL**, **MongoDB**, **ElasticSearch** データベースのいずれか
 で、履歴コンテキスト・データを永続化します。
 
 したがって、全体のアーキテクチャーは以下の要素で構成されます :
@@ -162,7 +172,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
         トに変換します
 -   FIWARE Cygnus はコンテキストの変更をサブスクライブし、データベース
     (**MySQL** , **PostgreSQL** , **MongoDB**) に保持します。
--   以下の**データベース**の 1 つ、2 つまたは 3 つ :
+-   以下の**データベース**の 1 つ、2 つ、3 つまたは 4 つ :
     -   基礎となる [MongoDB](https://www.mongodb.com/) データベース :
         -   **Orion Context Broker** が、データ・エンティティなどのコンテキスト
             ・データ情報を保持し、サブスクリプション、レジストレーションするため
@@ -175,6 +185,8 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
         -   履歴データを保持するためのデータ・シンクとして潜在的に使用します
     -   追加の [MySQL](https://www.mysql.com/) データベース :
         -   履歴データを保持するためのデータ・シンクとして潜在的に使用します
+    -   追加の [ElasticSearch](https://www.elastic.co) データベース :
+        -   履歴コンテキスト・データを保持するためのデータ・シンクとして使用します
 -   3 つの**コンテキストプロバイダ** :
     -   **在庫管理フロントエンド**は、このチュートリアルで使用していません。これ
         は以下を行います :
@@ -515,7 +527,7 @@ curl -X GET \
         "notification": {
             "timesSent": 158,
             "lastNotification": "2018-07-02T07:59:21.00Z",
-            "attrs": []
+            "attrs": [],
             "http": {
                 "url": "http://cygnus:5050/notify"
             },
@@ -1075,7 +1087,343 @@ Postgres クライアントを終了してインタラクティブ・モード�
 \q
 ```
 
-You will then return to the commmand line.
+その後、コマンドラインに戻ります。
+
+<a name="elasticsearch---persisting-context-data-into-a-database"></a>
+
+# ElasticSearch - コンテキスト・データをデータベースに永続化
+
+履歴コンテキスト・データを **ElasticSearch** などの代替データベースに永続化するには、ElasticSearch サーバをホストする
+追加のコンテナが必要になります。このデータのデフォルトの Docker イメージを使用できます。ElasticSearch シンクは
+Elasticsearch のバージョン6.3および7.6でテストされていることに注意してください。ElasticSearch インスタンスは標準の
+`9200` ポートでリッスンしており、全体的なアーキテクチャを以下に示します:
+
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-elasticsearch.png)
+
+Orion Context Broker と IoT Agent に関連するデータを保持するために MongoDB コンテナが引き続き必要であるため、2つの
+データベースを備えたシステムができました。
+
+<a name="elasticsearch---database-server-configuration"></a>
+
+## ElasticSearch - データベース・サーバの設定
+
+```yaml
+elasticsearch-db:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    hostname: elasticsearch
+    container_name: db-elasticsearch
+    expose:
+      - "${ELASTICSEARCH_PORT}"
+    ports:
+      - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
+    networks:
+      - default
+    volumes:
+      - es-db:/usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+    healthcheck:
+      test: curl http://localhost:${ELASTICSEARCH_PORT} >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+```
+
+`elasticsearch-db` コンテナは1つのポートのみをリッスンしています:
+
+-   ポート `9200` (ELASTICSEARCH_PORT) は、ElasticSearchサーバーのデフォルトのポートです
+
+> 注: 複数の ElasticSearch ノードをデプロイする場合は、対応するポートを指定する必要があります。デフォルトでは、
+> ノード通信用の ElasticSearch の場合は `9300` (ELASTICSEARCH_NODES_COMMUNICATION_PORT) である必要があります。
+
+`elasticsearch-db` コンテナは、示されているように環境変数によって駆動されます:
+
+| キー             | バリュー            | 詳細                                                 |
+| ---------------- | ------------------- | ---------------------------------------------------- |
+| ES_JAVA_OPTS     | `-Xmx256m -Xms256m` | JVM ヒープサイズの設定。実稼働環境ではお勧めしません |
+| ELASTIC_PASSWORD | `changeme`          | PostgreSQL データベース・ユーザのパスワード          |
+
+> :information_source: **注:** このようなプレーン・テキストの環境変数でパスワードを渡すことは、セキュリティ上の
+> リスクです。これはチュートリアルでは許容できる方法ですが、本番環境では、
+> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+> シークレットを適用することでこのリスクを回避できます。
+
+<a name="elasticsearch---cygnus-configuration"></a>
+
+## ElasticSearch - Cygnus の設定
+
+```yaml
+cygnus:
+    image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    hostname: cygnus
+    container_name: fiware-cygnus
+    depends_on:
+      - elasticsearch-db
+    networks:
+      - default
+    expose:
+      - "${CYGNUS_API_PORT}"
+      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+    ports:
+      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}" # localhost:5058
+      - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5088
+    environment:
+      - "CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}"
+      - "CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+      - "CYGNUS_ELASTICSEARCH_SSL=false"
+      - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
+      - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
+    healthcheck:
+      test: curl --fail -s http://localhost:${CYGNUS_API_ADMIN_PORT}/v1/version || exit 1
+```
+
+`cygnus` コンテナは2つのポートでリッスンしています:
+
+-   Cygnus のサブスクリプション・ポート CYGNUS_ELASTICSEARCH_SERVICE_PORT, `5058` は、サービスが Orion Context Broker
+    からの通知をリッスンする場所です
+-   Cygnus の管理ポート CYGNUS_API_PORT, `5080` は、純粋にチュートリアル・アクセス用に公開されているため、cUrl または
+    Postman は同じネットワークの一部でなくてもプロビジョニング・コマンドを実行できます
+
+`cygnus` コンテナは、示されているように環境変数によって駆動されます:
+
+| キー                      | バリュー                                 | 詳細                                                                                        |
+| ------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------- |
+| CYGNUS_ELASTICSEARCH_HOST | `elasticsearch-db:${ELASTICSEARCH_PORT}` | 履歴コンテキスト・データを永続化するために使用される ElasticSearch サーバのホスト名とポート |
+| CYGNUS_ELASTICSEARCH_PORT | `${CYGNUS_ELASTICSEARCH_SERVICE_PORT}`   | Cygnus が履歴コンテキスト・データを永続化するために使用するポート。デフォルトでは `5058`    |
+| CYGNUS_ELASTICSEARCH_SSL  | `false`                                  | SSL は通信用に構成されていません                                                            |
+| CYGNUS_API_PORT           | `${CYGNUS_API_PORT}`                     | Cygnus が操作上の理由でリッスンするポート。デフォルトでは `5080`                            |
+| CYGNUS_LOG_LEVEL          | `DEBUG`                                  | Cygnus のログレベル                                                                         |
+
+<a name="elasticsearch---start-up"></a>
+
+## ElasticSearch - 起動
+
+**ElasticSearch** データベースを使用してシステムを起動するには、次のコマンドを実行します:
+
+```console
+./services elasticsearch
+```
+
+<a name="checking-the-cygnus-service-health-2"></a>
+
+### Cygnus サービスの健全性をチェック
+
+Cygnus が実行されたら、公開された `CYGNUS_API_PORT` ポートに HTTP リクエストを送信することで、ステータスを
+確認できます。レスポンスが空白の場合、これは通常、Cygnus が実行されていないか、別のポートでリッスンしていることが
+原因です。
+
+#### リクエスト:
+
+```console
+curl -X GET \
+  'http://localhost:5080/v1/version'
+```
+
+#### レスポンス:
+
+レスポンスは次のようになります:
+
+```json
+{
+    "success": "true",
+    "version": "1.18.0_SNAPSHOT.etc"
+}
+```
+
+> **トラブルシューティング:** レスポンスが空白の場合はどうなりますか？
+>
+> -   Docker コンテナが実行されていることを確認するには、
+>
+> ```bash
+> docker ps
+> ```
+>
+> いくつかのコンテナが実行されているのが見えるはずです。`cygnus` が実行されていない場合は、必要に応じてコンテナを
+> 再起動できます。
+
+<a name="checking-the-cygnus-service-health-2"></a>
+
+### コンテキスト・データの生成
+
+このチュートリアルでは、コンテキストが定期的に更新されているシステムを監視する必要があります。ダミー IoT センサを
+使用してこれを行うことができます。`http://localhost:$TUTORIAL_APP_PORT/device/monitor` でデバイス・モニタのページ
+を開きます。**Smart Door** のロックを解除し、**Smart Lamp** をオンにします。変数 `Tutorial_APP_PORT` は `.env`
+ファイルで定義されていることに注意してください。これは、ドロップ・ダウン・リストから適切なコマンドを選択し、
+`send` ボタンを押すことで実行できます。デバイスからの測定値の流れは、同じページに表示されます:
+
+![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
+
+<a name="subscribing-to-context-changes-2"></a>
+
+### コンテキスト変更のサブスクライブ
+
+動的コンテキストシステムが稼働したら、コンテキストの変更を **Cygnus** に通知する必要があります。
+
+これは、Orion Context Broker の `/v2/subscription` エンドポイントに POST リクエストを行うことで実行されます。
+
+-   `fiware-service` ヘッダと `fiware-servicepath` ヘッダは、これらの設定を使用してプロビジョニングされているため、
+    接続された IoT センサからの測定値のみをリッスンするようにサブスクリプションをフィルタリングするために使用
+    されます
+-   リクエスト・ボディの `idPattern` は、Cygnus にすべてのコンテキスト・データの変更が通知されるようにします
+-   通知 (notification) `url` は設定された `CYGNUS_ELASTICSEARCH_SERVICE_PORT` と一致する必要があります
+-   `throttling` 値は、変更がサンプリングされるレートを定義します
+
+#### リクエスト:
+
+```console
+curl -iX POST \
+  'http://localhost:1026/v2/subscriptions' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+  "description": "Notify Cygnus ElasticSearch of all context changes",
+  "subject": {
+    "entities": [
+      {
+        "idPattern": ".*"
+      }
+    ]
+  },
+  "notification": {
+    "http": {
+      "url": "http://cygnus:5058/notify"
+    }
+  },
+  "throttling": 5
+}'
+```
+
+ご覧のとおり、コンテキスト・データの永続化に使用されるデータベースは、サブスクリプションの詳細に影響を与えません。
+各データベースで同じです。レスポンスは **201 - Created** になります。
+
+<a name="elasticsearch---reading-data-from-a-database"></a>
+
+## ElasticSearch - データベースからデータを読み込む
+
+コマンドラインから ElasticSearch データを読み取るために、一連の HTTP リクエストを実行してデータを取得します。
+データにアクセスするための特定のクエリを作成する方法を知りたい場合は、現在のバージョンの
+[Elastic Search API](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-your-data.html)
+を参照してください。
+
+<a name="show-available-databases-on-the-elasticsearch-server"></a>
+
+### ElasticSearch サーバ上で利用可能なデータベースを表示
+
+使用可能なデータベースのリストを表示するには、次のようにステートメントを実行します:
+
+### クエリ:
+
+```console
+curl -XGET 'localhost:9200/_cat/indices?v&pretty'
+```
+
+### 結果:
+
+```
+health status index                                        uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   cygnus-openiot--motion-003-motion-2021.04.16 lh3Y2NT8SJaqNrkLDlmFOg   1   1        288            0    119.4kb        119.4kb
+yellow open   cygnus-openiot--lamp-004-lamp-2021.04.16     XZ4zor2rTkeXBtO-uvJ0KA   1   1        451            0     92.8kb         92.8kb
+yellow open   cygnus-openiot--motion-001-motion-2021.04.16 TSMdVhXhSeOygOGAhgqHtw   1   1         16            0      267kb          267kb
+yellow open   cygnus-openiot--motion-004-motion-2021.04.16 K_RN-eVIQGGDlRVNpmiDow   1   1        400            0     95.4kb         95.4kb
+yellow open   cygnus-openiot--lamp-002-lamp-2021.04.16     Nveh6Ka1TQ2mDcxqh_YvXg   1   1        522          102    181.9kb        181.9kb
+yellow open   cygnus-openiot--lamp-003-lamp-2021.04.16     Mo5paVjeQwabf6PjGuNzWw   1   1        627            0    109.1kb        109.1kb
+yellow open   cygnus-openiot--door-001-door-2021.04.16     jWZccKX3Tjayd2nUrjuxSw   1   1         32            4    380.8kb        380.8kb
+yellow open   cygnus-openiot--lamp-001-lamp-2021.04.16     9L-1ZbX_TxmgyQXpQN_6lA   1   1        957            0    170.5kb        170.5kb
+yellow open   cygnus-openiot--motion-002-motion-2021.04.16 mvvS-IGvR2C4cy7KryJy1g   1   1        440            0    108.6kb        108.6kb
+```
+
+結果には、インデックスの完全なリスト、レジストリの数、および各テーブルのストア・サイズが含まれます。この情報を取得
+したら、各センサの情報をリクエストできます:
+
+<a name="read-historical-context-from-the-elasticsearch-server"></a>
+
+### ElasticSearch サーバから履歴コンテキストを読み込む
+
+ネットワーク内で Docker コンテナを実行すると、実行中のデータベースに関する情報を取得できます。この場合、`motion003`
+エンティティにアクセスし、結果を2つに制限します。
+
+### クエリ:
+
+```console
+curl -XGET 'localhost:9200/_sql?format=json' -H 'Content-Type: application/json' -d'
+{
+  "query": " select * from \"cygnus-openiot--motion-003-motion-2021.04.16\" limit 2 "
+}'
+```
+
+### 結果:
+
+```json
+{
+  "columns": [
+    {
+      "name": "attrMetadata.name",
+      "type": "text"
+    },
+    {
+      "name": "attrMetadata.type",
+      "type": "text"
+    },
+    {
+      "name": "attrMetadata.value",
+      "type": "datetime"
+    },
+    {
+      "name": "attrName",
+      "type": "text"
+    },
+    {
+      "name": "attrType",
+      "type": "text"
+    },
+    {
+      "name": "attrValue",
+      "type": "text"
+    },
+    {
+      "name": "entityId",
+      "type": "text"
+    },
+    {
+      "name": "entityType",
+      "type": "text"
+    },
+    {
+      "name": "recvTime",
+      "type": "datetime"
+    }
+  ],
+  "rows": [
+    [
+      "TimeInstant",
+      "DateTime",
+      "2021-04-16T09:23:38.418Z",
+      "supportedProtocol",
+      "Text",
+      "[\"ul20\"]",
+      "Motion:003",
+      "Motion",
+      "2021-04-16T09:23:38.418Z"
+    ],
+    [
+      "TimeInstant",
+      "DateTime",
+      "2021-04-16T09:23:38.418Z",
+      "function",
+      "Text",
+      "[\"sensing\"]",
+      "Motion:003",
+      "Motion",
+      "2021-04-16T09:23:38.418Z"
+    ]
+  ]
+}
+```
 
 <a name="mysql---persisting-context-data-into-a-database"></a>
 
@@ -1198,7 +1546,7 @@ cygnus:
 ./services mysql
 ```
 
-<a name="checking-the-cygnus-service-health-2"></a>
+<a name="checking-the-cygnus-service-health-3"></a>
 
 ### Cygnus サービスの健全性をチェック
 
@@ -1235,7 +1583,7 @@ curl -X GET \
 > いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていな
 > い場合は、必要に応じてコンテナを再起動できます。
 
-<a name="generating-context-data-2"></a>
+<a name="generating-context-data-3"></a>
 
 ### コンテキスト・データの生成
 
@@ -1249,7 +1597,7 @@ curl -X GET \
 
 ![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
-<a name="subscribing-to-context-changes-2"></a>
+<a name="subscribing-to-context-changes-3"></a>
 
 ### コンテキスト変更のサブスクライブ
 
@@ -1563,7 +1911,7 @@ CKAN、HDFS、または CartoDB データを保持していないため、これ
 ./services multiple
 ```
 
-<a name="checking-the-cygnus-service-health-3"></a>
+<a name="checking-the-cygnus-service-health-4"></a>
 
 ### Cygnus サービスの健全性をチェック
 
@@ -1600,7 +1948,7 @@ curl -X GET \
 > いくつかのコンテナが走っているのを確認してください。`cygnus` が実行されていな
 > い場合は、必要に応じてコンテナを再起動できます。
 
-<a name="generating-context-data-3"></a>
+<a name="generating-context-data-4"></a>
 
 ### コンテキスト・データの生成
 
@@ -1614,7 +1962,7 @@ curl -X GET \
 
 ![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
-<a name="subscribing-to-context-changes-3"></a>
+<a name="subscribing-to-context-changes-4"></a>
 
 ### コンテキスト変更のサブスクライブ
 
@@ -1699,4 +2047,4 @@ curl -iX POST \
 
 ## License
 
-[MIT](LICENSE) © 2018-2020 FIWARE Foundation e.V.
+[MIT](LICENSE) © 2018-2021 FIWARE Foundation e.V.
