@@ -99,8 +99,8 @@ The system so far has been built up to handle the current context, in other word
 the state of the real-world objects at a given moment in time.
 
 From this definition you can see - context is only interested in the **current** state of the system It is not the
-responsibility of the existing components to report on the historical state of the system, the context is based
-on the last measurement each sensor has sent to the context broker.
+responsibility of the existing components to report on the historical state of the system, the context is based on the
+last measurement each sensor has sent to the context broker.
 
 In order to do this, we will need to extend the existing architecture to persist changes of state into a database
 whenever the context is updated.
@@ -942,8 +942,8 @@ You will then return to the command-line.
 # ElasticSearch - Persisting Context Data into a Database
 
 To persist historic context data into an alternative database such as **ElasticSearch**, we will need an additional
-container which hosts the ElasticSearch server - the default Docker image for this data can be used. It is important
-to mention that the ElasticSearch Sink has been tested with the versions 6.3 and 7.6 of Elasticsearch. The ElasticSearch
+container which hosts the ElasticSearch server - the default Docker image for this data can be used. It is important to
+mention that the ElasticSearch Sink has been tested with the versions 6.3 and 7.6 of Elasticsearch. The ElasticSearch
 instance is listening on the standard `9200` port, and the overall architecture can be seen below:
 
 ![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/cygnus-elasticsearch.png)
@@ -959,24 +959,24 @@ elasticsearch-db:
     hostname: elasticsearch
     container_name: db-elasticsearch
     expose:
-      - "${MONGO_DB_PORT}"
+        - "${MONGO_DB_PORT}"
     ports:
-      - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
+        - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
     networks:
-      - default
+        - default
     volumes:
-      - es-db:/usr/share/elasticsearch/data
+        - es-db:/usr/share/elasticsearch/data
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: changeme
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-      discovery.type: single-node
+        ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+        ELASTIC_PASSWORD: changeme
+        # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+        # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+        discovery.type: single-node
     healthcheck:
-      test: curl http://localhost:${ELASTICSEARCH_PORT} >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 30s
-      timeout: 10s
-      retries: 5
+        test: curl http://localhost:${ELASTICSEARCH_PORT} >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+        interval: 30s
+        timeout: 10s
+        retries: 5
 ```
 
 The `elasticsearch-db` container is listening on only one port:
@@ -1005,23 +1005,23 @@ cygnus:
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
-      - elasticsearch-db
+        - elasticsearch-db
     networks:
-      - default
+        - default
     expose:
-      - "${CYGNUS_API_PORT}"
-      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+        - "${CYGNUS_API_PORT}"
+        - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
     ports:
-      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}" # localhost:5058
-      - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5088
+        - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}" # localhost:5058
+        - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5088
     environment:
-      - "CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}"
-      - "CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
-      - "CYGNUS_ELASTICSEARCH_SSL=false"
-      - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
-      - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
+        - "CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}"
+        - "CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+        - "CYGNUS_ELASTICSEARCH_SSL=false"
+        - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
+        - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
     healthcheck:
-      test: curl --fail -s http://localhost:${CYGNUS_API_ADMIN_PORT}/v1/version || exit 1
+        test: curl --fail -s http://localhost:${CYGNUS_API_ADMIN_PORT}/v1/version || exit 1
 ```
 
 The `cygnus` container is listening on two ports:
@@ -1033,13 +1033,13 @@ The `cygnus` container is listening on two ports:
 
 The `cygnus` container is driven by environment variables as shown:
 
-| Key                            | Value         | Description                                                                    |
-| ------------------------------ | ------------- | ------------------------------------------------------------------------------ |
-| CYGNUS_ELASTICSEARCH_HOST      | `elasticsearch-db:${ELASTICSEARCH_PORT}` | Hostname and port of the ElasticSearch server used to persist historical context data. |
-| CYGNUS_ELASTICSEARCH_PORT      | `${CYGNUS_ELASTICSEARCH_SERVICE_PORT}`   | Port, by default `5058`, that Cygnus used to persist historical context data.          |
-| CYGNUS_ELASTICSEARCH_SSL       | `false`                                  | SSL is not configured for communication.                                               |
-| CYGNUS_API_PORT                | `${CYGNUS_API_PORT}`                     | Port, by default `5080` that Cygnus listens on for operational reasons.                |
-| CYGNUS_LOG_LEVEL               | `DEBUG`                                  | The logging level for Cygnus                                                           |
+| Key                       | Value                                    | Description                                                                            |
+| ------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------- |
+| CYGNUS_ELASTICSEARCH_HOST | `elasticsearch-db:${ELASTICSEARCH_PORT}` | Hostname and port of the ElasticSearch server used to persist historical context data. |
+| CYGNUS_ELASTICSEARCH_PORT | `${CYGNUS_ELASTICSEARCH_SERVICE_PORT}`   | Port, by default `5058`, that Cygnus used to persist historical context data.          |
+| CYGNUS_ELASTICSEARCH_SSL  | `false`                                  | SSL is not configured for communication.                                               |
+| CYGNUS_API_PORT           | `${CYGNUS_API_PORT}`                     | Port, by default `5080` that Cygnus listens on for operational reasons.                |
+| CYGNUS_LOG_LEVEL          | `DEBUG`                                  | The logging level for Cygnus                                                           |
 
 ## ElasticSearch - Start up
 
@@ -1051,8 +1051,8 @@ To start the system with a **ElasticSearch** database run the following command:
 
 ### Checking the Cygnus Service Health
 
-Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port.
-If the response is blank, this is usually because Cygnus is not running or is listening on another port.
+Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. If the
+response is blank, this is usually because Cygnus is not running or is listening on another port.
 
 #### Request:
 
@@ -1085,10 +1085,11 @@ The response will look similar to the following:
 ### Generating Context Data
 
 For the purpose of this tutorial, we must be monitoring a system where the context is periodically being updated. The
-dummy IoT Sensors can be used to do this. Open the device monitor page at `http://localhost:$TUTORIAL_APP_PORT/device/monitor`
-and unlock a **Smart Door** and switch on a **Smart Lamp**. Remember that the variable `TUTORIAL_APP_PORT` is defined
-in the `.env` file. This can be done by selecting an appropriate the command from the drop down list and pressing the
-`send` button. The stream of measurements coming from the devices can then be seen on the same page:
+dummy IoT Sensors can be used to do this. Open the device monitor page at
+`http://localhost:$TUTORIAL_APP_PORT/device/monitor` and unlock a **Smart Door** and switch on a **Smart Lamp**.
+Remember that the variable `TUTORIAL_APP_PORT` is defined in the `.env` file. This can be done by selecting an
+appropriate the command from the drop down list and pressing the `send` button. The stream of measurements coming from
+the devices can then be seen on the same page:
 
 ![](https://fiware.github.io/tutorials.Historic-Context-Flume/img/door-open.gif)
 
@@ -1135,9 +1136,10 @@ same for each database. The response will be **201 - Created**
 
 ## ElasticSearch - Reading Data from a database
 
-To read ElasticSearch data from the command-line, we will execute a set of HTTP request to get the data. If you want
-to know how create specific queries to access the data, you can take a look to the [Elastic Search API](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-your-data.html)
-for the current version. 
+To read ElasticSearch data from the command-line, we will execute a set of HTTP request to get the data. If you want to
+know how create specific queries to access the data, you can take a look to the
+[Elastic Search API](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-your-data.html) for the current
+version.
 
 ### Show Available Databases on the ElasticSearch server
 
@@ -1169,8 +1171,8 @@ table. Once we have this information, we can request the information of each of 
 
 ### Read Historical Context from the ElasticSearch server
 
-Once running a docker container within the network, it is possible to obtain information about the running database.
-In our case we access to the `motion003` entity, and we limit the results only to 2.
+Once running a docker container within the network, it is possible to obtain information about the running database. In
+our case we access to the `motion003` entity, and we limit the results only to 2.
 
 ### Query:
 
@@ -1185,68 +1187,68 @@ curl -XGET 'localhost:9200/_sql?format=json' -H 'Content-Type: application/json'
 
 ```json
 {
-  "columns": [
-    {
-      "name": "attrMetadata.name",
-      "type": "text"
-    },
-    {
-      "name": "attrMetadata.type",
-      "type": "text"
-    },
-    {
-      "name": "attrMetadata.value",
-      "type": "datetime"
-    },
-    {
-      "name": "attrName",
-      "type": "text"
-    },
-    {
-      "name": "attrType",
-      "type": "text"
-    },
-    {
-      "name": "attrValue",
-      "type": "text"
-    },
-    {
-      "name": "entityId",
-      "type": "text"
-    },
-    {
-      "name": "entityType",
-      "type": "text"
-    },
-    {
-      "name": "recvTime",
-      "type": "datetime"
-    }
-  ],
-  "rows": [
-    [
-      "TimeInstant",
-      "DateTime",
-      "2021-04-16T09:23:38.418Z",
-      "supportedProtocol",
-      "Text",
-      "[\"ul20\"]",
-      "Motion:003",
-      "Motion",
-      "2021-04-16T09:23:38.418Z"
+    "columns": [
+        {
+            "name": "attrMetadata.name",
+            "type": "text"
+        },
+        {
+            "name": "attrMetadata.type",
+            "type": "text"
+        },
+        {
+            "name": "attrMetadata.value",
+            "type": "datetime"
+        },
+        {
+            "name": "attrName",
+            "type": "text"
+        },
+        {
+            "name": "attrType",
+            "type": "text"
+        },
+        {
+            "name": "attrValue",
+            "type": "text"
+        },
+        {
+            "name": "entityId",
+            "type": "text"
+        },
+        {
+            "name": "entityType",
+            "type": "text"
+        },
+        {
+            "name": "recvTime",
+            "type": "datetime"
+        }
     ],
-    [
-      "TimeInstant",
-      "DateTime",
-      "2021-04-16T09:23:38.418Z",
-      "function",
-      "Text",
-      "[\"sensing\"]",
-      "Motion:003",
-      "Motion",
-      "2021-04-16T09:23:38.418Z"
+    "rows": [
+        [
+            "TimeInstant",
+            "DateTime",
+            "2021-04-16T09:23:38.418Z",
+            "supportedProtocol",
+            "Text",
+            "[\"ul20\"]",
+            "Motion:003",
+            "Motion",
+            "2021-04-16T09:23:38.418Z"
+        ],
+        [
+            "TimeInstant",
+            "DateTime",
+            "2021-04-16T09:23:38.418Z",
+            "function",
+            "Text",
+            "[\"sensing\"]",
+            "Motion:003",
+            "Motion",
+            "2021-04-16T09:23:38.418Z"
+        ]
     ]
-  ]
 }
 ```
 
