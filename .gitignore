@@ -36,3 +36,4 @@ jspm_packages/
 docker-compose/data
 *.tgz
 .next
+.idea

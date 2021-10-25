@@ -10,9 +10,14 @@ set -e
 SCORPIO="http://scorpio:9090/scorpio/v1/info/"
 ORION="http://orion:1026/version"
 IOT_AGENT="http://iot-agent:4041/version"
-CONTEXT="http://context-provider:3000/data-models/ngsi-context.jsonld"
+CONTEXT="http://context/ngsi-context.jsonld"
 
-if (( $# != 1 )); then
+dockerCmd="docker compose"
+if (( $# == 2 )); then
+    dockerCmd="docker-compose"
+fi
+
+if (( $# < 1 )); then
     echo "Illegal number of parameters"
     echo "usage: services [create|ckan|hdfs|mongodb|mysql|multiple|postgres|stop]"
     exit 1
@@ -57,7 +62,7 @@ loadData () {
 stoppingContainers () {
 	export $(cat .env | grep "#" -v)
 	echo "Stopping containers"
-	docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware down -v --remove-orphans
+	${dockerCmd} -f docker-compose/multiple.yml down -v --remove-orphans
 
 	echo "Removing HDFS files"
 	for dir in ./docker-compose/data/*; do
@@ -101,11 +106,22 @@ addDatabaseIndex () {
 
 waitForContext () {
 	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
-	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` -eq 000 ]
-	do 
-	    echo -e "\n@context HTTP state: ${response} (waiting for 200)"
+	getHeartbeat "${CONTEXT}"
+	while [ "${response}" -eq 000 ]
+	do
+		echo -e "\n@context HTTP state: ${response} (waiting for 200)"
 		pause 3
 		getHeartbeat "${CONTEXT}"
+	done
+}
+
+waitForIoTAgent () {
+	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
+	do
+		echo -e "\nIoT Agent HTTP state: ${response} (waiting for 200)"
+		pause 3
+		getHeartbeat "${IOT_AGENT}"
 	done
 }
 
@@ -146,17 +162,6 @@ waitForScorpio () {
 	done
 }
 
-waitForIoTAgent () {
-	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
-
-	do 
-		echo -e "\nIoT Agent HTTP state: ${response} (waiting for 200)"
-		pause 3
-		getHeartbeat "${IOT_AGENT}"
-	done
-}
-
 displayServices () {
 	echo ""
 	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
@@ -182,13 +187,13 @@ case "${command}" in
         ;;
     "multiple")
 		stoppingContainers
-		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m, \033[1mPostgreSQL\033[0m and \033[1mMySQL\033[0m databases."
+		echo -e "Starting containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m , a linked data \033[1mContext\033[0m and \033[1mMongoDB\033[0m, \033[1mPostgreSQL\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB, PostgeSQL and MySQL"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware up -d --remove-orphans
+		${dockerCmd} -f docker-compose/multiple.yml up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -198,13 +203,13 @@ case "${command}" in
 		;;
 	"ckan")
 		stoppingContainers
-		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database and a \033[1mCKAN\033[0m system."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, a linked data \033[1mContext\033[0m and a \033[1mMongoDB\033[0m database and a \033[1mCKAN\033[0m system."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose -f docker-compose/ckan.yml -p fiware up -d --remove-orphans
+		${dockerCmd} -f docker-compose/ckan.yml up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -215,13 +220,13 @@ case "${command}" in
 		;;
 	"hdfs")
 		stoppingContainers
-		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database and a \033[1mHDFS\033[0m filesystem."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, a linked data \033[1mContext\033[0m and a \033[1mMongoDB\033[0m database and a \033[1mHDFS\033[0m filesystem."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose -f docker-compose/hdfs.yml -p fiware up -d --remove-orphans
+		${dockerCmd} -f docker-compose/hdfs.yml up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -232,13 +237,13 @@ case "${command}" in
 		;;
 	 "mongodb")
 		stoppingContainers
-		echo -e "Starting five containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database."	
+		echo -e "Starting five containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, a linked data \033[1mContext\033[0m and a \033[1mMongoDB\033[0m database."	
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/mongodb.yml -p fiware up -d --remove-orphans
+		${dockerCmd} -f docker-compose/mongodb.yml up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -248,13 +253,13 @@ case "${command}" in
 		;;
     "postgres")
 		stoppingContainers
-		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mPostgreSQL\033[0m databases."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, a linked data \033[1mContext\033[0m and \033[1mMongoDB\033[0m and \033[1mPostgreSQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to PostgreSQL only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose --log-level ERROR -f docker-compose/postgres.yml -p fiware up -d --remove-orphans
+		${dockerCmd} -f docker-compose/postgres.yml up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -264,13 +269,13 @@ case "${command}" in
 		;;
 	"mysql")
 		stoppingContainers
-		echo -e "Starting six containers \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
+		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, a linked data \033[1mContext\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
-		docker-compose  -f docker-compose/mysql.yml -p fiware up -d --remove-orphans
+		${dockerCmd}  -f docker-compose/mysql.yml up -d --remove-orphans
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
@@ -287,7 +292,7 @@ case "${command}" in
 	"create")
 		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
-		docker-compose --log-level ERROR -f docker-compose/multiple.yml -p fiware pull
+		${dockerCmd} -f docker-compose/multiple.yml pull
 		;;
 	*)
 		echo "Command not Found."
