@@ -5,8 +5,7 @@ services:
 
   # Cygnus is configured to write context data to Mongo-DB
   cygnus:
-    #image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
-    image: ging/cygnus-ngsi-ld
+    image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
