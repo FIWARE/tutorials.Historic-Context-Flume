@@ -16,10 +16,12 @@
 # 
 # see: https://github.com/FIWARE/helm-charts/
 #
-version: "3.5"
+version: "3.8"
 services:
   # Orion is the context broker
   orion:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/orion:${ORION_VERSION}
     hostname: orion
     container_name: fiware-orion
@@ -36,6 +38,8 @@ services:
 
   # Cygnus is configured to write context data to Mongo-DB
   cygnus:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
@@ -76,6 +80,8 @@ services:
   
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
@@ -106,6 +112,8 @@ services:
 
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/tutorials.context-provider
     hostname: iot-sensors
     container_name: fiware-tutorial
@@ -139,6 +147,8 @@ services:
 
   # Databases
   mongo-db:
+    labels:
+      org.fiware: 'tutorial'
     image: mongo:${MONGO_DB_VERSION}
     hostname: mongo-db
     container_name: db-mongo
@@ -158,80 +168,92 @@ services:
     
 
   namenode:
-      image: tailtarget/hadoop:2.7.2
-      container_name: hdfs-namenode
-      hostname: namenode
-      networks:
-          - default
-      expose:
-          - "50070"
-          - "9000"
-      ports: 
-          - "50070:50070"
-          - "9000:9000"
-      command: /usr/local/bin/start-namenode.sh
-      volumes:
-          - ./data/hadoop:/data
+    labels:
+      org.fiware: 'tutorial'
+    image: tailtarget/hadoop:2.7.2
+    container_name: hdfs-namenode
+    hostname: namenode
+    networks:
+        - default
+    expose:
+        - "50070"
+        - "9000"
+    ports: 
+        - "50070:50070"
+        - "9000:9000"
+    command: /usr/local/bin/start-namenode.sh
+    volumes:
+        - ./data/hadoop:/data
   datanode:
-      image: tailtarget/hadoop:2.7.2
-      container_name: hdfs-datanode
-      hostname: datanode
-      networks:
-          - default
-      expose:
-          - "50010"
-      ports:
-          - "50075" # local port dynamically assigned. allows node to be scaled up and down
-          - "50010:50010"
-      links:
-          - namenode
-      command: hdfs datanode
-      volumes:
-          - ./data/hadoop:/data
+    labels:
+      org.fiware: 'tutorial'
+    image: tailtarget/hadoop:2.7.2
+    container_name: hdfs-datanode
+    hostname: datanode
+    networks:
+        - default
+    expose:
+        - "50010"
+    ports:
+        - "50075" # local port dynamically assigned. allows node to be scaled up and down
+        - "50010:50010"
+    links:
+        - namenode
+    command: hdfs datanode
+    volumes:
+        - ./data/hadoop:/data
   secondarynamenode:
-      image: tailtarget/hadoop:2.7.2
-      container_name: hdfs-secondarynamenode
-      hostname: secondarynamenode
-      networks:
-          - default
-      expose:
-          - "50090"
-      ports:
-          - "50090:50090"
-      links:
-          - namenode
-      command: hdfs secondarynamenode
+    labels:
+      org.fiware: 'tutorial'
+    image: tailtarget/hadoop:2.7.2
+    container_name: hdfs-secondarynamenode
+    hostname: secondarynamenode
+    networks:
+        - default
+    expose:
+        - "50090"
+    ports:
+        - "50090:50090"
+    links:
+        - namenode
+    command: hdfs secondarynamenode
   yarn:
-      image: tailtarget/hadoop:2.7.2
-      container_name: hdfs-yarn
-      hostname: yarn
-      networks:
-          - default
-      ports:
-          - "8088:8088"
-          - "8042:8042"
-          - "8050:8050"
-          - "19888:19888"
-          - "10020:10020"
-      links:
-          - namenode
-          - datanode
-      command: start-yarn-historyserver.sh
+    labels:
+      org.fiware: 'tutorial'
+    image: tailtarget/hadoop:2.7.2
+    container_name: hdfs-yarn
+    hostname: yarn
+    networks:
+        - default
+    ports:
+        - "8088:8088"
+        - "8042:8042"
+        - "8050:8050"
+        - "19888:19888"
+        - "10020:10020"
+    links:
+        - namenode
+        - datanode
+    command: start-yarn-historyserver.sh
   nodemanager:
-      image: tailtarget/hadoop:2.7.2
-      container_name: hdfs-nodemanager
-      networks:
-          - default
-      ports:
-          - "8042" # local port dynamically assigned. allows node to be scaled up and down
-      links:
-          - namenode
-          - datanode
-          - yarn
-      command: yarn nodemanager
+    labels:
+      org.fiware: 'tutorial'
+    image: tailtarget/hadoop:2.7.2
+    container_name: hdfs-nodemanager
+    networks:
+        - default
+    ports:
+        - "8042" # local port dynamically assigned. allows node to be scaled up and down
+    links:
+        - namenode
+        - datanode
+        - yarn
+    command: yarn nodemanager
 
 networks:
   default:
+    labels:
+      org.fiware: 'tutorial'
     ipam:
       config:
         - subnet: 172.18.1.0/24

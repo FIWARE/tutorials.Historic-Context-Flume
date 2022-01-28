@@ -16,11 +16,13 @@
 # 
 # see: https://github.com/FIWARE/helm-charts/
 #
-version: "3.5"
+version: "3.8"
 services:
 
   # Orion is the context broker
   orion:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/orion:${ORION_VERSION}
     hostname: orion
     container_name: fiware-orion
@@ -37,6 +39,8 @@ services:
 
   # Cygnus is configured to write context data to PostgeSQL
   cygnus:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
@@ -65,6 +69,8 @@ services:
 
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
@@ -95,6 +101,8 @@ services:
   
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/tutorials.context-provider
     hostname: iot-sensors
     container_name: fiware-tutorial
@@ -131,6 +139,8 @@ services:
 
   # Databases
   mongo-db:
+    labels:
+      org.fiware: 'tutorial'
     image: mongo:${MONGO_DB_VERSION}
     hostname: mongo-db
     container_name: db-mongo
@@ -150,6 +160,8 @@ services:
     
       
   postgres-db:
+    labels:
+      org.fiware: 'tutorial'
     image: postgres
     hostname: postgres-db
     container_name: db-postgres
@@ -168,6 +180,8 @@ services:
 
 networks:
   default:
+    labels:
+      org.fiware: 'tutorial'
     ipam:
       config:
         - subnet: 172.18.1.0/24
