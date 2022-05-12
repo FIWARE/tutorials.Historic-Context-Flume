@@ -4,7 +4,7 @@
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-Flume.svg)](https://opensource.org/licenses/MIT)
 
-[![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/cygnus.svg)](https://stackoverflow.com/questions/tagged/fiware-cygnus)
+[![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-cygnus)
 <br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
 <!-- prettier-ignore -->
@@ -23,7 +23,7 @@ IoT センサをアクティブにし、これらのセンサからの測定値�
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
 
-## 内容
+## コンテンツ
 
 <details>
 <summary>詳細 <b>(クリックして拡大)</b></summary>
@@ -252,7 +252,7 @@ docker-compose -v
 docker version
 ```
 
-Docker バージョン 18.03 以降と Docker Compose 1.29 以上を使用していることを確認
+Docker バージョン 20.10 以降と Docker Compose 1.29 以上を使用していることを確認
 し、必要に応じてアップグレードしてください。
 
 <a name="cygwin-for-windows"></a>
@@ -1113,24 +1113,24 @@ elasticsearch-db:
     hostname: elasticsearch
     container_name: db-elasticsearch
     expose:
-      - "${ELASTICSEARCH_PORT}"
+        - "${ELASTICSEARCH_PORT}"
     ports:
-      - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
+        - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
     networks:
-      - default
+        - default
     volumes:
-      - es-db:/usr/share/elasticsearch/data
+        - es-db:/usr/share/elasticsearch/data
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: changeme
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-      discovery.type: single-node
+        ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+        ELASTIC_PASSWORD: changeme
+        # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+        # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+        discovery.type: single-node
     healthcheck:
-      test: curl http://localhost:${ELASTICSEARCH_PORT} >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 30s
-      timeout: 10s
-      retries: 5
+        test: curl http://localhost:${ELASTICSEARCH_PORT} >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+        interval: 30s
+        timeout: 10s
+        retries: 5
 ```
 
 `elasticsearch-db` コンテナは1つのポートのみをリッスンしています:
@@ -1162,23 +1162,23 @@ cygnus:
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
-      - elasticsearch-db
+        - elasticsearch-db
     networks:
-      - default
+        - default
     expose:
-      - "${CYGNUS_API_PORT}"
-      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+        - "${CYGNUS_API_PORT}"
+        - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
     ports:
-      - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}" # localhost:5058
-      - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5088
+        - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}" # localhost:5058
+        - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5088
     environment:
-      - "CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}"
-      - "CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
-      - "CYGNUS_ELASTICSEARCH_SSL=false"
-      - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
-      - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
+        - "CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}"
+        - "CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+        - "CYGNUS_ELASTICSEARCH_SSL=false"
+        - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
+        - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
     healthcheck:
-      test: curl --fail -s http://localhost:${CYGNUS_API_ADMIN_PORT}/v1/version || exit 1
+        test: curl --fail -s http://localhost:${CYGNUS_API_ADMIN_PORT}/v1/version || exit 1
 ```
 
 `cygnus` コンテナは2つのポートでリッスンしています:
@@ -1360,68 +1360,68 @@ curl -XGET 'localhost:9200/_sql?format=json' -H 'Content-Type: application/json'
 
 ```json
 {
-  "columns": [
-    {
-      "name": "attrMetadata.name",
-      "type": "text"
-    },
-    {
-      "name": "attrMetadata.type",
-      "type": "text"
-    },
-    {
-      "name": "attrMetadata.value",
-      "type": "datetime"
-    },
-    {
-      "name": "attrName",
-      "type": "text"
-    },
-    {
-      "name": "attrType",
-      "type": "text"
-    },
-    {
-      "name": "attrValue",
-      "type": "text"
-    },
-    {
-      "name": "entityId",
-      "type": "text"
-    },
-    {
-      "name": "entityType",
-      "type": "text"
-    },
-    {
-      "name": "recvTime",
-      "type": "datetime"
-    }
-  ],
-  "rows": [
-    [
-      "TimeInstant",
-      "DateTime",
-      "2021-04-16T09:23:38.418Z",
-      "supportedProtocol",
-      "Text",
-      "[\"ul20\"]",
-      "Motion:003",
-      "Motion",
-      "2021-04-16T09:23:38.418Z"
+    "columns": [
+        {
+            "name": "attrMetadata.name",
+            "type": "text"
+        },
+        {
+            "name": "attrMetadata.type",
+            "type": "text"
+        },
+        {
+            "name": "attrMetadata.value",
+            "type": "datetime"
+        },
+        {
+            "name": "attrName",
+            "type": "text"
+        },
+        {
+            "name": "attrType",
+            "type": "text"
+        },
+        {
+            "name": "attrValue",
+            "type": "text"
+        },
+        {
+            "name": "entityId",
+            "type": "text"
+        },
+        {
+            "name": "entityType",
+            "type": "text"
+        },
+        {
+            "name": "recvTime",
+            "type": "datetime"
+        }
     ],
-    [
-      "TimeInstant",
-      "DateTime",
-      "2021-04-16T09:23:38.418Z",
-      "function",
-      "Text",
-      "[\"sensing\"]",
-      "Motion:003",
-      "Motion",
-      "2021-04-16T09:23:38.418Z"
+    "rows": [
+        [
+            "TimeInstant",
+            "DateTime",
+            "2021-04-16T09:23:38.418Z",
+            "supportedProtocol",
+            "Text",
+            "[\"ul20\"]",
+            "Motion:003",
+            "Motion",
+            "2021-04-16T09:23:38.418Z"
+        ],
+        [
+            "TimeInstant",
+            "DateTime",
+            "2021-04-16T09:23:38.418Z",
+            "function",
+            "Text",
+            "[\"sensing\"]",
+            "Motion:003",
+            "Motion",
+            "2021-04-16T09:23:38.418Z"
+        ]
     ]
-  ]
 }
 ```
 
@@ -2041,10 +2041,10 @@ curl -iX POST \
 高度な機能を追加することで、アプリケーションに複雑さを加える方法を知りたいですか
 ？このシリーズ
 の[他のチュートリアル](https://www.letsfiware.jp/fiware-tutorials)を読むことで見
-つけることができます :
+つけることができます
 
 ---
 
 ## License
 
-[MIT](LICENSE) © 2018-2021 FIWARE Foundation e.V.
+[MIT](LICENSE) © 2018-2022 FIWARE Foundation e.V.
