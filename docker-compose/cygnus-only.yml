@@ -7,7 +7,7 @@ services:
   cygnus:
     labels:
       org.fiware: 'tutorial'
-    image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    image: quay.io/fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
     networks:

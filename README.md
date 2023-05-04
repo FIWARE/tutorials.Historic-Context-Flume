@@ -270,7 +270,7 @@ mongo-db:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
@@ -653,7 +653,7 @@ The `postgres-db` container is driven by environment variables as shown:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
@@ -1002,7 +1002,7 @@ The `elasticsearch-db` container is driven by environment variables as shown:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    image: quay.io/fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
@@ -1304,7 +1304,7 @@ The `mysql-db` container is driven by environment variables as shown:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
@@ -1605,7 +1605,7 @@ persistence and holding data related to the Orion Context Broker and the IoT Age
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:

@@ -334,7 +334,7 @@ mongo-db:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
@@ -768,7 +768,7 @@ postgres-db:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
@@ -1159,7 +1159,7 @@ elasticsearch-db:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:${CYGNUS_VERSION}
+    image: quay.io/fiware/cygnus-ngsi:${CYGNUS_VERSION}
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
@@ -1486,7 +1486,7 @@ mysql-db:
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     networks:
@@ -1828,7 +1828,7 @@ Broker と IoT Agent に関連するデータ永続化の両方のための Mong
 
 ```yaml
 cygnus:
-    image: fiware/cygnus-ngsi:latest
+    image: quay.io/fiware/cygnus-ngsi:latest
     hostname: cygnus
     container_name: fiware-cygnus
     depends_on:
