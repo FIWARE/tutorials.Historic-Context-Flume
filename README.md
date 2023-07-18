@@ -333,7 +333,7 @@ The response will look similar to the following:
 ```json
 {
     "success": "true",
-    "version": "1.18.0_SNAPSHOT.etc"
+    "version": "'2.16.etc"
 }
 ```
 
@@ -425,31 +425,36 @@ curl -X GET \
 
 ```json
 [
-    {
-        "id": "5b39d7c866df40ed84284174",
-        "description": "Notify Cygnus Mongo-DB of all context changes",
-        "status": "active",
-        "subject": {
-            "entities": [
-                {
-                    "idPattern": ".*"
-                }
-            ],
-            "condition": {
-                "attrs": []
-            }
-        },
-        "notification": {
-            "timesSent": 158,
-            "lastNotification": "2018-07-02T07:59:21.00Z",
-            "attrs": [],
-            "http": {
-                "url": "http://cygnus:5050/notify"
-            },
-            "lastSuccess": "2018-07-02T07:59:21.00Z"
-        },
-        "throttling": 5
-    }
+  {
+    "id": "64b6abf35716d070f607cc69",
+    "description": "Notify Cygnus of all context changes",
+    "status": "active",
+    "subject": {
+      "entities": [
+        {
+          "idPattern": ".*"
+        }
+      ],
+      "condition": {
+        "attrs": [],
+        "notifyOnMetadataChange": true
+      }
+    },
+    "notification": {
+      "timesSent": 3,
+      "lastNotification": "2023-07-18T15:15:13.000Z",
+      "attrs": [],
+      "onlyChangedAttrs": false,
+      "attrsFormat": "normalized",
+      "http": {
+        "url": "http://cygnus:5051/notify"
+      },
+      "lastSuccess": "2023-07-18T15:15:08.000Z",
+      "lastSuccessCode": 200,
+      "covered": false
+    },
+    "throttling": 5
+  }
 ]
 ```
 
