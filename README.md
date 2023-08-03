@@ -261,7 +261,7 @@ mongo-db:
     hostname: mongo-db
     container_name: db-mongo
     ports:
-        - "27017:27017"
+        - '27017:27017'
     networks:
         - default
 ```
@@ -278,16 +278,16 @@ cygnus:
     networks:
         - default
     expose:
-        - "5080"
+        - '5080'
     ports:
-        - "5051:5051"
-        - "5080:5080"
+        - '5051:5051'
+        - '5080:5080'
     environment:
-        - "CYGNUS_MONGO_HOSTS=mongo-db:27017"
-        - "CYGNUS_MONGO_SERVICE_PORT=5051"
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_API_PORT=5080"
-        - "CYGNUS_SERVICE_PORT=5051"
+        - 'CYGNUS_MONGO_HOSTS=mongo-db:27017'
+        - 'CYGNUS_MONGO_SERVICE_PORT=5051'
+        - 'CYGNUS_LOG_LEVEL=DEBUG'
+        - 'CYGNUS_API_PORT=5080'
+        - 'CYGNUS_SERVICE_PORT=5051'
 ```
 
 The `cygnus` container is listening on two ports:
@@ -425,36 +425,36 @@ curl -X GET \
 
 ```json
 [
-  {
-    "id": "64b6abf35716d070f607cc69",
-    "description": "Notify Cygnus of all context changes",
-    "status": "active",
-    "subject": {
-      "entities": [
-        {
-          "idPattern": ".*"
-        }
-      ],
-      "condition": {
-        "attrs": [],
-        "notifyOnMetadataChange": true
-      }
-    },
-    "notification": {
-      "timesSent": 3,
-      "lastNotification": "2023-07-18T15:15:13.000Z",
-      "attrs": [],
-      "onlyChangedAttrs": false,
-      "attrsFormat": "normalized",
-      "http": {
-        "url": "http://cygnus:5051/notify"
-      },
-      "lastSuccess": "2023-07-18T15:15:08.000Z",
-      "lastSuccessCode": 200,
-      "covered": false
-    },
-    "throttling": 5
-  }
+    {
+        "id": "64b6abf35716d070f607cc69",
+        "description": "Notify Cygnus of all context changes",
+        "status": "active",
+        "subject": {
+            "entities": [
+                {
+                    "idPattern": ".*"
+                }
+            ],
+            "condition": {
+                "attrs": [],
+                "notifyOnMetadataChange": true
+            }
+        },
+        "notification": {
+            "timesSent": 3,
+            "lastNotification": "2023-07-18T15:15:13.000Z",
+            "attrs": [],
+            "onlyChangedAttrs": false,
+            "attrsFormat": "normalized",
+            "http": {
+                "url": "http://cygnus:5051/notify"
+            },
+            "lastSuccess": "2023-07-18T15:15:08.000Z",
+            "lastSuccessCode": 200,
+            "covered": false
+        },
+        "throttling": 5
+    }
 ]
 ```
 
@@ -626,15 +626,15 @@ postgres-db:
     hostname: postgres-db
     container_name: db-postgres
     expose:
-        - "5432"
+        - '5432'
     ports:
-        - "5432:5432"
+        - '5432:5432'
     networks:
         - default
     environment:
-        - "POSTGRES_PASSWORD=password"
-        - "POSTGRES_USER=postgres"
-        - "POSTGRES_DB=postgres"
+        - 'POSTGRES_PASSWORD=password'
+        - 'POSTGRES_USER=postgres'
+        - 'POSTGRES_DB=postgres'
 ```
 
 The `postgres-db` container is listening on a single port:
@@ -666,20 +666,20 @@ cygnus:
     depends_on:
         - postgres-db
     expose:
-        - "5080"
+        - '5080'
     ports:
-        - "5055:5055"
-        - "5080:5080"
+        - '5055:5055'
+        - '5080:5080'
     environment:
-        - "CYGNUS_POSTGRESQL_HOST=postgres-db"
-        - "CYGNUS_POSTGRESQL_PORT=5432"
-        - "CYGNUS_POSTGRESQL_USER=postgres"
-        - "CYGNUS_POSTGRESQL_PASS=password"
-        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
-        - "CYGNUS_POSTGRESQL_SERVICE_PORT=5055"
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_API_PORT=5080"
-        - "CYGNUS_SERVICE_PORT=5055"
+        - 'CYGNUS_POSTGRESQL_HOST=postgres-db'
+        - 'CYGNUS_POSTGRESQL_PORT=5432'
+        - 'CYGNUS_POSTGRESQL_USER=postgres'
+        - 'CYGNUS_POSTGRESQL_PASS=password'
+        - 'CYGNUS_POSTGRESQL_ENABLE_CACHE=true'
+        - 'CYGNUS_POSTGRESQL_SERVICE_PORT=5055'
+        - 'CYGNUS_LOG_LEVEL=DEBUG'
+        - 'CYGNUS_API_PORT=5080'
+        - 'CYGNUS_SERVICE_PORT=5055'
 ```
 
 The `cygnus` container is listening on two ports:
@@ -965,15 +965,15 @@ elasticsearch-db:
     hostname: elasticsearch
     container_name: db-elasticsearch
     expose:
-        - "${MONGO_DB_PORT}"
+        - '${MONGO_DB_PORT}'
     ports:
-        - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
+        - '${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}'
     networks:
         - default
     volumes:
         - es-db:/usr/share/elasticsearch/data
     environment:
-        ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+        ES_JAVA_OPTS: '-Xmx256m -Xms256m'
         ELASTIC_PASSWORD: changeme
         # Use single node discovery in order to disable production mode and avoid bootstrap checks.
         # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
@@ -1015,17 +1015,17 @@ cygnus:
     networks:
         - default
     expose:
-        - "${CYGNUS_API_PORT}"
-        - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
+        - '${CYGNUS_API_PORT}'
+        - '${CYGNUS_ELASTICSEARCH_SERVICE_PORT}'
     ports:
-        - "${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}" # localhost:5058
-        - "${CYGNUS_API_PORT}:${CYGNUS_API_PORT}" # localhost:5088
+        - '${CYGNUS_ELASTICSEARCH_SERVICE_PORT}:${CYGNUS_ELASTICSEARCH_SERVICE_PORT}' # localhost:5058
+        - '${CYGNUS_API_PORT}:${CYGNUS_API_PORT}' # localhost:5088
     environment:
-        - "CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}"
-        - "CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}"
-        - "CYGNUS_ELASTICSEARCH_SSL=false"
-        - "CYGNUS_API_PORT=${CYGNUS_API_PORT}" # Port that Cygnus listens on for operational reasons
-        - "CYGNUS_LOG_LEVEL=DEBUG" # The logging level for Cygnus
+        - 'CYGNUS_ELASTICSEARCH_HOST=elasticsearch-db:${ELASTICSEARCH_PORT}'
+        - 'CYGNUS_ELASTICSEARCH_PORT=${CYGNUS_ELASTICSEARCH_SERVICE_PORT}'
+        - 'CYGNUS_ELASTICSEARCH_SSL=false'
+        - 'CYGNUS_API_PORT=${CYGNUS_API_PORT}' # Port that Cygnus listens on for operational reasons
+        - 'CYGNUS_LOG_LEVEL=DEBUG' # The logging level for Cygnus
     healthcheck:
         test: curl --fail -s http://localhost:${CYGNUS_API_ADMIN_PORT}/v1/version || exit 1
 ```
@@ -1278,14 +1278,14 @@ mysql-db:
     hostname: mysql-db
     container_name: db-mysql
     expose:
-        - "3306"
+        - '3306'
     ports:
-        - "3306:3306"
+        - '3306:3306'
     networks:
         - default
     environment:
-        - "MYSQL_ROOT_PASSWORD=123"
-        - "MYSQL_ROOT_HOST=%"
+        - 'MYSQL_ROOT_PASSWORD=123'
+        - 'MYSQL_ROOT_HOST=%'
 ```
 
 > :information_source: **Note:** Using the default `root` user and displaying the password in an environment variables
@@ -1317,19 +1317,19 @@ cygnus:
     depends_on:
         - mysql-db
     expose:
-        - "5080"
+        - '5080'
     ports:
-        - "5050:5050"
-        - "5080:5080"
+        - '5050:5050'
+        - '5080:5080'
     environment:
-        - "CYGNUS_MYSQL_HOST=mysql-db"
-        - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=root"
-        - "CYGNUS_MYSQL_PASS=123"
-        - "CYGNUS_MYSQL_SERVICE_PORT=5050"
-        - "CYGNUS_LOG_LEVEL=DEBUG"
-        - "CYGNUS_API_PORT=5080"
-        - "CYGNUS_SERVICE_PORT=5050"
+        - 'CYGNUS_MYSQL_HOST=mysql-db'
+        - 'CYGNUS_MYSQL_PORT=3306'
+        - 'CYGNUS_MYSQL_USER=root'
+        - 'CYGNUS_MYSQL_PASS=123'
+        - 'CYGNUS_MYSQL_SERVICE_PORT=5050'
+        - 'CYGNUS_LOG_LEVEL=DEBUG'
+        - 'CYGNUS_API_PORT=5080'
+        - 'CYGNUS_SERVICE_PORT=5050'
 ```
 
 > :information_source: **Note:** Passing the Username and Password in plain text environment variables like this is a
@@ -1620,28 +1620,28 @@ cygnus:
     networks:
         - default
     expose:
-        - "5080"
-        - "5081"
-        - "5084"
+        - '5080'
+        - '5081'
+        - '5084'
     ports:
-        - "5050:5050"
-        - "5051:5051"
-        - "5054:5054"
-        - "5080:5080"
-        - "5081:5081"
-        - "5084:5084"
+        - '5050:5050'
+        - '5051:5051'
+        - '5054:5054'
+        - '5080:5080'
+        - '5081:5081'
+        - '5084:5084'
     environment:
-        - "CYGNUS_MULTIAGENT=true"
-        - "CYGNUS_POSTGRESQL_HOST=postgres-sb"
-        - "CYGNUS_POSTGRESQL_PORT=5432"
-        - "CYGNUS_POSTGRESQL_USER=postgres"
-        - "CYGNUS_POSTGRESQL_PASS=password"
-        - "CYGNUS_POSTGRESQL_ENABLE_CACHE=true"
-        - "CYGNUS_MYSQL_HOST=mysql-db"
-        - "CYGNUS_MYSQL_PORT=3306"
-        - "CYGNUS_MYSQL_USER=root"
-        - "CYGNUS_MYSQL_PASS=123"
-        - "CYGNUS_LOG_LEVEL=DEBUG"
+        - 'CYGNUS_MULTIAGENT=true'
+        - 'CYGNUS_POSTGRESQL_HOST=postgres-sb'
+        - 'CYGNUS_POSTGRESQL_PORT=5432'
+        - 'CYGNUS_POSTGRESQL_USER=postgres'
+        - 'CYGNUS_POSTGRESQL_PASS=password'
+        - 'CYGNUS_POSTGRESQL_ENABLE_CACHE=true'
+        - 'CYGNUS_MYSQL_HOST=mysql-db'
+        - 'CYGNUS_MYSQL_PORT=3306'
+        - 'CYGNUS_MYSQL_USER=root'
+        - 'CYGNUS_MYSQL_PASS=123'
+        - 'CYGNUS_LOG_LEVEL=DEBUG'
 ```
 
 In multi-agent mode, the `cygnus` container is listening on multiple ports:
