@@ -158,6 +158,7 @@ services:
     
 
   mysql-db:
+    platform: linux/amd64
     restart: always
     labels:
       org.fiware: 'tutorial'
