@@ -1154,22 +1154,17 @@ To show the list of available databases, run the statement as shown:
 ### Query:
 
 ```console
-curl -XGET 'localhost:9200/_cat/indices?v&pretty'
+curl -X GET 'localhost:9200/_cat/indices?v&pretty'
 ```
 
 ### Result:
 
-```
-health status index                                        uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-yellow open   cygnus-openiot--motion-003-motion-2021.04.16 lh3Y2NT8SJaqNrkLDlmFOg   1   1        288            0    119.4kb        119.4kb
-yellow open   cygnus-openiot--lamp-004-lamp-2021.04.16     XZ4zor2rTkeXBtO-uvJ0KA   1   1        451            0     92.8kb         92.8kb
-yellow open   cygnus-openiot--motion-001-motion-2021.04.16 TSMdVhXhSeOygOGAhgqHtw   1   1         16            0      267kb          267kb
-yellow open   cygnus-openiot--motion-004-motion-2021.04.16 K_RN-eVIQGGDlRVNpmiDow   1   1        400            0     95.4kb         95.4kb
-yellow open   cygnus-openiot--lamp-002-lamp-2021.04.16     Nveh6Ka1TQ2mDcxqh_YvXg   1   1        522          102    181.9kb        181.9kb
-yellow open   cygnus-openiot--lamp-003-lamp-2021.04.16     Mo5paVjeQwabf6PjGuNzWw   1   1        627            0    109.1kb        109.1kb
-yellow open   cygnus-openiot--door-001-door-2021.04.16     jWZccKX3Tjayd2nUrjuxSw   1   1         32            4    380.8kb        380.8kb
-yellow open   cygnus-openiot--lamp-001-lamp-2021.04.16     9L-1ZbX_TxmgyQXpQN_6lA   1   1        957            0    170.5kb        170.5kb
-yellow open   cygnus-openiot--motion-002-motion-2021.04.16 mvvS-IGvR2C4cy7KryJy1g   1   1        440            0    108.6kb        108.6kb
+```text
+health status index                                        uuid                   pri rep docs.count docs.deleted
+green  open   .geoip_databases                             ATZpqJUHQgibDyBUXOx_XQ   1   0         42            0     40.3mb         40.3mb
+yellow open   cygnus-openiot--lamp-001-lamp-2023.08.14     AzJUwdLGTGS8GWsmYLte4Q   1   1         83           12     96.1kb         96.1kb
+yellow open   cygnus-openiot--bell-001-bell-2023.08.14     mYCVDJzcRw-5nqzMe7OcRA   1   1          7            0     10.6kb         10.6kb
+yellow open   cygnus-openiot--motion-001-motion-2023.08.14 QfMxa7MCRKW2F-d9msz1og   1   1          8            0     10.7kb         10.7kb
 ```
 
 The result includes the complete list of indexes as well the number of registries and the store size of each of the
@@ -1178,14 +1173,16 @@ table. Once we have this information, we can request the information of each of 
 ### Read Historical Context from the ElasticSearch server
 
 Once running a docker container within the network, it is possible to obtain information about the running database. In
-our case we access to the `motion003` entity, and we limit the results only to 2.
+our case we access to the `motion001` entity, and we limit the results only to 2.
 
 ### Query:
 
 ```console
-curl -XGET 'localhost:9200/_sql?format=json' -H 'Content-Type: application/json' -d'
+curl -X GET 'localhost:9200/_sql?format=json' \
+  -H 'Content-Type: application/json' \
+  -d'
 {
-  "query": " select * from \"cygnus-openiot--motion-003-motion-2021.04.16\" limit 2 "
+  "query": " select * from \"cygnus-openiot--motion-001-motion-2023.08.14\" limit 2 "
 }'
 ```
 
@@ -1231,30 +1228,30 @@ curl -XGET 'localhost:9200/_sql?format=json' -H 'Content-Type: application/json'
             "type": "datetime"
         }
     ],
-    "rows": [
-        [
-            "TimeInstant",
-            "DateTime",
-            "2021-04-16T09:23:38.418Z",
-            "supportedProtocol",
-            "Text",
-            "[\"ul20\"]",
-            "Motion:003",
-            "Motion",
-            "2021-04-16T09:23:38.418Z"
-        ],
-        [
-            "TimeInstant",
-            "DateTime",
-            "2021-04-16T09:23:38.418Z",
-            "function",
-            "Text",
-            "[\"sensing\"]",
-            "Motion:003",
-            "Motion",
-            "2021-04-16T09:23:38.418Z"
-        ]
+    "rows":  [
+    [
+      "TimeInstant",
+      "DateTime",
+      "2023-08-14T14:16:48.154Z",
+      "supportedProtocol",
+      "Text",
+      "[\"ul20\"]",
+      "Motion:001",
+      "Motion",
+      "2023-08-14T14:16:48.154Z"
+    ],
+    [
+      "TimeInstant",
+      "DateTime",
+      "2023-08-14T14:16:48.154Z",
+      "function",
+      "Text",
+      "[\"sensing\"]",
+      "Motion:001",
+      "Motion",
+      "2023-08-14T14:16:48.154Z"
     ]
+  ]
 }
 ```
 
