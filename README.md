@@ -1228,30 +1228,30 @@ curl -X GET 'localhost:9200/_sql?format=json' \
             "type": "datetime"
         }
     ],
-    "rows":  [
-    [
-      "TimeInstant",
-      "DateTime",
-      "2023-08-14T14:16:48.154Z",
-      "supportedProtocol",
-      "Text",
-      "[\"ul20\"]",
-      "Motion:001",
-      "Motion",
-      "2023-08-14T14:16:48.154Z"
-    ],
-    [
-      "TimeInstant",
-      "DateTime",
-      "2023-08-14T14:16:48.154Z",
-      "function",
-      "Text",
-      "[\"sensing\"]",
-      "Motion:001",
-      "Motion",
-      "2023-08-14T14:16:48.154Z"
+    "rows": [
+        [
+            "TimeInstant",
+            "DateTime",
+            "2023-08-14T14:16:48.154Z",
+            "supportedProtocol",
+            "Text",
+            "[\"ul20\"]",
+            "Motion:001",
+            "Motion",
+            "2023-08-14T14:16:48.154Z"
+        ],
+        [
+            "TimeInstant",
+            "DateTime",
+            "2023-08-14T14:16:48.154Z",
+            "function",
+            "Text",
+            "[\"sensing\"]",
+            "Motion:001",
+            "Motion",
+            "2023-08-14T14:16:48.154Z"
+        ]
     ]
-  ]
 }
 ```
 
