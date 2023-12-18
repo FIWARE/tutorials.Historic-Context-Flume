@@ -319,7 +319,7 @@ To start the system with a **MongoDB** database only, run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. If the
 response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### :one: Request:
+#### 1️⃣ Request:
 
 ```console
 curl -X GET \
@@ -369,7 +369,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The notification `url` must match the configured `CYGNUS_MONGO_SERVICE_PORT`
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### :two: Request:
+#### 2️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -412,7 +412,7 @@ same for each database. The response will be **201 - Created**
 If a subscription has been created, you can check to see if it is firing by making a GET request to the
 `/v2/subscriptions` endpoint.
 
-#### :three: Request:
+#### 3️⃣ Request:
 
 ```console
 curl -X GET \
@@ -720,7 +720,7 @@ To start the system with a **PostgreSQL** database run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. If the
 response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### :four: Request:
+#### 4️⃣ Request:
 
 ```console
 curl -X GET \
@@ -770,7 +770,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The notification `url` must match the configured `CYGNUS_POSTGRESQL_SERVICE_PORT`
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### :five: Request:
+#### 5️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -1366,7 +1366,7 @@ To start the system with a **MySQL** database run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. If the
 response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### :six: Request:
+#### 6️⃣ Request:
 
 ```console
 curl -X GET \
@@ -1416,7 +1416,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The notification `url` must match the configured `CYGNUS_MYSQL_SERVICE_PORT`
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### :seven: Request:
+#### 7️⃣  Request:
 
 ```console
 curl -iX POST \
@@ -1689,7 +1689,7 @@ To start the system with **multiple** databases run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. If the
 response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### :eight: Request:
+#### 8️⃣  Request:
 
 ```console
 curl -X GET \
@@ -1754,7 +1754,7 @@ The default port mapping can be seen below:
 
 Since this subscription is using port `5050` the context data will eventually be persisted to the _MySQL_ database.
 
-#### :nine: Request:
+#### 9️⃣ Request:
 
 ```console
 curl -iX POST \
