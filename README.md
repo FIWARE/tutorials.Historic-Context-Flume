@@ -2,7 +2,6 @@
 
 [![FIWARE Core Context Management](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/core.svg)](https://github.com/FIWARE/catalogue/blob/master/core/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Historic-Context-Flume.svg)](https://opensource.org/licenses/MIT)
-
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware-cygnus)
 
 <!-- prettier-ignore -->
