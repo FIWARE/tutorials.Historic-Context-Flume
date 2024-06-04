@@ -244,6 +244,7 @@ Where `<command>` will vary depending upon the databases we wish to activate. Th
 from the previous tutorials and provision the dummy IoT sensors on startup.
 
 > [!NOTE]
+>
 > If you want to clean up and start over again you can do so with the following command:
 >
 > ```console
@@ -404,6 +405,7 @@ As you can see, the database used to persist context data has no impact on the d
 same for each database. The response will be **201 - Created**
 
 > [!NOTE]
+>
 > if you see errors of the following form within the **Cygnus** log:
 >
 > ```
@@ -657,9 +659,10 @@ The `postgres-db` container is driven by environment variables as shown:
 | POSTGRES_DB       | `postgres` | The name of the PostgreSQL database       |
 
 > [!NOTE]
-> Passing the Username and Password in plain text environment variables like this is a
-> security risk. Whereas this is acceptable practice in a tutorial, for a production environment, you can avoid this
-> risk by applying [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+>
+> Passing the Username and Password in plain text environment variables like this is a security risk. Whereas this is
+> acceptable practice in a tutorial, for a production environment, you can avoid this risk by applying
+> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 ## PostgreSQL - Cygnus Configuration
 
@@ -710,10 +713,10 @@ The `cygnus` container is driven by environment variables as shown:
 | CYGNUS_POSTGRESQL_ENABLE_CACHE | `true`        | Switch to enable caching within the PostgreSQL configuration                   |
 
 > [!NOTE]
->  Passing the Username and Password in plain text environment variables like this is a
-> security risk. Whereas this is acceptable practice in a tutorial, for a production environment,
-> `CYGNUS_POSTGRESQL_USER` and `CYGNUS_POSTGRESQL_PASS` should be injected using
-> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+>
+> Passing the Username and Password in plain text environment variables like this is a security risk. Whereas this is
+> acceptable practice in a tutorial, for a production environment, `CYGNUS_POSTGRESQL_USER` and `CYGNUS_POSTGRESQL_PASS`
+> should be injected using [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 ## PostgreSQL - Start up
 
@@ -1008,8 +1011,9 @@ The `elasticsearch-db` container is driven by environment variables as shown:
 | ELASTIC_PASSWORD | `changeme`          | Password for the PostgreSQL database user.                              |
 
 > [!NOTE]
->  Passing the Password in plain text environment variables like this is a security risk.
-> Whereas this is acceptable practice in a tutorial, for a production environment, you can avoid this risk by applying
+>
+> Passing the Password in plain text environment variables like this is a security risk. Whereas this is acceptable
+> practice in a tutorial, for a production environment, you can avoid this risk by applying
 > [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 ## ElasticSearch - Cygnus Configuration
@@ -1295,10 +1299,10 @@ mysql-db:
 ```
 
 > [!NOTE]
-> Using the default `root` user and displaying the password in an environment variables
-> like this is a security risk. Whereas this is acceptable practice in a tutorial, for a production environment, you can
-> avoid this risk by setting up another user and applying
-> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+>
+> Using the default `root` user and displaying the password in an environment variables like this is a security risk.
+> Whereas this is acceptable practice in a tutorial, for a production environment, you can avoid this risk by setting up
+> another user and applying [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 The `mysql-db` container is listening on a single port:
 
@@ -1340,10 +1344,10 @@ cygnus:
 ```
 
 > [!NOTE]
->  Passing the Username and Password in plain text environment variables like this is a
-> security risk. Whereas this is acceptable practice in a tutorial, for a production environment, `CYGNUS_MYSQL_USER`
-> and `CYGNUS_MYSQL_PASS` should be injected using
-> [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
+>
+> Passing the Username and Password in plain text environment variables like this is a security risk. Whereas this is
+> acceptable practice in a tutorial, for a production environment, `CYGNUS_MYSQL_USER` and `CYGNUS_MYSQL_PASS` should be
+> injected using [Docker Secrets](https://blog.docker.com/2017/02/docker-secrets-management/)
 
 The `cygnus` container is listening on two ports:
 
@@ -1427,7 +1431,7 @@ This is done by making a POST request to the `/v2/subscription` endpoint of the 
 -   The notification `url` must match the configured `CYGNUS_MYSQL_SERVICE_PORT`
 -   The `throttling` value defines the rate that changes are sampled.
 
-#### 7️⃣  Request:
+#### 7️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -1700,7 +1704,7 @@ To start the system with **multiple** databases run the following command:
 Once Cygnus is running, you can check the status by making an HTTP request to the exposed `CYGNUS_API_PORT` port. If the
 response is blank, this is usually because Cygnus is not running or is listening on another port.
 
-#### 8️⃣  Request:
+#### 8️⃣ Request:
 
 ```console
 curl -X GET \
