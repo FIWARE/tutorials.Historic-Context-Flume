@@ -1,8 +1,4 @@
-version: "3.8"
-
 services:
-
-
   # Cygnus is configured to write context data to Mongo-DB
   cygnus:
     labels:
