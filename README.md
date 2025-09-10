@@ -26,7 +26,7 @@ The tutorial uses [cUrl](https://ec.haxx.se/) commands throughout, but is also a
 [Postman documentation](https://fiware.github.io/tutorials.Historic-Context-Flume/)
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/4824d3171f823935dcab)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/FIWARE/tutorials.Historic-Context-Flume/tree/NGSI-v2)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?repo=FIWARE/tutorials.Historic-Context-Flume&ref=NGSI-v2)
 
 -   このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
