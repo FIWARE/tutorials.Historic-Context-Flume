@@ -101,8 +101,7 @@ waitForOrion () {
 
 waitForIoTAgent () {
 	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
-
+	while [ `curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version'` != "200" ]
 	do 
 	  echo -e "IoT Agent HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://localhost:4041/version'` " (waiting for 200)"
 	  sleep 1
@@ -138,7 +137,7 @@ case "${command}" in
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m, \033[1mPostgreSQL\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB, PostgeSQL and MySQL"
-		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the JSON Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		${dockerCmd} -f docker-compose/multiple.yml up -d --remove-orphans
@@ -154,7 +153,7 @@ case "${command}" in
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database and a \033[1mCKAN\033[0m system."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
-		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the JSON Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		${dockerCmd} -f docker-compose/ckan.yml up -d --remove-orphans
@@ -171,7 +170,7 @@ case "${command}" in
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database and a \033[1mHDFS\033[0m filesystem."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
-		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the JSON Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		${dockerCmd} -f docker-compose/hdfs.yml up -d --remove-orphans
@@ -188,7 +187,7 @@ case "${command}" in
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and a \033[1mMongoDB\033[0m database."	
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to Mongo-DB only"
-		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the JSON Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		${dockerCmd} -f docker-compose/mongodb.yml up -d --remove-orphans
@@ -204,7 +203,7 @@ case "${command}" in
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m, \033[1mElacticSearch\033[0m and a \033[1mMongoDB\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to ElasticSearch-DB only"
-		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the JSON Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		${dockerCmd} -f docker-compose/elasticsearch.yml up -d --remove-orphans
@@ -220,7 +219,7 @@ case "${command}" in
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mPostgreSQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to PostgreSQL only"
-		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the JSON Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		${dockerCmd} -f docker-compose/postgres.yml up -d --remove-orphans
@@ -236,7 +235,7 @@ case "${command}" in
 		echo -e "Starting containers: \033[1;34mOrion\033[0m, \033[1;34mCygnus\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;34mCygnus\033[0m is configured to write context data to MySQL only"
-		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the JSON Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo ""
 		${dockerCmd}  -f docker-compose/mysql.yml up -d --remove-orphans

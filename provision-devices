@@ -120,7 +120,7 @@ curl -s -o /dev/null -X POST \
 #
 
 curl -s -o /dev/null -X POST \
-  "http://iot-agent:$IOTA_NORTH_PORT/iot/jsonevices" \
+  "http://iot-agent:$IOTA_NORTH_PORT/iot/devices" \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -150,7 +150,7 @@ curl -s -o /dev/null -X POST \
       "entity_name": "Door:001",
       "entity_type": "Door",
       "apikey":      "3089326",
-      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/jsonoor001"'",
+      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/door001"'",
       "static_attributes": [
           {"name": "refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:001"}
        ]
@@ -176,7 +176,7 @@ curl -s -o /dev/null -X POST \
 #
 
 curl -s -o /dev/null -X POST \
-  "http://iot-agent:$IOTA_NORTH_PORT/iot/jsonevices" \
+  "http://iot-agent:$IOTA_NORTH_PORT/iot/devices" \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -206,7 +206,7 @@ curl -s -o /dev/null -X POST \
       "entity_name": "Door:002",
       "entity_type": "Door",
       "apikey":      "3089326",
-      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/jsonoor002"'",
+      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/door002"'",
       "static_attributes": [
         {"name": "refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:002"}
       ]
@@ -236,7 +236,7 @@ curl -s -o /dev/null -X POST \
 #
 
 curl -s -o /dev/null -X POST \
-  "http://iot-agent:$IOTA_NORTH_PORT/iot/jsonevices" \
+  "http://iot-agent:$IOTA_NORTH_PORT/iot/devices" \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -266,7 +266,7 @@ curl -s -o /dev/null -X POST \
       "entity_name": "Door:003",
       "entity_type": "Door",
       "apikey":      "3089326",
-      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/jsonoor003"'",
+      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/door003"'",
       "static_attributes": [
         {"name": "refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:003"}
       ]
@@ -295,7 +295,7 @@ curl -s -o /dev/null -X POST \
 #
 
 curl -s -o /dev/null -X POST \
-  "http://iot-agent:$IOTA_NORTH_PORT/iot/jsonevices" \
+  "http://iot-agent:$IOTA_NORTH_PORT/iot/devices" \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -325,7 +325,7 @@ curl -s -o /dev/null -X POST \
       "entity_name": "Door:004",
       "entity_type": "Door",
       "apikey":      "3089326",
-      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/jsonoor004"'",
+      "endpoint": "'"http://iot-sensors:$TUTORIAL_DUMMY_DEVICE_PORT/iot/door004"'",
       "static_attributes": [
         {"name": "refStore", "type": "Relationship","value": "urn:ngsi-ld:Store:004"}
       ]
