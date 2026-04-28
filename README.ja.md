@@ -134,7 +134,7 @@ Context Broker** と **IoT Agent** の 2 つの FIWARE コンポーネントを�
 このチュートリアルの目的のために、一連のダミー IoT デバイスが作成され、Context
 Broker に接続されます。使用しているアーキテクチャとプロトコルの詳細は
 、[IoT Sensors チュートリアル](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)に
-あります。各デバイスの状態は、次の UltraLight デバイス・モニタの Web ページで確
+あります。各デバイスの状態は、次の JSON デバイス・モニタの Web ページで確
 認できます : `http://localhost:3000/device/monitor`
 
 ![FIWARE Monitor](https://fiware.github.io/tutorials.Historic-Context-Flume/img/device-monitor.png)
@@ -148,7 +148,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
 コンポーネントと ダミー IoT デバイスをベースにしています。3 つの FIWARE コンポー
 ネントを使用します
 。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
-[IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/),
+[IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/),
 コンテキスト・データをデータベースに永続化するための
 [Cygnus Generic Enabler](https://fiware-cygnus.readthedocs.io/en/latest/) を導入
 しました。Orion Context Broker と IoT Agent の両方が
@@ -164,9 +164,9 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
         、[NGSI](https://fiware.github.io/specifications/ngsiv2/latest/) を使用
         してリクエストを受信します
     -   FIWARE
-        [IoT Agent for Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/)
+        [IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/)
         は
-        、[Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+        、[JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         フォーマットのダミー IoT デバイスからノース・バウンドの測定値を受信し
         、Context Broker がコンテキスト・エンティティの状態を変更するための
         [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) リクエス
@@ -196,7 +196,7 @@ Broker に接続されます。使用しているアーキテクチャとプロ�
         -   各店舗で購入できる商品を表示します
         -   ユーザが製品を購入して在庫数を減らすことを許可します
     -   HTTP 上で動作する
-        [Ultralight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+        [JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
         プロトコルを使用して
         、[ダミー IoT デバイス](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)の
         セットとして機能する Web サーバ
@@ -596,7 +596,7 @@ show dbs
 
 ```
 admin          0.000GB
-iotagentul     0.000GB
+iotagentjson     0.000GB
 local          0.000GB
 orion          0.000GB
 orion-openiot  0.000GB
@@ -611,7 +611,7 @@ sth_openiot    0.000GB
 -   IoT デバイスのエンティティは、`openiot` `fiware-service` ヘッダを使用して作
     成され、別々に保持されるのに対し、ストア・エンティティは、`fiware-service`
     を定義することなく作成され、したがって `orion` データベース内に保持されます
-    。 IoT Agent は、IoT センサ・データ`iotagentul` という別の **MongoDB** デー
+    。 IoT Agent は、IoT センサ・データ`iotagentjson` という別の **MongoDB** デー
     タベースに保持するように初期化されました。
 
 Orgn Context Broker に Cygnus をサブスクリプションした結果、`sth_openiot` という
@@ -1409,7 +1409,7 @@ curl -XGET 'localhost:9200/_sql?format=json' -H 'Content-Type: application/json'
             "2021-04-16T09:23:38.418Z",
             "supportedProtocol",
             "Text",
-            "[\"ul20\"]",
+            "[\"json\"]",
             "Motion:003",
             "Motion",
             "2021-04-16T09:23:38.418Z"
